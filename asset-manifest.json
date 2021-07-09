@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/tz-main-app/static/css/main.a617e044.chunk.css",
+    "main.js": "/tz-main-app/static/js/main.1e49fb21.chunk.js",
+    "main.js.map": "/tz-main-app/static/js/main.1e49fb21.chunk.js.map",
+    "runtime-main.js": "/tz-main-app/static/js/runtime-main.8b213643.js",
+    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.8b213643.js.map",
+    "static/js/2.b9832936.chunk.js": "/tz-main-app/static/js/2.b9832936.chunk.js",
+    "static/js/2.b9832936.chunk.js.map": "/tz-main-app/static/js/2.b9832936.chunk.js.map",
+    "static/js/3.752f9773.chunk.js": "/tz-main-app/static/js/3.752f9773.chunk.js",
+    "static/js/3.752f9773.chunk.js.map": "/tz-main-app/static/js/3.752f9773.chunk.js.map",
+    "index.html": "/tz-main-app/index.html",
+    "static/css/main.a617e044.chunk.css.map": "/tz-main-app/static/css/main.a617e044.chunk.css.map",
+    "static/js/2.b9832936.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.b9832936.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/tz-main-app/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8b213643.js",
+    "static/js/2.b9832936.chunk.js",
+    "static/css/main.a617e044.chunk.css",
+    "static/js/main.1e49fb21.chunk.js"
+  ]
+}
