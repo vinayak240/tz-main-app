@@ -1,26 +1,27 @@
 {
   "files": {
     "main.css": "/tz-main-app/static/css/main.e86d05a0.chunk.css",
-    "main.js": "/tz-main-app/static/js/main.6c161a8e.chunk.js",
-    "main.js.map": "/tz-main-app/static/js/main.6c161a8e.chunk.js.map",
-    "runtime-main.js": "/tz-main-app/static/js/runtime-main.6456104f.js",
-    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.6456104f.js.map",
+    "main.js": "/tz-main-app/static/js/main.25bb6c21.chunk.js",
+    "main.js.map": "/tz-main-app/static/js/main.25bb6c21.chunk.js.map",
+    "runtime-main.js": "/tz-main-app/static/js/runtime-main.bd2c52a1.js",
+    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.bd2c52a1.js.map",
     "static/css/2.9b5018b4.chunk.css": "/tz-main-app/static/css/2.9b5018b4.chunk.css",
-    "static/js/2.d40a7425.chunk.js": "/tz-main-app/static/js/2.d40a7425.chunk.js",
-    "static/js/2.d40a7425.chunk.js.map": "/tz-main-app/static/js/2.d40a7425.chunk.js.map",
-    "static/js/3.df446adb.chunk.js": "/tz-main-app/static/js/3.df446adb.chunk.js",
-    "static/js/3.df446adb.chunk.js.map": "/tz-main-app/static/js/3.df446adb.chunk.js.map",
+    "static/js/2.43e28c34.chunk.js": "/tz-main-app/static/js/2.43e28c34.chunk.js",
+    "static/js/2.43e28c34.chunk.js.map": "/tz-main-app/static/js/2.43e28c34.chunk.js.map",
+    "static/js/3.de356237.chunk.js": "/tz-main-app/static/js/3.de356237.chunk.js",
+    "static/js/3.de356237.chunk.js.map": "/tz-main-app/static/js/3.de356237.chunk.js.map",
     "index.html": "/tz-main-app/index.html",
     "static/css/2.9b5018b4.chunk.css.map": "/tz-main-app/static/css/2.9b5018b4.chunk.css.map",
     "static/css/main.e86d05a0.chunk.css.map": "/tz-main-app/static/css/main.e86d05a0.chunk.css.map",
-    "static/js/2.d40a7425.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.d40a7425.chunk.js.LICENSE.txt",
-    "static/media/all.css": "/tz-main-app/static/media/fa-solid-900.efbd5d20.eot"
+    "static/js/2.43e28c34.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.43e28c34.chunk.js.LICENSE.txt",
+    "static/media/all.css": "/tz-main-app/static/media/fa-solid-900.efbd5d20.eot",
+    "static/media/restaurant.f28c7020.png": "/tz-main-app/static/media/restaurant.f28c7020.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.6456104f.js",
+    "static/js/runtime-main.bd2c52a1.js",
     "static/css/2.9b5018b4.chunk.css",
-    "static/js/2.d40a7425.chunk.js",
+    "static/js/2.43e28c34.chunk.js",
     "static/css/main.e86d05a0.chunk.css",
-    "static/js/main.6c161a8e.chunk.js"
+    "static/js/main.25bb6c21.chunk.js"
   ]
 }
