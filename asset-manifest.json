@@ -1,27 +1,27 @@
 {
   "files": {
     "main.css": "/tz-main-app/static/css/main.e86d05a0.chunk.css",
-    "main.js": "/tz-main-app/static/js/main.25bb6c21.chunk.js",
-    "main.js.map": "/tz-main-app/static/js/main.25bb6c21.chunk.js.map",
-    "runtime-main.js": "/tz-main-app/static/js/runtime-main.bd2c52a1.js",
-    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.bd2c52a1.js.map",
+    "main.js": "/tz-main-app/static/js/main.b7a57b0e.chunk.js",
+    "main.js.map": "/tz-main-app/static/js/main.b7a57b0e.chunk.js.map",
+    "runtime-main.js": "/tz-main-app/static/js/runtime-main.84a334a8.js",
+    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.84a334a8.js.map",
     "static/css/2.9b5018b4.chunk.css": "/tz-main-app/static/css/2.9b5018b4.chunk.css",
-    "static/js/2.43e28c34.chunk.js": "/tz-main-app/static/js/2.43e28c34.chunk.js",
-    "static/js/2.43e28c34.chunk.js.map": "/tz-main-app/static/js/2.43e28c34.chunk.js.map",
-    "static/js/3.de356237.chunk.js": "/tz-main-app/static/js/3.de356237.chunk.js",
-    "static/js/3.de356237.chunk.js.map": "/tz-main-app/static/js/3.de356237.chunk.js.map",
+    "static/js/2.32b02a38.chunk.js": "/tz-main-app/static/js/2.32b02a38.chunk.js",
+    "static/js/2.32b02a38.chunk.js.map": "/tz-main-app/static/js/2.32b02a38.chunk.js.map",
+    "static/js/3.782abfbe.chunk.js": "/tz-main-app/static/js/3.782abfbe.chunk.js",
+    "static/js/3.782abfbe.chunk.js.map": "/tz-main-app/static/js/3.782abfbe.chunk.js.map",
     "index.html": "/tz-main-app/index.html",
     "static/css/2.9b5018b4.chunk.css.map": "/tz-main-app/static/css/2.9b5018b4.chunk.css.map",
     "static/css/main.e86d05a0.chunk.css.map": "/tz-main-app/static/css/main.e86d05a0.chunk.css.map",
-    "static/js/2.43e28c34.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.43e28c34.chunk.js.LICENSE.txt",
-    "static/media/all.css": "/tz-main-app/static/media/fa-solid-900.efbd5d20.eot",
-    "static/media/restaurant.f28c7020.png": "/tz-main-app/static/media/restaurant.f28c7020.png"
+    "static/js/2.32b02a38.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.32b02a38.chunk.js.LICENSE.txt",
+    "static/media/2x.c2425bb2.png": "/tz-main-app/static/media/2x.c2425bb2.png",
+    "static/media/all.css": "/tz-main-app/static/media/fa-solid-900.efbd5d20.eot"
   },
   "entrypoints": [
-    "static/js/runtime-main.bd2c52a1.js",
+    "static/js/runtime-main.84a334a8.js",
     "static/css/2.9b5018b4.chunk.css",
-    "static/js/2.43e28c34.chunk.js",
+    "static/js/2.32b02a38.chunk.js",
     "static/css/main.e86d05a0.chunk.css",
-    "static/js/main.25bb6c21.chunk.js"
+    "static/js/main.b7a57b0e.chunk.js"
   ]
 }
