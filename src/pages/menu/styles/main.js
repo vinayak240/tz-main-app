@@ -1,0 +1,121 @@
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  restInfo: {
+    marginTop: "20px",
+    paddingBottom: "15px",
+    borderRadius: "0px",
+    border: "none",
+    boxShadow: "none",
+    borderBottom: "0.7px solid lightgrey",
+  },
+  main_text: {
+    textAlign: "center",
+    fontWeight: "600",
+    paddingTop: "8px",
+    textTransform: "capitalize",
+    opacity: 0.9,
+    fontSize: "1.2rem",
+    marginTop: "9px",
+  },
+  light_text: {
+    textAlign: "center",
+    fontSize: "0.93rem",
+    color: "#535665",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    fontWeight: "bold",
+    opacity: 0.56,
+  },
+  icon_img_div: {
+    textAlign: "center",
+  },
+  icon_img: {
+    width: "60px",
+    padding: "4px",
+    border: "1px solid lightgray",
+    borderRadius: "7px",
+    background: "#f7f2f2",
+  },
+  dottedSeperator: {
+    border: "none",
+    borderBottom: "10px solid #ececec",
+    width: "100%",
+    margin: "20px auto 15px auto",
+  },
+  infoGrid: {
+    borderRight: "1px solid lightgray",
+  },
+  searchBtn: {
+    marginLeft: "auto",
+    padding: "6px",
+    borderRadius: "50%",
+    boxShadow: "0 0 8px -1px lightgrey",
+    "&:active": {
+      boxShadow: "none",
+      backgroundColor: "lightgray",
+    },
+  },
+  itemName: {
+    fontFamily: "'Open Sans'",
+    fontWeight: 600,
+    fontSize: "1.05rem",
+    letterSpacing: "-0.3px",
+  },
+  itemPrice: {
+    fontFamily: "'Open Sans'",
+    fontWeight: 500,
+    letterSpacing: "-0.2px",
+    fontSize: "0.95rem",
+    color: "#3e4152",
+    "&::before": {
+      content: '"\\20B9"',
+    },
+  },
+  itemDesc: {
+    marginTop: "14px",
+    lineHeight: 1.3,
+    color: "rgba(40, 44, 63, 0.45)",
+    letterSpacing: "-0.3px",
+    fontSize: "0.92rem",
+  },
+  itemImg: {
+    height: "104px",
+    width: "118px",
+    borderRadius: "6px",
+    "&::after": {
+      position: "absolute",
+      content: "",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(40, 44, 63, 0.05)",
+      backgroundBlendMode: "overlay",
+      height: "104px",
+      borderRadius: "6px",
+    },
+  },
+  categoryName: {
+    fontFamily: "'Open Sans'",
+    fontWeight: 600,
+    fontSize: "1.16rem",
+    color: "#3e4152",
+    lineHeight: "1.2",
+    letterSpacing: "-0.3px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  addSubBtn: {
+    color: "inherit",
+    fontSize: "1.3rem",
+    fontWeight: 500,
+    background: "inherit",
+    border: "none",
+    display: "flex",
+  },
+});
+
+export default useStyles;
