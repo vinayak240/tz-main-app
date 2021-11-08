@@ -8,6 +8,7 @@ import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounde
 export default function Category(props) {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const classes = useStyles();
+  const { category } = props;
   const styleObj = isCategoryOpen
     ? {}
     : {
@@ -19,13 +20,17 @@ export default function Category(props) {
   };
 
   return (
-    <Paper style={{ padding: "24px 8px 16px 16px" }} elevation={0}>
+    <Paper
+      id={props.id}
+      style={{ padding: "24px 8px 16px 16px" }}
+      elevation={0}
+    >
       <Typography
         style={{ marginBottom: isCategoryOpen ? "24px" : 0 }}
         onClick={handleCollapse}
         className={classes.categoryName}
       >
-        Menu Category{" "}
+        {category.category_name + ` (${category.items.length})`}
         {isCategoryOpen ? (
           <KeyboardArrowUpRoundedIcon />
         ) : (
@@ -33,19 +38,22 @@ export default function Category(props) {
         )}{" "}
       </Typography>
       <Collapse style={styleObj} in={isCategoryOpen}>
-        {Array.from({ length: 10 }).map((ele, idx, arr) => (
-          <>
-            <Item />
+        {category.items.map((ele, idx, arr) => (
+          <div key={idx}>
+            <div style={{ paddingBottom: "14px" }}>
+              {" "}
+              <Item key={ele._id} item={ele} />{" "}
+            </div>
             {arr.length !== idx + 1 && (
               <hr
                 style={{
                   borderWidth: "1.5px",
-                  margin: "20px 0",
+                  margin: "6px 0 20px 0",
                 }}
                 className={classes.dottedSeperator}
               ></hr>
             )}
-          </>
+          </div>
         ))}
       </Collapse>
     </Paper>

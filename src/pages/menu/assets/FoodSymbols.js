@@ -27,25 +27,25 @@ export function EggFoodSymbol(props) {
       xmlns="http://www.w3.org/2000/svg"
       x="0px"
       y="0px"
-      width="48"
-      height="48"
+      width={props.style.width}
+      height={props.style.height}
       viewBox="0 0 172 172"
       style={{ fill: "#000000" }}
     >
       <g
         fill="none"
-        fill-rule="nonzero"
+        fillRule="nonzero"
         stroke="none"
-        stroke-width="1"
-        stroke-linecap="butt"
-        stroke-linejoin="miter"
-        stroke-miterlimit="10"
-        stroke-dasharray=""
-        stroke-dashoffset="0"
-        font-family="none"
-        font-weight="none"
-        font-size="none"
-        text-anchor="none"
+        strokeWidth="1"
+        strokeLinecap="butt"
+        strokeLinejoin="miter"
+        strokeMiterlimit="10"
+        strokeDasharray=""
+        strokeDashoffset="0"
+        fontFamily="none"
+        fontWeight="none"
+        fontSize="none"
+        textAnchor="none"
         style={{ mixBlendMode: "normal" }}
       >
         <path d="M0,172v-172h172v172z" fill="none"></path>
@@ -56,4 +56,12 @@ export function EggFoodSymbol(props) {
       </g>
     </svg>
   );
+}
+
+export default function FoodSymbols(props) {
+  return {
+    veg: <VegFoodSymbol {...props} />,
+    non_veg: <NonVegFoodSymbol {...props} />,
+    egg_only: <EggFoodSymbol {...props} />,
+  }[props.food_type];
 }

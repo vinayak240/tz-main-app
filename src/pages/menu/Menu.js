@@ -7,12 +7,18 @@ import MenuTabs from "./components/MenuTabs";
 import TabPanel from "./components/TabPanel";
 import MenuSearchBar from "./components/MenuSearchBar";
 import Category from "./components/Category";
+import restaurantData from "../../data/rest.json";
+import BottomActionsArea from "./components/BottomActionsArea";
 
 const Menu = (props) => {
+  // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
   const classes = useStyles();
   const [tabValue, setTabValue] = useState(0);
   const [isVegOnly, setVegOnly] = useState(false);
   const [showTopSearchBar, setShowTopSearchBar] = useState(false);
+  const restaurnt = restaurantData;
+
+  const menuMap = ["food", "bar", "buffet"];
 
   useEffect(() => {
     document.onscroll = () => {
@@ -32,7 +38,7 @@ const Menu = (props) => {
         marginTop: showTopSearchBar
           ? `${
               document.getElementById("menu-tabs").clientHeight +
-              document.getElementById("menu-app-bar").clientHeight
+              document.getElementById("menu-tool-bar").clientHeight
             }px`
           : "0px",
       }}
@@ -43,6 +49,7 @@ const Menu = (props) => {
         isAtTop={showTopSearchBar}
         tabValue={tabValue}
         setTabValue={setTabValue}
+        menu={restaurnt.menu}
       />
 
       <Paper id="rest-info" className={classes.restInfo}>
@@ -57,7 +64,7 @@ const Menu = (props) => {
               style={{ paddingLeft: "10px" }}
               className={classes.main_text}
             >
-              {"Maa Da Dhaba"}
+              {restaurnt.rest_name}
               <CheckCircleRoundedIcon
                 style={{
                   width: "18px",
@@ -68,7 +75,7 @@ const Menu = (props) => {
               />
             </Typography>
             <Typography className={classes.light_text}>
-              {["Indian", "Italian"].join(", ")}
+              {restaurnt.rest_tags.join(", ")}
             </Typography>
           </Grid>
 
@@ -136,7 +143,7 @@ const Menu = (props) => {
           </Grid>
         </Grid>
       </Paper>
-      <div className="menu">
+      <div id="rest-menu">
         {!showTopSearchBar && (
           <MenuTabs numTabs={3} tabValue={tabValue} setTabValue={setTabValue} />
         )}
@@ -145,6 +152,7 @@ const Menu = (props) => {
             isVegOnly={isVegOnly}
             setVegOnly={setVegOnly}
             isAtTop={false}
+            menu={restaurnt.menu}
           />
         )}
         <hr
@@ -155,45 +163,60 @@ const Menu = (props) => {
           className={classes.dottedSeperator}
         ></hr>
         <TabPanel value={tabValue} index={0}>
-          {Array.from({ length: 10 }).map((ele, idx, arr) => (
-            <>
-              <Category />
+          {restaurnt.menu["food"].map((ele, idx, arr) => (
+            <div key={idx}>
+              <Category
+                id={`menu-cat-${idx + 1}`}
+                key={ele._id}
+                category={ele}
+              />
               {arr.length !== idx + 1 && (
                 <hr
                   style={{ borderWidth: "16px", margin: 0 }}
                   className={classes.dottedSeperator}
                 ></hr>
               )}
-            </>
+            </div>
           ))}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          {Array.from({ length: 10 }).map((ele, idx, arr) => (
-            <>
-              <Category />
+          {restaurnt.menu["bar"].map((ele, idx, arr) => (
+            <div key={idx}>
+              <Category
+                id={`menu-cat-${idx + 1}`}
+                key={ele._id}
+                category={ele}
+              />
               {arr.length !== idx + 1 && (
                 <hr
                   style={{ borderWidth: "16px", margin: 0 }}
                   className={classes.dottedSeperator}
                 ></hr>
               )}
-            </>
+            </div>
           ))}
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          {Array.from({ length: 10 }).map((ele, idx, arr) => (
-            <>
-              <Category />
-              {arr.length !== idx + 1 && (
-                <hr
-                  style={{ borderWidth: "16px", margin: 0 }}
-                  className={classes.dottedSeperator}
-                ></hr>
-              )}
-            </>
+          {restaurnt.menu["food"].map((ele, idx, arr) => (
+            // <>
+            //   <Category key={ele._id} />
+            //   {arr.length !== idx + 1 && (
+            //     <hr
+            //       style={{ borderWidth: "16px", margin: 0 }}
+            //       className={classes.dottedSeperator}
+            //     ></hr>
+            //   )}
+            // </>
+            <h4 key={ele._id}>Buffet In Progress</h4>
           ))}
         </TabPanel>
       </div>
+      <BottomActionsArea
+        categories={restaurnt.menu[menuMap[tabValue]].map((cat) => ({
+          category_name: cat.category_name,
+          n_items: cat.items.length,
+        }))}
+      />
     </div>
   );
 };

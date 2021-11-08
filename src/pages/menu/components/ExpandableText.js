@@ -2,7 +2,7 @@ import { Typography } from "@material-ui/core";
 import React, { useState } from "react";
 
 export default function ExpandableText(props) {
-  const [isExpanded, setIsExpanded] = useState(props.children.length < 100);
+  const [isExpanded, setIsExpanded] = useState(props.children.length < 90);
   const styleObj = !isExpanded
     ? {
         overflow: "hidden",

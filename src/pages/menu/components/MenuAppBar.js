@@ -53,8 +53,13 @@ const MenuAppBar = (props) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar id="menu-app-bar" elevation={0}>
-        <Toolbar className={classes.appBarRoot}>
+      <AppBar
+        color="transparent"
+        style={{ zIndex: 10 }}
+        id="menu-app-bar"
+        elevation={0}
+      >
+        <Toolbar id="menu-tool-bar" className={classes.appBarRoot}>
           <Typography variant="h6" noWrap>
             <Logo width="100px" height="50px" />
           </Typography>
@@ -127,6 +132,7 @@ const MenuAppBar = (props) => {
               isVegOnly={props.isVegOnly}
               setVegOnly={props.setVegOnly}
               isAtTop={props.isAtTop}
+              menu={props.menu}
             />
           </>
         )}

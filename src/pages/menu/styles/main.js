@@ -51,7 +51,6 @@ const useStyles = makeStyles({
     marginLeft: "auto",
     padding: "6px",
     borderRadius: "50%",
-    boxShadow: "0 0 8px -1px lightgrey",
     "&:active": {
       boxShadow: "none",
       backgroundColor: "lightgray",
@@ -81,8 +80,8 @@ const useStyles = makeStyles({
     fontSize: "0.92rem",
   },
   itemImg: {
-    height: "104px",
-    width: "118px",
+    height: "102px",
+    width: "116px",
     borderRadius: "6px",
     "&::after": {
       position: "absolute",
@@ -100,7 +99,7 @@ const useStyles = makeStyles({
   categoryName: {
     fontFamily: "'Open Sans'",
     fontWeight: 600,
-    fontSize: "1.16rem",
+    fontSize: "1.1rem",
     color: "#3e4152",
     lineHeight: "1.2",
     letterSpacing: "-0.3px",
@@ -115,6 +114,20 @@ const useStyles = makeStyles({
     background: "inherit",
     border: "none",
     display: "flex",
+  },
+  repeatBtn: {
+    width: "calc(50% - 4%)",
+    border: "2px solid #ffa400",
+    height: "42px",
+    lineHeight: "38px",
+    borderRadius: "8px",
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden",
+    textTransform: "uppercase",
+    fontWeight: 600,
+    display: "flex",
+    fontSize: "0.83rem",
   },
 });
 
