@@ -1,28 +1,25 @@
-import { CLEAR_CART, UPDATE_CART } from "../actions/types";
+import { SET_LOADING, UNSET_LOADING } from "../actions/types";
 
 const initialState = {
-  items: [],
-  offers: [],
-  totalCost: 0,
+  loading: false,
 };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case UPDATE_CART:
+    case SET_LOADING:
       return {
         ...state,
-        ...payload,
+        loading: true,
       };
 
-    case CLEAR_CART:
+    case UNSET_LOADING:
       return {
         ...state,
-        items: [],
-        offers: [],
-        totalCost: 0,
+        loading: false,
       };
+
     default:
       return state;
   }

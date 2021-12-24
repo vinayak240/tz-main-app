@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
 import {
   Button,
   Checkbox,
@@ -18,6 +17,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import { clone } from "ramda";
 import BackIcon from "../assets/BackIcon";
+import ErrorAlert from "../shared/ErrorAlert";
+import { connect, useDispatch } from "react-redux";
+import { setAlert } from "../../../redux/actions/alert";
+import ALERT_TYPES from "../../../constants/alert_types";
+import { decideFoodType } from "../utils/helper";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -26,35 +30,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustumizationPage(props) {
+function CustumizationPage(props) {
   const classes = useStyles();
   const [state, setState] = useState({
-    itemCost: Number(props.item.item_price),
+    itemCost: Number(
+      props.isPackage ? props.item.package_price : props.item.item_price
+    ),
     custumization_arr: [],
     count: 1,
     isSet: false,
   });
-
-  const [error, setErrorState] = useState({
-    showError: false,
-    errorMsg: "",
-  });
-
+  const dispatch = useDispatch();
   const { custumization_arr } = props.item;
-
-  const triggerError = (msg) => {
-    setErrorState({
-      showError: true,
-      errorMsg: msg,
-    });
-
-    setTimeout(() => {
-      setErrorState({
-        showError: false,
-        errorMsg: "",
-      });
-    }, 1000);
-  };
 
   const handleCheckBoxInput = (evt) => {
     const [custId, optId] = evt.target.name.split("-");
@@ -144,7 +131,7 @@ export default function CustumizationPage(props) {
   };
 
   const setInitialState = () => {
-    const initialCustArr = clone(custumization_arr)
+    let initialCustArr = clone(custumization_arr)
       .filter((cust) => Number(cust.custum_type) > 0)
       .map((cust) => {
         cust.options =
@@ -154,9 +141,36 @@ export default function CustumizationPage(props) {
         return cust;
       });
 
+    if (Boolean(props.cur_custumizations?.length > 0)) {
+      initialCustArr = initialCustArr.map((cust) => {
+        let curCustIdx = props.cur_custumizations.findIndex(
+          (ncust) => ncust._id === cust._id
+        );
+        if (curCustIdx !== -1) {
+          return props.cur_custumizations[curCustIdx];
+        }
+
+        return cust;
+      });
+    }
+
+    let cost = initialCustArr.reduce((total, cust) => {
+      return (
+        total +
+        cust.options.reduce(
+          (totalOptCost, opt) => totalOptCost + getOptionCost(opt),
+          0
+        )
+      );
+    }, Number(props.isPackage ? props.item.package_price : props.item.item_price));
+
+    let count = Boolean(props.cur_count) && props.is_edit ? props.cur_count : 1;
+
     setState((prev) => ({
       ...prev,
       custumization_arr: [...initialCustArr],
+      itemCost: cost,
+      count: count,
       isSet: true,
     }));
   };
@@ -224,15 +238,23 @@ export default function CustumizationPage(props) {
     );
 
     if (!isAllOk) {
-      setErrorState({
-        showError: true,
-        errorMsg: "Cannot add, Please select required customizations",
-      });
-
+      dispatch(
+        setAlert(
+          "Cannot add, Please select required customizations",
+          ALERT_TYPES.ERROR
+        )
+      );
       return;
     }
 
-    props.addItem(false, state.custumization_arr, state.itemCost, state.count);
+    !props.is_edit
+      ? props.addItem(
+          false,
+          state.custumization_arr,
+          state.itemCost,
+          state.count
+        )
+      : props.updateItem(state.custumization_arr, state.itemCost, state.count);
   };
 
   useEffect(() => setInitialState(), []);
@@ -247,7 +269,6 @@ export default function CustumizationPage(props) {
             onClick={props.handleClose}
             aria-label="close"
           >
-            {/* <KeyboardBackspaceIcon /> */}
             <BackIcon />
           </IconButton>
           <Typography
@@ -263,19 +284,32 @@ export default function CustumizationPage(props) {
         <Toolbar>
           <div style={{ display: "flex", alignItems: "center" }}>
             <FoodSymbols
-              food_type={props.item.food_type}
+              food_type={
+                props.isPackage
+                  ? decideFoodType(props.item.items)
+                  : props.item.food_type
+              }
               style={{
                 width: "19px",
                 height: "fit-content",
               }}
             />{" "}
-            <span style={{ fontSize: "1.1rem", marginLeft: "5px" }}>
-              {props.item.item_name}
+            <span
+              style={{
+                fontSize: "1.1rem",
+                marginLeft: "5px",
+                fontFamily: "'Proxima Nova', sans-serif",
+              }}
+            >
+              {props.isPackage ? props.item.package_name : props.item.item_name}
             </span>{" "}
           </div>
         </Toolbar>
       </AppBar>
-      <Paper style={{ padding: "0 17px", marginTop: "20px" }} elevation={0}>
+      <Paper
+        style={{ padding: "0 17px", marginTop: "20px", marginBottom: "60px" }}
+        elevation={0}
+      >
         {state.isSet &&
           custumization_arr.map((cust, custIdx) => {
             const n_options = Number(cust.custum_type);
@@ -296,7 +330,13 @@ export default function CustumizationPage(props) {
                   >
                     {!isRadio
                       ? isRequired
-                        ? `(${cust.options.length}/${cust.custum_type})`
+                        ? `(${
+                            state.custumization_arr[
+                              state.custumization_arr.findIndex(
+                                (s_cust) => s_cust._id === cust._id
+                              )
+                            ]?.options.length || 0
+                          }/${cust.custum_type})`
                         : "(optional)"
                       : ""}
                   </span>
@@ -304,37 +344,68 @@ export default function CustumizationPage(props) {
                 <FormControl
                   component="fieldset"
                   className={classes.formControl}
+                  style={{ width: "100%" }}
                 >
                   {!isRadio ? (
                     <FormGroup>
                       {cust.options.map((opt, optIdx) => (
-                        <FormControlLabel
-                          style={{ color: "rgb(247, 160, 2)" }}
-                          key={opt._id}
-                          control={
-                            <Checkbox
-                              checked={isChecked(cust._id, opt._id)}
-                              onChange={handleCheckBoxInput}
-                              name={`${cust._id}-${opt._id}`}
-                              disabled={checkIsDisabled(cust._id, opt._id)}
-                            />
-                          }
-                          label={
-                            <span
+                        <div
+                          key={optIdx}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingRight: "8px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <FoodSymbols
+                              food_type={opt.food_type}
                               style={{
-                                color: "#3d4152",
+                                width: "16px",
+                                height: "fit-content",
+                                marginRight: "6px",
                               }}
-                            >
-                              {opt.option}
-                              <span
-                                style={{ color: "#93959f", marginLeft: "10px" }}
-                              >
-                                <span>&#8377;</span>
-                                {opt.option_price}
-                              </span>
+                            />
+                            <FormControlLabel
+                              style={{ color: "rgb(247, 160, 2)" }}
+                              key={opt._id}
+                              control={
+                                <Checkbox
+                                  checked={isChecked(cust._id, opt._id)}
+                                  onChange={handleCheckBoxInput}
+                                  name={`${cust._id}-${opt._id}`}
+                                  disabled={checkIsDisabled(cust._id, opt._id)}
+                                />
+                              }
+                              label={
+                                <span
+                                  style={{
+                                    color: "#3d4152",
+                                  }}
+                                >
+                                  {opt.option}
+                                </span>
+                              }
+                            />
+                          </div>
+                          <span
+                            style={{ marginRight: "5px", fontWeight: "600" }}
+                          >
+                            <span style={{ marginRight: "2px" }}>
+                              {opt.option_type === "minus" && "-"}
                             </span>
-                          }
-                        />
+                            <span>&#8377;</span>
+                            {opt.option_type === "total"
+                              ? "0"
+                              : opt.option_price}
+                          </span>
+                        </div>
                       ))}
                     </FormGroup>
                   ) : (
@@ -345,20 +416,56 @@ export default function CustumizationPage(props) {
                       onChange={handleRadioInput}
                     >
                       {cust.options.map((opt, optIdx) => (
-                        <FormControlLabel
-                          style={{ color: "rgb(247, 160, 2)" }}
-                          value={`${cust._id}-${opt._id}`}
-                          control={<Radio />}
-                          label={
-                            <span
+                        <div
+                          key={optIdx}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingRight: "8px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <FoodSymbols
+                              food_type={opt.food_type}
                               style={{
-                                color: "#3d4152",
+                                width: "16px",
+                                height: "fit-content",
+                                marginRight: "6px",
                               }}
-                            >
-                              {opt.option}
+                            />
+                            <FormControlLabel
+                              style={{ color: "rgb(247, 160, 2)" }}
+                              value={`${cust._id}-${opt._id}`}
+                              control={<Radio />}
+                              label={
+                                <span
+                                  style={{
+                                    color: "#3d4152",
+                                  }}
+                                >
+                                  {opt.option}
+                                </span>
+                              }
+                            />
+                          </div>
+                          <span
+                            style={{ marginRight: "5px", fontWeight: "600" }}
+                          >
+                            <span style={{ marginRight: "2px" }}>
+                              {opt.option_type === "minus" && "-"}
                             </span>
-                          }
-                        />
+                            <span>&#8377;</span>
+                            {opt.option_type === "total"
+                              ? "0"
+                              : opt.option_price}
+                          </span>
+                        </div>
                       ))}
                     </RadioGroup>
                   )}
@@ -367,6 +474,7 @@ export default function CustumizationPage(props) {
             );
           })}
       </Paper>
+      {props.alerts?.length > 0 && <ErrorAlert alert={props.alerts[0]} />}
       <div
         style={{
           position: "fixed",
@@ -378,6 +486,7 @@ export default function CustumizationPage(props) {
           padding: "5px 10px",
           display: "flex",
           justifyContent: "space-around",
+          backgroundColor: "white",
         }}
       >
         <div
@@ -452,7 +561,7 @@ export default function CustumizationPage(props) {
             textTransform: "capitalize",
           }}
         >
-          Add{" "}
+          {!props.is_edit ? "Add" : "Update"}{" "}
           <span
             style={{
               marginLeft: "7px",
@@ -467,3 +576,14 @@ export default function CustumizationPage(props) {
     </div>
   );
 }
+
+CustumizationPage.defaultProps = {
+  isPackage: false,
+  is_edit: false,
+};
+
+const mapStateToProps = (state) => ({
+  alerts: state.alert,
+});
+
+export default connect(mapStateToProps)(CustumizationPage);

@@ -3,8 +3,8 @@ const logError = () =>
     `Invalid element, are you sure you've provided element id or react ref?`
   );
 
-const getElementPosition = (element) =>
-  element.offsetTop -
+export const getElementPosition = (element) =>
+  (element?.offsetTop || 0) -
   (document.getElementById("menu-tool-bar").clientHeight +
     document.getElementById("menu-tabs").clientHeight +
     document.getElementById("menu-search-bar").clientHeight);

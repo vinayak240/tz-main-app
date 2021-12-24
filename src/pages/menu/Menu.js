@@ -9,6 +9,9 @@ import MenuSearchBar from "./components/MenuSearchBar";
 import Category from "./components/Category";
 import restaurantData from "../../data/rest.json";
 import BottomActionsArea from "./components/BottomActionsArea";
+import Package from "./components/Package";
+import { decideFoodType, decideToShowMenuFAB } from "./utils/helper";
+import { getElementPosition } from "./utils/scroll";
 
 const Menu = (props) => {
   // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
@@ -16,21 +19,47 @@ const Menu = (props) => {
   const [tabValue, setTabValue] = useState(0);
   const [isVegOnly, setVegOnly] = useState(false);
   const [showTopSearchBar, setShowTopSearchBar] = useState(false);
+  const [s_active_cat, setScrollActiveCat] = useState(0);
   const restaurnt = restaurantData;
 
   const menuMap = ["food", "bar", "buffet"];
 
   useEffect(() => {
     document.onscroll = () => {
-      let height = document.getElementById("rest-info").clientHeight + 23;
+      try {
+        let height = document.getElementById("rest-info")?.clientHeight + 20;
 
-      if (Boolean(document.scrollingElement.scrollTop >= height)) {
-        !showTopSearchBar && setShowTopSearchBar(true);
-      } else {
-        showTopSearchBar && setShowTopSearchBar(false);
+        if (Boolean(document.scrollingElement.scrollTop >= height)) {
+          !showTopSearchBar && setShowTopSearchBar(true);
+        } else {
+          showTopSearchBar && setShowTopSearchBar(false);
+        }
+
+        let offsets = restaurnt.menu[menuMap[tabValue]].map((cat, idx) => ({
+          element: document.getElementById(`menu-cat-${idx + 1}`),
+          offset: getElementPosition(
+            document.getElementById(`menu-cat-${idx + 1}`)
+          ),
+        }));
+
+        let active_cat = offsets.findIndex(
+          (ele) =>
+            window.scrollY + window.innerHeight / 2 - ele.offset <=
+            ele.element?.clientHeight
+        );
+
+        if (active_cat !== -1) {
+          setScrollActiveCat(active_cat);
+        }
+      } catch (err) {
+        console.log("Error while scrolling");
       }
     };
-  }, [showTopSearchBar]);
+  }, [showTopSearchBar, tabValue, menuMap, restaurnt.menu]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [tabValue]);
 
   return (
     <div
@@ -111,7 +140,7 @@ const Menu = (props) => {
                   fontWeight: "600",
                 }}
               >
-                40 min
+                {restaurnt.serve_time} min
               </span>
             </Typography>
             <Typography
@@ -131,7 +160,7 @@ const Menu = (props) => {
                 }}
               >
                 <span>&#8377;</span>
-                {600}
+                {restaurnt.cost_for_two}
               </span>
             </Typography>
             <Typography
@@ -169,6 +198,7 @@ const Menu = (props) => {
                 id={`menu-cat-${idx + 1}`}
                 key={ele._id}
                 category={ele}
+                is_veg={isVegOnly}
               />
               {arr.length !== idx + 1 && (
                 <hr
@@ -186,6 +216,7 @@ const Menu = (props) => {
                 id={`menu-cat-${idx + 1}`}
                 key={ele._id}
                 category={ele}
+                is_veg={isVegOnly}
               />
               {arr.length !== idx + 1 && (
                 <hr
@@ -196,27 +227,40 @@ const Menu = (props) => {
             </div>
           ))}
         </TabPanel>
-        <TabPanel value={tabValue} index={2}>
-          {restaurnt.menu["food"].map((ele, idx, arr) => (
-            // <>
-            //   <Category key={ele._id} />
-            //   {arr.length !== idx + 1 && (
-            //     <hr
-            //       style={{ borderWidth: "16px", margin: 0 }}
-            //       className={classes.dottedSeperator}
-            //     ></hr>
-            //   )}
-            // </>
-            <h4 key={ele._id}>Buffet In Progress</h4>
-          ))}
+        <TabPanel style={{ padding: "15px" }} value={tabValue} index={2}>
+          {restaurnt.menu["buffet"]
+            .filter(
+              (i_package) =>
+                !isVegOnly || decideFoodType(i_package.items) === "veg"
+            )
+            .map((ele, idx, arr) => (
+              <>
+                <Package package={ele} key={ele._id} />
+                {arr.length !== idx + 1 && (
+                  <hr
+                    style={{
+                      borderWidth: "1.5px",
+                      margin: "6px 0 20px 0",
+                    }}
+                    className={classes.dottedSeperator}
+                  ></hr>
+                )}
+              </>
+            ))}
         </TabPanel>
       </div>
       <BottomActionsArea
+        active_cat={s_active_cat}
+        showFAB={decideToShowMenuFAB(restaurnt.menu[menuMap[tabValue]])}
         categories={restaurnt.menu[menuMap[tabValue]].map((cat) => ({
           category_name: cat.category_name,
           n_items: cat.items.length,
         }))}
+        checkOut={props.checkOut}
       />
+      <div
+        style={{ height: "120px", width: "100%", background: "#f4f4f5" }}
+      ></div>
     </div>
   );
 };

@@ -4,8 +4,10 @@ import useStyles from "../styles/main";
 import Item from "./Item";
 import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounded";
+import { connect } from "react-redux";
+import { findCartItem } from "../utils/helper";
 
-export default function Category(props) {
+function Category(props) {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const classes = useStyles();
   const { category } = props;
@@ -38,24 +40,36 @@ export default function Category(props) {
         )}{" "}
       </Typography>
       <Collapse style={styleObj} in={isCategoryOpen}>
-        {category.items.map((ele, idx, arr) => (
-          <div key={idx}>
-            <div style={{ paddingBottom: "14px" }}>
-              {" "}
-              <Item key={ele._id} item={ele} />{" "}
+        {category.items
+          .filter((item) => !props.is_veg || item.food_type === "veg")
+          .map((ele, idx, arr) => (
+            <div key={idx}>
+              <div style={{ paddingBottom: "14px" }}>
+                {" "}
+                <Item
+                  key={ele._id}
+                  item={ele}
+                  cart_item={findCartItem(props.cart, ele._id)}
+                />{" "}
+              </div>
+              {arr.length !== idx + 1 && (
+                <hr
+                  style={{
+                    borderWidth: "1.5px",
+                    margin: "6px 0 20px 0",
+                  }}
+                  className={classes.dottedSeperator}
+                ></hr>
+              )}
             </div>
-            {arr.length !== idx + 1 && (
-              <hr
-                style={{
-                  borderWidth: "1.5px",
-                  margin: "6px 0 20px 0",
-                }}
-                className={classes.dottedSeperator}
-              ></hr>
-            )}
-          </div>
-        ))}
+          ))}
       </Collapse>
     </Paper>
   );
 }
+
+const mapStateToProps = (state) => ({
+  cart: state.cart,
+});
+
+export default connect(mapStateToProps)(Category);

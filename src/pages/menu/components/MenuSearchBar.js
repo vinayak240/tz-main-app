@@ -37,6 +37,7 @@ const MenuSearchBar = (props) => {
           TransitionComponent={DialogTransition}
         >
           <MenuSearchPage
+            is_veg={isVegOnly}
             handleClose={() => handleDialogClose("f_search_dialog")}
             menu={props.menu}
           />

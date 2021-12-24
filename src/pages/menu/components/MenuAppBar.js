@@ -63,7 +63,6 @@ const MenuAppBar = (props) => {
           <Typography variant="h6" noWrap>
             <Logo width="100px" height="50px" />
           </Typography>
-          {/* Add Notification Icon and Dropdown menu */}
           <div className={classes.appBarOptions}>
             <Button
               style={{

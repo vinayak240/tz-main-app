@@ -57,10 +57,10 @@ const useStyles = makeStyles({
     },
   },
   itemName: {
-    fontFamily: "'Open Sans'",
-    fontWeight: 600,
-    fontSize: "1.05rem",
+    fontWeight: 500,
+    fontSize: "1.1rem",
     letterSpacing: "-0.3px",
+    fontFamily: "'Proxima Nova', sans-serif",
   },
   itemPrice: {
     fontFamily: "'Open Sans'",
@@ -78,6 +78,7 @@ const useStyles = makeStyles({
     color: "rgba(40, 44, 63, 0.45)",
     letterSpacing: "-0.3px",
     fontSize: "0.92rem",
+    fontFamily: "'Proxima Nova', sans-serif",
   },
   itemImg: {
     height: "102px",
@@ -97,15 +98,15 @@ const useStyles = makeStyles({
     },
   },
   categoryName: {
-    fontFamily: "'Open Sans'",
-    fontWeight: 600,
-    fontSize: "1.1rem",
+    fontWeight: 500,
+    fontSize: "1.15rem",
     color: "#3e4152",
     lineHeight: "1.2",
     letterSpacing: "-0.3px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    fontFamily: "'Proxima Nova', sans-serif",
   },
   addSubBtn: {
     color: "inherit",
