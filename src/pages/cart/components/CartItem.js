@@ -64,7 +64,7 @@ function CartItem(props) {
       addItemToCart(
         payload,
         props.cart_item._id,
-        isRepeatLast ||
+        !isRepeatLast &&
           props.cart_item.versions.some((ver) =>
             checkIfCustumizationSame(
               ver.custumization_arr,
