@@ -24,9 +24,29 @@ export default function Offer(props) {
         {/* APPLY BTN HERE */}
       </div>
       <p>{offer.label_text}</p>
-      <p>{offer.desc}</p>
+      <p
+        style={{
+          color: "#686b78",
+          fontSize: ".85rem",
+          marginTop: "12px",
+          paddingTop: "12px",
+          borderTop: "1px solid #f4f4f5",
+          fontFamily: "'Proxima Nova'",
+          fontWeight: "300",
+        }}
+      >
+        {offer.desc}
+      </p>
       {offer.conditions?.length > 0 && (
-        <div>
+        <div
+          style={{
+            color: "#686b78",
+            fontSize: ".85rem",
+            borderTop: "1px solid #f4f4f5",
+            fontFamily: "'Proxima Nova'",
+            fontWeight: "300",
+          }}
+        >
           <p>Terms and conditiions</p>
           <uk>
             {offer.conditions.map((condtn) => (
