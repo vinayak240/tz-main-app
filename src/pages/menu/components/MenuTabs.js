@@ -37,11 +37,12 @@ const MyTabs = withStyles({
 
 const MyTab = withStyles({
   root: {
-    fontWeight: "600",
+    fontWeight: 700,
     fontSize: "16px",
     textTransform: "capitalize",
     color: "#282c3f",
     opacity: "0.6",
+    fontFamily: "'Proxima Nova'",
   },
   selected: {
     color: "rgba(0, 0, 0, 0.87)",

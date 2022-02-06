@@ -89,6 +89,11 @@ const useStyles = makeStyles({
     display: "block",
     background: "#f1f1f3",
   },
+  infoIcon: {
+    verticalAlign: "middle",
+    marginLeft: "3px",
+    fontSize: "17px",
+  },
 });
 
 export default useStyles;

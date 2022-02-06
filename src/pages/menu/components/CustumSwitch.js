@@ -54,7 +54,17 @@ export default function CustumSwitch(props) {
         />
       }
       label={
-        <span style={{ color: "#3d4152", margin: "7px" }}>{switchLabel}</span>
+        <span
+          style={{
+            color: "#3d4152",
+            margin: "7px",
+            fontFamily: "'Proxima Nova'",
+
+            fontWeight: 500,
+          }}
+        >
+          {switchLabel}
+        </span>
       }
     />
   );

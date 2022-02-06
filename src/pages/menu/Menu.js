@@ -1,5 +1,5 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import MenuAppBar from "./components/MenuAppBar";
 import useStyles from "./styles/main";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
@@ -7,11 +7,12 @@ import MenuTabs from "./components/MenuTabs";
 import TabPanel from "./components/TabPanel";
 import MenuSearchBar from "./components/MenuSearchBar";
 import Category from "./components/Category";
-import restaurantData from "../../data/rest.json";
 import BottomActionsArea from "./components/BottomActionsArea";
 import Package from "./components/Package";
 import { decideFoodType, decideToShowMenuFAB } from "./utils/helper";
 import { getElementPosition } from "./utils/scroll";
+import { connect } from "react-redux";
+import { isObjEmpty } from "../../utils/helpers";
 
 const Menu = (props) => {
   // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
@@ -20,46 +21,56 @@ const Menu = (props) => {
   const [isVegOnly, setVegOnly] = useState(false);
   const [showTopSearchBar, setShowTopSearchBar] = useState(false);
   const [s_active_cat, setScrollActiveCat] = useState(0);
-  const restaurnt = restaurantData;
+  const { restaurant } = props;
 
   const menuMap = ["food", "bar", "buffet"];
 
-  useEffect(() => {
-    document.onscroll = () => {
-      try {
-        let height = document.getElementById("rest-info")?.clientHeight + 20;
+  const handleMenuScroll = () => {
+    try {
+      let height = document.getElementById("rest-info")?.clientHeight + 20;
 
-        if (Boolean(document.scrollingElement.scrollTop >= height)) {
-          !showTopSearchBar && setShowTopSearchBar(true);
-        } else {
-          showTopSearchBar && setShowTopSearchBar(false);
-        }
-
-        let offsets = restaurnt.menu[menuMap[tabValue]].map((cat, idx) => ({
-          element: document.getElementById(`menu-cat-${idx + 1}`),
-          offset: getElementPosition(
-            document.getElementById(`menu-cat-${idx + 1}`)
-          ),
-        }));
-
-        let active_cat = offsets.findIndex(
-          (ele) =>
-            window.scrollY + window.innerHeight / 2 - ele.offset <=
-            ele.element?.clientHeight
-        );
-
-        if (active_cat !== -1) {
-          setScrollActiveCat(active_cat);
-        }
-      } catch (err) {
-        console.log("Error while scrolling");
+      if (Boolean(document.scrollingElement.scrollTop >= height)) {
+        !showTopSearchBar && setShowTopSearchBar(true);
+      } else {
+        showTopSearchBar && setShowTopSearchBar(false);
       }
+
+      let offsets = restaurant.menu[menuMap[tabValue]].map((cat, idx) => ({
+        element: document.getElementById(`menu-cat-${idx + 1}`),
+        offset: getElementPosition(
+          document.getElementById(`menu-cat-${idx + 1}`)
+        ),
+      }));
+
+      let active_cat = offsets.findIndex(
+        (ele) =>
+          window.scrollY + window.innerHeight / 2 - ele.offset <=
+          ele.element?.clientHeight
+      );
+
+      if (active_cat !== -1) {
+        setScrollActiveCat(active_cat);
+      }
+    } catch (err) {
+      console.log("Error while scrolling");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("scroll", handleMenuScroll);
+
+    return () => {
+      document.removeEventListener("scroll", handleMenuScroll);
     };
-  }, [showTopSearchBar, tabValue, menuMap, restaurnt.menu]);
+  }, [showTopSearchBar, tabValue, menuMap, restaurant.menu]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [tabValue]);
+
+  if (isObjEmpty(restaurant)) {
+    return <Fragment>Loading menu..</Fragment>;
+  }
 
   return (
     <div
@@ -78,7 +89,7 @@ const Menu = (props) => {
         isAtTop={showTopSearchBar}
         tabValue={tabValue}
         setTabValue={setTabValue}
-        menu={restaurnt.menu}
+        menu={restaurant.menu}
       />
 
       <Paper id="rest-info" className={classes.restInfo}>
@@ -93,7 +104,7 @@ const Menu = (props) => {
               style={{ paddingLeft: "10px" }}
               className={classes.main_text}
             >
-              {restaurnt.rest_name}
+              {restaurant.rest_name}
               <CheckCircleRoundedIcon
                 style={{
                   width: "18px",
@@ -104,7 +115,7 @@ const Menu = (props) => {
               />
             </Typography>
             <Typography className={classes.light_text}>
-              {restaurnt.rest_tags.join(", ")}
+              {restaurant.rest_tags.join(", ")}
             </Typography>
           </Grid>
 
@@ -118,6 +129,7 @@ const Menu = (props) => {
                   fontSize: "16px",
                   marginLeft: "5px",
                   fontWeight: "600",
+                  fontFamily: "'Proxima Nova'",
                 }}
               >
                 4.7
@@ -138,9 +150,10 @@ const Menu = (props) => {
                   fontSize: "16px",
                   marginLeft: "5px",
                   fontWeight: "600",
+                  fontFamily: "'Proxima Nova'",
                 }}
               >
-                {restaurnt.serve_time} min
+                {restaurant.serve_time} min
               </span>
             </Typography>
             <Typography
@@ -157,10 +170,11 @@ const Menu = (props) => {
                   fontSize: "16px",
                   marginLeft: "5px",
                   fontWeight: "600",
+                  fontFamily: "'Proxima Nova'",
                 }}
               >
                 <span>&#8377;</span>
-                {restaurnt.cost_for_two}
+                {restaurant.cost_for_two}
               </span>
             </Typography>
             <Typography
@@ -181,7 +195,7 @@ const Menu = (props) => {
             isVegOnly={isVegOnly}
             setVegOnly={setVegOnly}
             isAtTop={false}
-            menu={restaurnt.menu}
+            menu={restaurant.menu}
           />
         )}
         <hr
@@ -192,7 +206,7 @@ const Menu = (props) => {
           className={classes.dottedSeperator}
         ></hr>
         <TabPanel value={tabValue} index={0}>
-          {restaurnt.menu["food"].map((ele, idx, arr) => (
+          {restaurant.menu["food"].map((ele, idx, arr) => (
             <div key={idx}>
               <Category
                 id={`menu-cat-${idx + 1}`}
@@ -210,7 +224,7 @@ const Menu = (props) => {
           ))}
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          {restaurnt.menu["bar"].map((ele, idx, arr) => (
+          {restaurant.menu["bar"].map((ele, idx, arr) => (
             <div key={idx}>
               <Category
                 id={`menu-cat-${idx + 1}`}
@@ -228,7 +242,7 @@ const Menu = (props) => {
           ))}
         </TabPanel>
         <TabPanel style={{ padding: "15px" }} value={tabValue} index={2}>
-          {restaurnt.menu["buffet"]
+          {restaurant.menu["buffet"]
             .filter(
               (i_package) =>
                 !isVegOnly || decideFoodType(i_package.items) === "veg"
@@ -251,8 +265,8 @@ const Menu = (props) => {
       </div>
       <BottomActionsArea
         active_cat={s_active_cat}
-        showFAB={decideToShowMenuFAB(restaurnt.menu[menuMap[tabValue]])}
-        categories={restaurnt.menu[menuMap[tabValue]].map((cat) => ({
+        showFAB={decideToShowMenuFAB(restaurant.menu[menuMap[tabValue]])}
+        categories={restaurant.menu[menuMap[tabValue]].map((cat) => ({
           category_name: cat.category_name,
           n_items: cat.items.length,
         }))}
@@ -265,4 +279,8 @@ const Menu = (props) => {
   );
 };
 
-export default Menu;
+const mapStateToProps = (state) => ({
+  restaurant: state.restaurant,
+});
+
+export default connect(mapStateToProps)(Menu);

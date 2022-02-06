@@ -41,3 +41,53 @@ export const filterSameVersions = (versions) => {
 
   return versions.filter((ver) => Boolean(ver));
 };
+
+export const getChargesMap = (charges, total) => {
+  return charges.map((chr) => {
+    let charge = {};
+    charge.text = chr.label_text;
+
+    if (chr.method === "compound") {
+      charge.sub_charges = chr.sub_charges.map((s_chr) => {
+        return {
+          text: s_chr.label_text,
+          total: round(
+            calculateTotalByPerc(s_chr.method, total, s_chr.value),
+            2
+          ),
+        };
+      });
+      charge.total = charge.sub_charges.reduce(
+        (m_total, m_chr) => m_chr.total + m_total,
+        0
+      );
+    } else {
+      charge.sub_charges = [];
+      charge.total = round(
+        calculateTotalByPerc(chr.method, total, chr.value),
+        2
+      );
+    }
+
+    return charge;
+  });
+};
+
+export const calculateTotalByPerc = (method, total, value) => {
+  let tkns = method.split("-");
+  if (tkns.length > 1 && tkns[1] === "perc") {
+    let result = total * (Number(value) / 100);
+    switch (tkns[0]) {
+      case "minus":
+        return -result;
+      default:
+        return result;
+    }
+  }
+
+  return Number(value);
+};
+
+const round = (value, decimals) => {
+  return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+};

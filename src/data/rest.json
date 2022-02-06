@@ -13,6 +13,74 @@
    "rest_no": "1234567878",
    "rest_addr": "Bangalore - Karnataka - India - Earth",
    "rest_type": "1",
+   "offers": [
+      {
+         "label_text": "Get 50% Off",
+         "scope": "order",
+         "code": "TRYNEW",
+         "process_type": "computed",
+         "value_type": "minus-perc",
+         "value": "50",
+         "desc": "Use code TRYNEW & get 50% off on orders above ₹149. Maximum discount: ₹100.",
+         "conditions": [
+            {
+               "label_text": "Offer is valid only on select restaurants",
+               "always_valid": true
+            },
+            {
+               "label_text": "Offer is valid only on orders above ₹149",
+               "always_valid": false,
+               "decider_field": "order-total",
+               "decider_value": 149,
+               "operator": "gt"
+            }
+         ]
+      }
+   ],
+   "settings": {
+      "charges": [
+         {
+            "label_text": "GST by Govt.",
+            "scope": "order",
+            "method": "compound",
+            "sub_charges": [
+               {
+                  "label_text": "CGST by Govt.",
+                  "method": "add-perc",
+                  "value": "9"
+               },
+               {
+                  "label_text": "SGST by Govt.",
+                  "method": "add-perc",
+                  "value": "9"
+               }
+            ]
+         },
+         {
+            "label_text": "Service Tax",
+            "scope": "total",
+            "method": "add-perc",
+            "value": "12"
+         },
+         {
+            "label_text": "App Charges",
+            "scope": "order",
+            "method": "compound",
+            "sub_charges": [
+               {
+                  "label_text": "Rst. Charges",
+                  "method": "add-perc",
+                  "value": "3"
+               },
+               {
+                  "label_text": "Web Charges",
+                  "method": "add-perc",
+                  "value": "3"
+               }
+            ]
+         }
+      ]
+   },
    "cost_for_two": "800",
    "serve_time": "35",
    "dine_type": "3",

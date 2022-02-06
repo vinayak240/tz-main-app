@@ -1,4 +1,4 @@
-const isObjEmpty = (obj) => {
+export const isObjEmpty = (obj) => {
   if (!Boolean(obj)) {
     return true;
   }
@@ -7,5 +7,3 @@ const isObjEmpty = (obj) => {
   }
   return true;
 };
-
-export { isObjEmpty };

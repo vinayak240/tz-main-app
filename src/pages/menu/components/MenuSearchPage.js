@@ -42,7 +42,7 @@ export default function MenuSearchPage(props) {
   const handleSearchTextChange = (evt) => {
     let query = evt.target.value;
     let list = [];
-    let deciderValue = 2 * query.split(" ").length - 1;
+    let deciderValue = 2 * query.trim().split(" ").length - 1;
     if (query.length > deciderValue) {
       list = filterItems(query);
     } else {

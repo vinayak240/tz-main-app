@@ -11,9 +11,10 @@ const useStyles = makeStyles({
   },
   main_text: {
     textAlign: "center",
-    fontWeight: "600",
+    fontWeight: 700,
     paddingTop: "8px",
     textTransform: "capitalize",
+    fontFamily: "'Proxima Nova'",
     opacity: 0.9,
     fontSize: "1.2rem",
     marginTop: "9px",
@@ -23,9 +24,10 @@ const useStyles = makeStyles({
     fontSize: "0.93rem",
     color: "#535665",
     textOverflow: "ellipsis",
+    fontFamily: "'Proxima Nova'",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    fontWeight: "bold",
+    fontWeight: 500,
     opacity: 0.56,
   },
   icon_img_div: {
