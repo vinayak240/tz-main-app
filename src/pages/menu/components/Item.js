@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { clone } from "ramda";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useDispatch } from "react-redux";
 import FoodSymbols from "../assets/FoodSymbols";
 import DialogTransition from "../shared/DialogTransition";
@@ -66,13 +66,13 @@ export default function Item(props) {
 
     const count = versions.reduce((total, item) => total + item.itemCount, 0);
 
-    setState((prevState) => ({
-      ...prevState,
+    setState({
+      ...state,
       itemCount: count,
       versions: clone(versions),
       f_cust_dialog: false,
       f_repeat_drawer: false,
-    }));
+    });
 
     dispatch(
       addItemToCart(
@@ -120,7 +120,7 @@ export default function Item(props) {
       itemCount: props.cart_item?.itemCount || prev.itemCount,
       versions: clone(props.cart_item?.versions) || prev.versions,
     }));
-  }, [props.cart_item]);
+  }, [props.cart_item, props.cart_item?.itemCount, props.cart_item?.versions]);
 
   return (
     <div>
@@ -279,6 +279,7 @@ export default function Item(props) {
                       width: "93px",
                       height: "34px",
                       color: "#ffa400",
+                      // color: "#21242b",
                       fontWeight: 600,
                       fontFamily: "'Proxima Nova', sans-serif",
                       border: "1px solid #d4d5d9",

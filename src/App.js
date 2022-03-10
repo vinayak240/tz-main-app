@@ -1,22 +1,11 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { BookRepo } from "./data/book_repo";
-import { DragApp } from "./data/test_comp";
-import Cart from "./pages/cart/Cart";
-import Menu from "./pages/menu/Menu";
+import { BrowserRouter as Router } from "react-router-dom";
 import { loadRestaurant } from "./redux/actions/restaurant";
+import Routes from "./routing/Routes";
 
 const App = () => {
-  const [m_switch, setSwitch] = useState(true);
   const dispatch = useDispatch();
-
-  const checkOut = () => {
-    setSwitch(false);
-  };
-
-  const goBack = () => {
-    setSwitch(true);
-  };
 
   useEffect(() => {
     dispatch(loadRestaurant());
@@ -24,7 +13,11 @@ const App = () => {
 
   return (
     <div className="App">
-      {m_switch ? <Menu checkOut={checkOut} /> : <Cart goBack={goBack} />}
+      <Router>
+        <Fragment>
+          <Routes />
+        </Fragment>
+      </Router>
     </div>
   );
 };

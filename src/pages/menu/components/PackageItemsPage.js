@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -29,6 +29,7 @@ export default function PackageItemsPage(props) {
   const [state, setState] = useState({
     f_cust_dialog: false,
   });
+  const [curState, setCurState] = useState(null);
 
   const handleDialogOpen = (flagName) => {
     setState({
@@ -44,6 +45,33 @@ export default function PackageItemsPage(props) {
     });
     props.handleClose();
   };
+
+  const goBack = (isPopped = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    props.handleClose();
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+  };
+
+  useEffect(() => {
+    setCurState(window.history.state);
+    window.history.pushState(
+      window.history.state,
+      null,
+      window.location.pathname + "#package-items"
+    );
+
+    window.addEventListener("popstate", onBackButtonEvent);
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+    };
+  }, []);
 
   return (
     <div>
@@ -68,7 +96,7 @@ export default function PackageItemsPage(props) {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={props.handleClose}
+            onClick={() => goBack()}
             aria-label="close"
           >
             <BackIcon />
@@ -138,7 +166,10 @@ export default function PackageItemsPage(props) {
           onClick={
             Boolean(props.m_package.custumization_arr.length > 0)
               ? () => handleDialogOpen("f_cust_dialog")
-              : () => props.addItem(true)
+              : () => {
+                  goBack();
+                  setTimeout(() => props.addItem(true), 10);
+                }
           }
           style={{
             width: "90%",

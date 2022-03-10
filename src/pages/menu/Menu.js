@@ -13,10 +13,12 @@ import { decideFoodType, decideToShowMenuFAB } from "./utils/helper";
 import { getElementPosition } from "./utils/scroll";
 import { connect } from "react-redux";
 import { isObjEmpty } from "../../utils/helpers";
+import { useNavigate } from "react-router-dom";
 
 const Menu = (props) => {
   // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
   const classes = useStyles();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [isVegOnly, setVegOnly] = useState(false);
   const [showTopSearchBar, setShowTopSearchBar] = useState(false);
@@ -54,6 +56,10 @@ const Menu = (props) => {
     } catch (err) {
       console.log("Error while scrolling");
     }
+  };
+
+  const checkOut = () => {
+    navigate("/restaurant/cart");
   };
 
   useEffect(() => {
@@ -270,7 +276,7 @@ const Menu = (props) => {
           category_name: cat.category_name,
           n_items: cat.items.length,
         }))}
-        checkOut={props.checkOut}
+        checkOut={checkOut}
       />
       <div
         style={{ height: "120px", width: "100%", background: "#f4f4f5" }}

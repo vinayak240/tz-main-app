@@ -1,0 +1,38 @@
+$pulseSize: 4em;
+$pulseTiming: 1s;
+
+// body {
+//   background-color: white;
+//   text-align: center;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 100vh;
+//   margin: 0;
+// }
+
+// use this class to apply animation
+.pulseLoader {
+  width: $pulseSize;
+  height: $pulseSize;
+  border-radius: $pulseSize;
+  background-color: rgb(50, 139, 214);
+  outline: 1px solid transparent;
+  animation: pulseanim $pulseTiming ease-in-out infinite;
+}
+
+@keyframes pulseanim {
+  // 0% { transform: scale(0); opacity: 1;}
+  50% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}

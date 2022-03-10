@@ -12,20 +12,21 @@ import TimelapseRoundedIcon from "@material-ui/icons/TimelapseRounded";
 import ListAltRoundedIcon from "@material-ui/icons/ListAltRounded";
 import DraftsRoundedIcon from "@material-ui/icons/DraftsRounded";
 import DoubleArrowRoundedIcon from "@material-ui/icons/DoubleArrowRounded";
+import { useNavigate } from "react-router-dom";
 
 const OptionsMenu = (props) => {
+  const navigate = useNavigate();
+
   return (
     <MenuList>
       <MenuItem>
         <ListItemIcon>
           <TimelapseRoundedIcon />
         </ListItemIcon>
-        <ListItemText style={{ paddingRight: "15px" }}>
-          Order Status
-        </ListItemText>
+        <ListItemText style={{ paddingRight: "15px" }}>View Bill</ListItemText>
         <Typography variant="body2" color="text.secondary"></Typography>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => navigate("/restaurant/orders")}>
         <ListItemIcon>
           <ListAltRoundedIcon />
         </ListItemIcon>

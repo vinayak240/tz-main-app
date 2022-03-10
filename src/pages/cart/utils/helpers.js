@@ -88,6 +88,6 @@ export const calculateTotalByPerc = (method, total, value) => {
   return Number(value);
 };
 
-const round = (value, decimals) => {
+export const round = (value, decimals) => {
   return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
 };

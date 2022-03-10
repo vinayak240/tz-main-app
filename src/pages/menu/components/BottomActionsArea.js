@@ -1,6 +1,5 @@
 import {
   Backdrop,
-  Button,
   ButtonBase,
   List,
   ListItem,
@@ -14,7 +13,6 @@ import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import React, { useEffect, useState } from "react";
 import { scrollTo } from "../utils/scroll";
 import { connect } from "react-redux";
-import TouchRipple from "@material-ui/core/ButtonBase/TouchRipple";
 import animationStyles from "../../styles/comman_styles";
 
 const backdropStyles = makeStyles((theme) => ({
@@ -67,6 +65,7 @@ function BottomActionsArea(props) {
         left: 0,
         right: 0,
         zIndex: 10,
+        pointerEvents: "none",
       }}
     >
       <div className="partials">
@@ -105,7 +104,11 @@ function BottomActionsArea(props) {
               aria-label="secondary mailbox folders"
             >
               {props.categories.map((cat, idx) => (
-                <ListItem key={idx} onClick={() => scrollToCategory(idx)}>
+                <ListItem
+                  style={{ cursor: "pointer" }}
+                  key={idx}
+                  onClick={() => scrollToCategory(idx)}
+                >
                   <ListItemText
                     primary={
                       <span

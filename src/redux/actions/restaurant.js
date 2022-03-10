@@ -1,18 +1,20 @@
 import { clone } from "ramda";
-import ALERT_TYPES from "../../constants/alert_types";
+import ALERT_TYPES from "../../enums/alert_types";
 import { setAlert } from "./alert";
 import { INIT_CART, LOADED_REST } from "./types";
 import restaurantData from "../../data/rest.json";
+import { setUser } from "./comman";
 
 export const loadRestaurant = () => async (dispatch) => {
   try {
-    // This is to be updated..
+    // [API CALL] This is to be updated..
     const restaurant = restaurantData;
     const iniCart = {
       items: [],
-      offers: restaurant.offers,
+      offers: [],
       totalCost: 0,
     };
+    dispatch(setUser(null));
     dispatch({
       type: LOADED_REST,
       payload: restaurant,

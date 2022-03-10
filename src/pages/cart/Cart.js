@@ -1,43 +1,73 @@
-import { ButtonBase, Dialog, Paper } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import {
+  Button,
+  ButtonBase,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Typography,
+} from "@material-ui/core";
+import React, { Fragment, useEffect, useState } from "react";
 import CartAppBar from "./components/CartAppBar";
 import useStyles from "./styles/main";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import OfferIcon from "../../layouts/components/OfferIcon";
 import { OrderSlideButton } from "./components/OrderSlideButton";
 import { connect, useDispatch } from "react-redux";
 import CartItem from "./components/CartItem";
-import { clone } from "ramda";
-import { getChargesMap } from "./utils/helpers";
+import { clone, set } from "ramda";
+import { getChargesMap, round } from "./utils/helpers";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import OffersPage from "./components/OffersPage";
 import DialogTransition from "../menu/shared/DialogTransition";
-import { clearCart } from "../../redux/actions/cart";
+import {
+  applyOfferOnCart,
+  clearCart,
+  removeOffers,
+} from "../../redux/actions/cart";
+import { processOffer, isOfferApplicable } from "./utils/offers";
+import { isObjEmpty } from "../../utils/helpers";
+import MsgOfferIcon from "./assets/MsgOfferIcon";
+import PaperComponent from "./shared/PaperComponent";
+import {
+  getNextOrderNumber,
+  placeOrder as placeOrderAction,
+} from "../../redux/actions/table";
+import { useNavigate } from "react-router-dom";
 
 function Cart(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [state, setState] = useState({
     infoX: 0,
     infoY: 0,
     is_open: false,
-    f_cust_dialog: false,
+    f_offer_page: false,
+    f_offer_msg: false,
     infolist: [],
     infoHead: "",
   });
+  const [curOffer, setCurOffer] = useState({
+    is_applied: false,
+    code: "",
+    discount: 0,
+  });
 
   const handleDialogOpen = (flagName) => {
-    setState({
-      ...state,
+    setState((prevState) => ({
+      ...prevState,
       [flagName]: true,
-    });
+    }));
   };
 
   const handleDialogClose = (flagName) => {
-    setState({
-      ...state,
+    setState((prevState) => ({
+      ...prevState,
       [flagName]: false,
-    });
+    }));
   };
 
   const getOrderTotal = () => {
@@ -46,7 +76,12 @@ function Cart(props) {
       props.cart.totalCost
     ).reduce((c_total, chr) => c_total + chr.total, 0);
 
-    return props.cart.totalCost + chargeTotal;
+    let discount = props.cart.offers.reduce(
+      (tot, o) => (o.is_applicable ? tot + o.discount : tot),
+      0
+    );
+
+    return round(props.cart.totalCost + chargeTotal - discount, 1);
   };
 
   const handleInfoOpen = (evt, sub_charges, charge) => {
@@ -73,20 +108,175 @@ function Cart(props) {
     });
   };
 
-  useEffect(() => {
-    if (props.cart?.items?.length === 0) {
-      props.goBack();
-      dispatch(clearCart());
+  const openOfferMsg = (offer) => {
+    setTimeout(() => {
+      setCurOffer({
+        ...curOffer,
+        ...offer,
+      });
+      setTimeout(() => handleDialogOpen("f_offer_msg"), 100);
+    }, 200);
+  };
+
+  const applyOffer = (offer) => {
+    if (isOfferApplicable(offer, props.cart)) {
+      let discountedValue = processOffer(offer, props.cart);
+
+      dispatch(applyOfferOnCart(discountedValue, offer));
+      openOfferMsg({
+        is_applied: true,
+        code: offer.code,
+        discount: discountedValue,
+      });
+    } else {
+      openOfferMsg({
+        is_applied: false,
+        code: "",
+        discount: 0,
+      });
     }
-  }, [props.cart?.items]);
+
+    handleDialogClose("f_offer_page");
+  };
+
+  const getAppliedOffer = () => {
+    return props.cart.offers.find((o) => o.type === "applied");
+  };
+
+  const removeOffer = () => {
+    let curOffer = getAppliedOffer();
+    dispatch(removeOffers([curOffer.offer_id]));
+  };
+
+  const placeOrder = () => {
+    let orderNum = getNextOrderNumber(props.common?.user?.user_name);
+    dispatch(
+      placeOrderAction({ ...props.cart, totoalCost: getOrderTotal(), orderNum })
+    );
+
+    navigate(`/restaurant/orders/${orderNum}`);
+    dispatch(clearCart());
+  };
+
+  const goBack = () => {
+    navigate("/restaurant/menu");
+  };
 
   useEffect(() => {
+    if (props.cart?.items?.length === 0) {
+      navigate("/restaurant/menu");
+      dispatch(clearCart());
+    }
+  }, [props.cart, props.cart?.items]);
+
+  useEffect(() => {
+    if (!curOffer.is_applied) {
+      setCurOffer({
+        ...curOffer,
+        is_applied: false,
+        code: "",
+        discount: 0,
+      });
+    }
+  }, [state.f_offer_msg, setCurOffer]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
     document.addEventListener("scroll", handleInfoClose);
   }, []);
 
   return (
     <div style={{ paddingBottom: "100px" }}>
       <div className="partials">
+        <Dialog
+          PaperComponent={PaperComponent}
+          open={state.f_offer_msg}
+          onClose={() => handleDialogClose("f_offer_msg")}
+        >
+          <DialogTitle
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "6px",
+            }}
+          >
+            <MsgOfferIcon type={curOffer.is_applied ? "success" : "fail"} />
+          </DialogTitle>
+          <DialogContent style={{ paddingTop: "0px" }}>
+            {curOffer.is_applied ? (
+              <Fragment>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "600",
+                    fontFamily: "'Proxima Nova'",
+                    fontSize: "0.85rem",
+                    color: "#4a4949",
+                  }}
+                >
+                  code '{curOffer.code}' applied
+                </Typography>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "600",
+                    fontSize: "1.4rem",
+                    fontFamily: "'Proxima Nova'",
+                    marginTop: "3px",
+                    marginBottom: "-3px",
+                  }}
+                >
+                  You saved <span>&#8377;</span>
+                  {curOffer.discount}
+                </Typography>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    fontFamily: "'Proxima Nova'",
+                    fontSize: "0.95rem",
+                    color: "#4a4949",
+                  }}
+                >
+                  with this coupon
+                </Typography>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Typography
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "600",
+                    fontFamily: "'Proxima Nova'",
+                    fontSize: "0.85rem",
+                    color: "#4a4949",
+                  }}
+                >
+                  Cannot apply this coupon
+                </Typography>
+              </Fragment>
+            )}
+          </DialogContent>
+          <DialogActions
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0px",
+            }}
+          >
+            <Button
+              onClick={() => handleDialogClose("f_offer_msg")}
+              style={{
+                fontWeight: "600",
+                fontFamily: "'Proxima Nova'",
+                color: "#e59502",
+              }}
+            >
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
         <div
           onClick={handleInfoClose}
           style={{
@@ -102,13 +292,15 @@ function Cart(props) {
         ></div>
         <Dialog
           fullScreen
-          open={state.f_cust_dialog}
-          onClose={() => handleDialogClose("f_cust_dialog")}
+          open={state.f_offer_page}
+          onClose={() => handleDialogClose("f_offer_page")}
           TransitionComponent={DialogTransition}
         >
           <OffersPage
-            handleClose={() => handleDialogClose("f_cust_dialog")}
-            offers={props.cart?.offers}
+            handleClose={() => handleDialogClose("f_offer_page")}
+            offers={props.offers.filter((o) => o.scope === "order")}
+            applyOffer={applyOffer}
+            cart={props.cart}
           />
         </Dialog>
         <div
@@ -196,7 +388,7 @@ function Cart(props) {
           ))}
         </div>
       </div>
-      <CartAppBar n_items={props.cart.items.length} goBack={props.goBack} />
+      <CartAppBar n_items={props.cart.items.length} goBack={goBack} />
       <Paper className={classes.itemList} elevation={0}>
         <div id="item-list" style={{ padding: "0px 16px" }}>
           <p className={classes.itemsMnText}>Items Added</p>
@@ -225,18 +417,91 @@ function Cart(props) {
       <Paper className={classes.offerCtnr} elevation={0}>
         <div>
           <p className={classes.offerMnText}>Offers</p>
-          <ButtonBase style={{ display: "block", width: "100%" }}>
-            <p
-              onClick={() => handleDialogOpen("f_cust_dialog")}
-              className={classes.offerLtText}
-            >
-              <OfferIcon style={{ width: "20px", marginRight: "6px" }} />
-              Select a coupon code
-              <ArrowForwardIosRoundedIcon
-                style={{ width: "1rem", marginLeft: "auto" }}
-              />
-            </p>
-          </ButtonBase>
+          {isObjEmpty(getAppliedOffer()) ? (
+            <ButtonBase style={{ display: "block", width: "100%" }}>
+              <p
+                onClick={() => handleDialogOpen("f_offer_page")}
+                className={classes.offerLtText}
+              >
+                <OfferIcon style={{ width: "20px", marginRight: "6px" }} />
+                Select a coupon code
+                <ArrowForwardIosRoundedIcon
+                  style={{ width: "1rem", marginLeft: "auto" }}
+                />
+              </p>
+            </ButtonBase>
+          ) : (
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "0px",
+                  marginTop: "-3px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <CheckCircleRoundedIcon
+                    style={{
+                      width: "18px",
+                      fill: "mediumseagreen",
+                      verticalAlign: "middle",
+                      margin: "3px",
+                      marginRight: "7px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "'Proxima Nova'",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Code '{getAppliedOffer().code}' applied
+                  </span>
+                </div>
+                <p
+                  style={{
+                    margin: "0px",
+                    color: "#6ca4dd",
+                    fontWeight: "500",
+                    fontFamily: "'Proxima Nova'",
+                  }}
+                >
+                  <span>-</span>
+                  <span>&#8377;</span> {getAppliedOffer().discount}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-start",
+                  marginTop: "-3px",
+                }}
+              >
+                <Button
+                  onClick={removeOffer}
+                  style={{
+                    fontSize: "0.6rem",
+                    textTransform: "lowercase",
+                    padding: "0px",
+                    margin: "0px",
+                    minWidth: "0px",
+                    marginLeft: "6px",
+                    color: "red",
+                  }}
+                >
+                  remove
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </Paper>
       <div className={classes.separatorLine}></div>
@@ -248,6 +513,22 @@ function Cart(props) {
             <span>&#8377;</span> {props.cart.totalCost}
           </p>
         </div>
+        {props.cart.offers.length > 0 &&
+          props.cart.offers.map(
+            (o) =>
+              o.is_applicable && (
+                <div
+                  style={{ color: "#03a103" }}
+                  className={classes.paymentItemCtnr}
+                >
+                  <p className={classes.paymentItem}>{o.label_text}</p>
+                  <p className={classes.paymentItem}>
+                    <span>-</span>
+                    <span>&#8377;</span> {o.discount}
+                  </p>
+                </div>
+              )
+          )}
         {getChargesMap(
           props.charges.filter((chr) => chr?.scope === "order"),
           props.cart.totalCost
@@ -283,14 +564,16 @@ function Cart(props) {
           </p>
         </div>
       </Paper>
-      <OrderSlideButton />
+      <OrderSlideButton onSlideComplete={placeOrder} />
     </div>
   );
 }
 
 const mapStateToProps = (state) => ({
   cart: clone(state.cart),
+  offers: clone(state.restaurant.offers),
   charges: clone(state.restaurant.settings.charges),
+  common: clone(state.common),
 });
 
 export default connect(mapStateToProps)(Cart);

@@ -1,13 +1,16 @@
 import { clone } from "ramda";
-import ALERT_TYPES from "../../constants/alert_types";
+import ALERT_TYPES from "../../enums/alert_types";
 import {
   checkIfCustumizationSame,
   filterSameVersions,
 } from "../../pages/cart/utils/helpers";
+import { isOfferApplicable } from "../../pages/cart/utils/offers";
 import { getItemsTotalCost } from "../../pages/menu/utils/helper";
 import store from "../store";
 import { setAlert } from "./alert";
 import { CLEAR_CART, UPDATE_CART } from "./types";
+
+//#region Action creators
 
 export const addItem =
   (payload, itemId, versionIdx = -1) =>
@@ -56,6 +59,8 @@ export const addItem =
       }
 
       cart.totalCost = getItemsTotalCost(cart.items);
+
+      cart = reApplyAllOffers(cart);
 
       dispatch({
         type: UPDATE_CART,
@@ -116,6 +121,8 @@ export const removeItem =
 
       cart.totalCost = getItemsTotalCost(cart.items);
 
+      cart = reApplyAllOffers(cart);
+
       dispatch({
         type: UPDATE_CART,
         payload: cart,
@@ -157,6 +164,8 @@ export const updateItem = (itemId, version, versionIdx) => (dispatch) => {
 
     cart.totalCost = getItemsTotalCost(cart.items);
 
+    cart = reApplyAllOffers(cart);
+
     dispatch({
       type: UPDATE_CART,
       payload: cart,
@@ -171,3 +180,64 @@ export const clearCart = () => (dispatch) => {
     type: CLEAR_CART,
   });
 };
+
+export const applyOfferOnCart = (discountedValue, offer) => (dispatch) => {
+  let cart = clone(store.getState().cart);
+  let applied_offer = {
+    label_text: "Offer Discount",
+    type: "applied",
+    offer_id: offer?._id,
+    discount: discountedValue,
+    is_applicable: true,
+    code: offer?.code,
+  };
+
+  cart.offers = cart.offers.filter((o) => o.type !== "applied");
+
+  cart.offers.push(applied_offer);
+
+  dispatch({
+    type: UPDATE_CART,
+    payload: cart,
+  });
+};
+
+export const removeOffers = (offerIds) => (dispatch) => {
+  let cart = store.getState().cart;
+
+  cart.offers = cart.offers.filter((o) => !offerIds.includes(o.offer_id));
+
+  dispatch({
+    type: UPDATE_CART,
+    payload: cart,
+  });
+};
+
+//#endregion
+
+//#region Helpers
+
+const reApplyAllOffers = (cart) => {
+  // use is_applicale flag before place order/ After delete not applicable offers
+  let restOffers = clone(store.getState().restaurant.offers);
+  let appliedOffers = cart.offers;
+  if (appliedOffers?.length === 0) {
+    return cart;
+  }
+  let appIds = appliedOffers.map((o) => o.offer_id);
+  let offers = restOffers.filter((o) => appIds.includes(o._id));
+  let remIds = offers
+    .filter((o) => !isOfferApplicable(o, cart))
+    .map((o) => o._id);
+
+  console.log("Reapplying Offers");
+
+  cart.offers = cart.offers.map((o) => {
+    o.is_applicable = !remIds.includes(o.offer_id);
+    return o;
+  });
+
+  return cart;
+};
+
+//#endregion

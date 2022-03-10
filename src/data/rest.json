@@ -15,11 +15,13 @@
    "rest_type": "1",
    "offers": [
       {
+         "_id": "725835aapodghe45540",
          "label_text": "Get 50% Off",
          "scope": "order",
          "code": "TRYNEW",
          "process_type": "computed",
          "value_type": "minus-perc",
+         "cap_value": "100",
          "value": "50",
          "desc": "Use code TRYNEW & get 50% off on orders above ₹149. Maximum discount: ₹100.",
          "conditions": [

@@ -20,8 +20,9 @@ import BackIcon from "../assets/BackIcon";
 import ErrorAlert from "../shared/ErrorAlert";
 import { connect, useDispatch } from "react-redux";
 import { setAlert } from "../../../redux/actions/alert";
-import ALERT_TYPES from "../../../constants/alert_types";
+import ALERT_TYPES from "../../../enums/alert_types";
 import { decideFoodType } from "../utils/helper";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 function CustumizationPage(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [state, setState] = useState({
     itemCost: Number(
       props.isPackage ? props.item.package_price : props.item.item_price
@@ -40,6 +42,7 @@ function CustumizationPage(props) {
     count: 1,
     isSet: false,
   });
+  const [curState, setCurState] = useState(null);
   const dispatch = useDispatch();
   const { custumization_arr } = props.item;
 
@@ -152,6 +155,11 @@ function CustumizationPage(props) {
 
         return cust;
       });
+
+      let optionalCusts = props.cur_custumizations.filter(
+        (cust) => Number(cust.custum_type) === 0
+      );
+      initialCustArr = [...initialCustArr, ...optionalCusts];
     }
 
     let cost = initialCustArr.reduce((total, cust) => {
@@ -246,6 +254,24 @@ function CustumizationPage(props) {
       );
       return;
     }
+    // TO REMOVE
+    // goBack();
+    // setTimeout(
+    //   () =>
+    //     !props.is_edit
+    //       ? props.addItem(
+    //           false,
+    //           state.custumization_arr,
+    //           state.itemCost,
+    //           state.count
+    //         )
+    //       : props.updateItem(
+    //           state.custumization_arr,
+    //           state.itemCost,
+    //           state.count
+    //         ),
+    //   10
+    // );
 
     !props.is_edit
       ? props.addItem(
@@ -257,7 +283,44 @@ function CustumizationPage(props) {
       : props.updateItem(state.custumization_arr, state.itemCost, state.count);
   };
 
-  useEffect(() => setInitialState(), []);
+  const goBack = (isPopped = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    props.handleClose();
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    setCurState(window.history.state);
+    if (props.isPackage || props.isFromRepeat) {
+      window.history.replaceState(
+        window.history.state,
+        null,
+        window.location.pathname + "#customizations"
+      );
+    } else {
+      window.history.pushState(
+        window.history.state,
+        null,
+        window.location.pathname + "#customizations"
+      );
+    }
+
+    window.addEventListener("popstate", onBackButtonEvent);
+    // window.addEventListener("beforeunload", onBackButtonEvent);
+    setInitialState();
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+      // window.addEventListener("beforeunload", onBackButtonEvent);
+    };
+  }, []);
 
   return (
     <div>
@@ -266,7 +329,7 @@ function CustumizationPage(props) {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={props.handleClose}
+            onClick={() => goBack()}
             aria-label="close"
           >
             <BackIcon />
@@ -509,7 +572,7 @@ function CustumizationPage(props) {
             }}
             onClick={() => {
               if (state.count <= 1) {
-                props.handleClose();
+                goBack();
                 return;
               }
               setState((prev) => ({
@@ -548,7 +611,10 @@ function CustumizationPage(props) {
           </button>
         </div>
         <Button
-          onClick={addItem}
+          onClick={() => {
+            goBack();
+            setTimeout(() => addItem(), 10);
+          }}
           style={{
             width: "55%",
             padding: "7px",
@@ -580,6 +646,7 @@ function CustumizationPage(props) {
 CustumizationPage.defaultProps = {
   isPackage: false,
   is_edit: false,
+  isFromRepeat: false,
 };
 
 const mapStateToProps = (state) => ({

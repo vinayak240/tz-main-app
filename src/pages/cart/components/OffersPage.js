@@ -4,8 +4,9 @@ import {
   makeStyles,
   Toolbar,
   Typography,
+  Button,
 } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BackIcon from "../../menu/assets/BackIcon";
 import Offer from "./Offer";
 
@@ -19,6 +20,54 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OffersPage(props) {
   const classes = useStyles();
+  const [state, setState] = useState({
+    coupon_code: "",
+  });
+  const [curState, setCurState] = useState(null);
+
+  const handleChange = (evt) => {
+    setState({
+      ...state,
+      [evt.target.name]: String(evt.target.value).toLocaleUpperCase(),
+    });
+  };
+
+  const applyCouponCode = () => {
+    let offer = props.offers.find((o) => o.code === state.coupon_code);
+
+    props.applyOffer(offer);
+
+    setState({
+      ...state,
+      coupon_code: "",
+    });
+  };
+
+  const goBack = (isPopped = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    props.handleClose();
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+  };
+
+  useEffect(() => {
+    setCurState(window.history.state);
+    window.history.pushState(
+      window.history.state,
+      null,
+      window.location.pathname + "#offers"
+    );
+    window.addEventListener("popstate", onBackButtonEvent);
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+    };
+  }, []);
 
   return (
     <div>
@@ -27,7 +76,7 @@ export default function OffersPage(props) {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={props.handleClose}
+            onClick={() => goBack()}
             aria-label="close"
           >
             <BackIcon />
@@ -72,6 +121,9 @@ export default function OffersPage(props) {
                 }}
               >
                 <input
+                  name="coupon_code"
+                  value={state.coupon_code}
+                  onChange={handleChange}
                   style={{
                     border: "none",
                     width: "100%",
@@ -80,15 +132,23 @@ export default function OffersPage(props) {
                   placeholder="Enter coupon code"
                 />
               </div>
-              <div
-                style={{
-                  color: "#fc8019",
-                  textTransform: "uppercase",
-                  fontWeight: "500",
-                  fontFamily: "'Proxima Nova'",
-                }}
-              >
-                Apply
+              <div>
+                <Button
+                  onClick={applyCouponCode}
+                  style={{
+                    padding: "0px",
+                    minWidth: "0px",
+                    // color: "rgb(252, 128, 25)",
+                    color: "rgb(50 139 214)",
+                    fontSize: "0.83rem",
+                    fontWeight: "600",
+                    fontFamily: "'Proxima Nova'",
+                    opacity: state.coupon_code.length > 0 ? 1 : 0.64,
+                  }}
+                  disabled={state.coupon_code.length === 0}
+                >
+                  APPLY
+                </Button>
               </div>
             </div>
           </div>
@@ -108,7 +168,13 @@ export default function OffersPage(props) {
         </div>
         <div>
           {props.offers?.length > 0 &&
-            props.offers.map((offer) => <Offer offer={offer} />)}
+            props.offers.map((offer) => (
+              <Offer
+                offer={offer}
+                applyOffer={props.applyOffer}
+                cart={props.cart}
+              />
+            ))}
         </div>
       </div>
     </div>

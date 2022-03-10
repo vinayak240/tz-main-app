@@ -1,14 +1,8 @@
 import { Skeleton } from "@material-ui/lab";
 import { withStyles } from "@material-ui/styles";
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 import useStyles from "../../styles/comman_styles";
-
-const waveAnimation = withStyles({
-  wave: {
-    color: "red",
-  },
-})(Skeleton);
 
 export function OrderSlideButton(props) {
   const [dragEnd, setDragEnd] = useState(0);
@@ -29,7 +23,7 @@ export function OrderSlideButton(props) {
     if (dragPosition < dragEnd) {
       setDragPosition(0);
     } else {
-      console.log("Order Placed!!");
+      props.onSlideComplete();
     }
   };
 
@@ -51,7 +45,8 @@ export function OrderSlideButton(props) {
           className={comman_classes.shine}
           style={{
             margin: "0px",
-            color: "#e2725a",
+            // color: "#e2725a", with Orange
+            color: "#21242b",
             zIndex: -1,
             position: "absolute",
             fontSize: "1.1rem",
@@ -84,8 +79,10 @@ export function OrderSlideButton(props) {
               style={{
                 visibility: dragPosition === dragEnd ? "hidden" : "visible",
                 fontWeight: "bold",
-                color: "white",
-                backgroundColor: "#e2725a",
+                // color: "white", // with Orange
+                color: "#21242b",
+                // backgroundColor: "#e2725a", //Orange
+                backgroundColor: "rgb(252, 214, 1)",
                 fontSize: "1rem",
                 border: "none",
                 borderRadius: "5px",

@@ -6,17 +6,19 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import BackIcon from "../assets/BackIcon";
 import { clone } from "ramda";
 import Item from "./Item";
 import useMainStyles from "../styles/main";
 import {
   decideFoodType,
+  findCartItem,
   findOriginalPackage,
   getMenuType,
 } from "../utils/helper";
 import Package from "./Package";
+import { connect } from "react-redux";
 
 const SearchItem = memo(Item);
 
@@ -29,13 +31,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuSearchPage(props) {
+function MenuSearchPage(props) {
   const classes = useStyles();
   const m_classes = useMainStyles();
   const [state, setState] = useState({
     search_text: "",
     filtered_menu: [],
   });
+  const [curState, setCurState] = useState(null);
 
   const { menu } = props;
 
@@ -172,6 +175,32 @@ export default function MenuSearchPage(props) {
     return list.map((cat) => cat.items).flat();
   };
 
+  const goBack = (isPopped = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    props.handleClose();
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+  };
+
+  useEffect(() => {
+    setCurState(window.history.state);
+    window.history.pushState(
+      window.history.state,
+      null,
+      window.location.pathname + "#search"
+    );
+    window.addEventListener("popstate", onBackButtonEvent);
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+    };
+  }, []);
+
   return (
     <div>
       <AppBar className={classes.appBar} position="sticky" elevation={0}>
@@ -189,7 +218,7 @@ export default function MenuSearchPage(props) {
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={props.handleClose}
+                onClick={() => goBack()}
                 aria-label="close"
               >
                 <BackIcon />
@@ -251,7 +280,11 @@ export default function MenuSearchPage(props) {
                 <div style={{ paddingBottom: "14px" }}>
                   {" "}
                   {section.type === "category" ? (
-                    <Item key={`${item._id}-${itemIdx}`} item={item} />
+                    <Item
+                      key={`${item._id}-${itemIdx}`}
+                      item={item}
+                      cart_item={findCartItem(props.cart, item._id)}
+                    />
                   ) : (
                     <div>
                       <Package
@@ -317,3 +350,9 @@ export default function MenuSearchPage(props) {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  cart: state.cart,
+});
+
+export default connect(mapStateToProps)(MenuSearchPage);

@@ -68,7 +68,6 @@ const useStyles = makeStyles({
     border: "none",
     boxShadow: "none",
     marginTop: "0px",
-    marginTop: "0px",
     marginBottom: "25px",
     padding: "4px 10px",
   },

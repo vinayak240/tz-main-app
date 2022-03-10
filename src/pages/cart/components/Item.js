@@ -18,22 +18,9 @@ function Item(props) {
     f_cust_dialog: false,
     is_edit: false,
     f_repeat_drawer: false,
+    is_from_rpt: false,
   });
-
-  const handleDialogOpen = (flagName) => {
-    setState({
-      ...state,
-      [flagName]: true,
-    });
-  };
-
-  const handleDialogClose = (flagName) => {
-    setState({
-      ...state,
-      [flagName]: false,
-      is_edit: false,
-    });
-  };
+  const [curState, setCurState] = useState(null);
 
   const handleEditCustums = () => {
     setState({
@@ -54,7 +41,6 @@ function Item(props) {
       f_cust_dialog: false,
       f_repeat_drawer: false,
     }));
-
     props.addItem(
       isRepeatLast,
       itemCustomizations,
@@ -112,6 +98,60 @@ function Item(props) {
     dispatch(removeItemFromCart(props.cart_item._id, count, props.version_idx));
   }
 
+  const goBack = (isPopped = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    setState({
+      ...state,
+      f_repeat_drawer: false,
+      is_edit: false,
+      is_from_rpt: false,
+    });
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+  };
+
+  const handleDialogOpen = (flagName) => {
+    if (flagName === "f_repeat_drawer") {
+      setCurState(window.history.state);
+      window.history.pushState(
+        window.history.state,
+        null,
+        window.location.pathname + "#repeat"
+      );
+
+      window.addEventListener("popstate", onBackButtonEvent);
+      setState({
+        ...state,
+        f_repeat_drawer: true,
+        is_from_rpt: true,
+      });
+    } else {
+      setState({
+        ...state,
+        [flagName]: true,
+      });
+    }
+  };
+
+  const handleDialogClose = (flagName) => {
+    if (flagName === "f_repeat_drawer") {
+      goBack();
+      window.removeEventListener("popstate", onBackButtonEvent);
+    } else {
+      setState({
+        ...state,
+        [flagName]: false,
+        is_edit: false,
+      });
+    }
+  };
+
   return (
     <div
       style={{
@@ -137,6 +177,7 @@ function Item(props) {
             cur_count={props.cart_item.versions[0].itemCount}
             is_edit={state.is_edit}
             isPackage={props.cart_item.type === "package"}
+            isFromRepeat={state.is_from_rpt}
           />
         </Dialog>
         <Drawer
@@ -207,7 +248,10 @@ function Item(props) {
               I'LL CHOOSE
             </Button>
             <Button
-              onClick={() => addItem(true)}
+              onClick={() => {
+                goBack();
+                addItem(true);
+              }}
               className={classes.repeatBtn}
               style={{
                 backgroundColor: "#ffa400",
@@ -248,7 +292,7 @@ function Item(props) {
             ? props.cart_item.item_name
             : props.cart_item.package_name}
         </p>
-        {props.cart_item.versions[0].custumization_arr.length > 0 && (
+        {props.cart_item.custumization_arr.length > 0 && (
           <div>
             <div
               style={{
