@@ -10,10 +10,12 @@ const OptionsMenu = (props) => {
       label: "All Orders",
     },
   ];
+
   return (
     <MenuList style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-      {options.map((o) => (
+      {options.map((o, idx) => (
         <MenuItem
+          onClick={() => props.setFilter(idx === 0)}
           style={{
             padding: "2px 15px",
             minHeight: "0px",

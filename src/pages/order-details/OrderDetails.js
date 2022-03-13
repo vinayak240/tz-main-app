@@ -260,7 +260,7 @@ function OrderDetails(props) {
         </div>
       </div>
       <div
-        onClick={() => navigate("/restaurant/orders")}
+        // onClick={() => navigate("/restaurant/orders")}
         style={{
           backgroundColor: "#efeff3",
           height: "137px",

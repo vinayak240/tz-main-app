@@ -53,7 +53,7 @@ export default function SplashScreen() {
           transform: `scale(${state.scale})`,
         }}
       >
-        <Logo width="10rem" height="5rem" />
+        <Logo type="svg" width="12rem" height="6rem" />
       </div>
     </div>
   );

@@ -62,6 +62,8 @@ export const placeOrder =
         type: PLACE_ORDER,
         payload: clone(table),
       });
+
+      return order; // this is the payload from the API call made
     } catch (err) {
       setAlert("Error placing order..", ALERT_TYPES.ERROR);
     }

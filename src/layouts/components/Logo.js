@@ -1,10 +1,11 @@
 import React, { Fragment } from "react";
 import logo from "../../img/2x.png";
-function Logo({ width, height }) {
+import logo_svg from "../../img/tz_logo.svg";
+function Logo({ width, height, type }) {
   return (
     <Fragment>
       <img
-        src={logo}
+        src={type === "svg" ? logo_svg : logo}
         style={{
           margin: "auto",
           display: "block",

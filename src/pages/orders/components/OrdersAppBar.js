@@ -31,6 +31,30 @@ function OrdersAppBar(props) {
       anchorEl: null,
     });
   };
+
+  const setFilter = (flag) => {
+    handleMenuClose();
+
+    props.setFilter(flag);
+  };
+
+  const options = [
+    {
+      label: "Your Orders",
+    },
+    {
+      label: "All Orders",
+    },
+  ];
+
+  const getLabel = () => {
+    if (props.filterFlag) {
+      return options[0];
+    } else {
+      return options[1];
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="partials">
@@ -48,7 +72,7 @@ function OrdersAppBar(props) {
             horizontal: "center",
           }}
         >
-          <OptionsMenu />
+          <OptionsMenu setFilter={setFilter} />
         </Popover>
       </div>
       <CssBaseline />
@@ -84,7 +108,7 @@ function OrdersAppBar(props) {
               cursor: "pointer",
             }}
           >
-            Your Orders{" "}
+            {getLabel()?.label}{" "}
             {Boolean(state.anchorEl) ? (
               <ExpandLessRoundedIcon />
             ) : (

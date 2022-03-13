@@ -23,7 +23,7 @@ const OptionsMenu = (props) => {
         <ListItemIcon>
           <TimelapseRoundedIcon />
         </ListItemIcon>
-        <ListItemText style={{ paddingRight: "15px" }}>View Bill</ListItemText>
+        <ListItemText style={{ paddingRight: "15px" }}>Your Table</ListItemText>
         <Typography variant="body2" color="text.secondary"></Typography>
       </MenuItem>
       <MenuItem onClick={() => navigate("/restaurant/orders")}>

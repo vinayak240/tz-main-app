@@ -254,33 +254,23 @@ function CustumizationPage(props) {
       );
       return;
     }
-    // TO REMOVE
-    // goBack();
-    // setTimeout(
-    //   () =>
-    //     !props.is_edit
-    //       ? props.addItem(
-    //           false,
-    //           state.custumization_arr,
-    //           state.itemCost,
-    //           state.count
-    //         )
-    //       : props.updateItem(
-    //           state.custumization_arr,
-    //           state.itemCost,
-    //           state.count
-    //         ),
-    //   10
-    // );
-
-    !props.is_edit
-      ? props.addItem(
-          false,
-          state.custumization_arr,
-          state.itemCost,
-          state.count
-        )
-      : props.updateItem(state.custumization_arr, state.itemCost, state.count);
+    goBack();
+    setTimeout(
+      () =>
+        !props.is_edit
+          ? props.addItem(
+              false,
+              state.custumization_arr,
+              state.itemCost,
+              state.count
+            )
+          : props.updateItem(
+              state.custumization_arr,
+              state.itemCost,
+              state.count
+            ),
+      10
+    );
   };
 
   const goBack = (isPopped = false) => {
@@ -611,10 +601,7 @@ function CustumizationPage(props) {
           </button>
         </div>
         <Button
-          onClick={() => {
-            goBack();
-            setTimeout(() => addItem(), 10);
-          }}
+          onClick={addItem}
           style={{
             width: "55%",
             padding: "7px",
