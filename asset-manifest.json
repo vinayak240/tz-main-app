@@ -1,29 +1,29 @@
 {
   "files": {
-    "main.css": "/tz-main-app/static/css/main.54562464.chunk.css",
-    "main.js": "/tz-main-app/static/js/main.a9c3d4a2.chunk.js",
-    "main.js.map": "/tz-main-app/static/js/main.a9c3d4a2.chunk.js.map",
-    "runtime-main.js": "/tz-main-app/static/js/runtime-main.058b29fa.js",
-    "runtime-main.js.map": "/tz-main-app/static/js/runtime-main.058b29fa.js.map",
-    "static/css/2.9b5018b4.chunk.css": "/tz-main-app/static/css/2.9b5018b4.chunk.css",
-    "static/js/2.921e8d46.chunk.js": "/tz-main-app/static/js/2.921e8d46.chunk.js",
-    "static/js/2.921e8d46.chunk.js.map": "/tz-main-app/static/js/2.921e8d46.chunk.js.map",
-    "static/js/3.22dd5e2b.chunk.js": "/tz-main-app/static/js/3.22dd5e2b.chunk.js",
-    "static/js/3.22dd5e2b.chunk.js.map": "/tz-main-app/static/js/3.22dd5e2b.chunk.js.map",
-    "index.html": "/tz-main-app/index.html",
-    "static/css/2.9b5018b4.chunk.css.map": "/tz-main-app/static/css/2.9b5018b4.chunk.css.map",
-    "static/css/main.54562464.chunk.css.map": "/tz-main-app/static/css/main.54562464.chunk.css.map",
-    "static/js/2.921e8d46.chunk.js.LICENSE.txt": "/tz-main-app/static/js/2.921e8d46.chunk.js.LICENSE.txt",
-    "static/media/2x.c2425bb2.png": "/tz-main-app/static/media/2x.c2425bb2.png",
-    "static/media/all.css": "/tz-main-app/static/media/fa-solid-900.efbd5d20.eot",
-    "static/media/index.css": "/tz-main-app/static/media/font_700.68758a10.woff2",
-    "static/media/tz_logo.20851746.svg": "/tz-main-app/static/media/tz_logo.20851746.svg"
+    "main.css": "/static/css/main.ea52592d.chunk.css",
+    "main.js": "/static/js/main.4123bbe7.chunk.js",
+    "main.js.map": "/static/js/main.4123bbe7.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.2a8619ba.js",
+    "runtime-main.js.map": "/static/js/runtime-main.2a8619ba.js.map",
+    "static/css/2.d972ee17.chunk.css": "/static/css/2.d972ee17.chunk.css",
+    "static/js/2.3b63a97d.chunk.js": "/static/js/2.3b63a97d.chunk.js",
+    "static/js/2.3b63a97d.chunk.js.map": "/static/js/2.3b63a97d.chunk.js.map",
+    "static/js/3.22dd5e2b.chunk.js": "/static/js/3.22dd5e2b.chunk.js",
+    "static/js/3.22dd5e2b.chunk.js.map": "/static/js/3.22dd5e2b.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.d972ee17.chunk.css.map": "/static/css/2.d972ee17.chunk.css.map",
+    "static/css/main.ea52592d.chunk.css.map": "/static/css/main.ea52592d.chunk.css.map",
+    "static/js/2.3b63a97d.chunk.js.LICENSE.txt": "/static/js/2.3b63a97d.chunk.js.LICENSE.txt",
+    "static/media/2x.c2425bb2.png": "/static/media/2x.c2425bb2.png",
+    "static/media/all.css": "/static/media/fa-solid-900.efbd5d20.eot",
+    "static/media/index.css": "/static/media/font_700.68758a10.woff2",
+    "static/media/tz_logo.20851746.svg": "/static/media/tz_logo.20851746.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.058b29fa.js",
-    "static/css/2.9b5018b4.chunk.css",
-    "static/js/2.921e8d46.chunk.js",
-    "static/css/main.54562464.chunk.css",
-    "static/js/main.a9c3d4a2.chunk.js"
+    "static/js/runtime-main.2a8619ba.js",
+    "static/css/2.d972ee17.chunk.css",
+    "static/js/2.3b63a97d.chunk.js",
+    "static/css/main.ea52592d.chunk.css",
+    "static/js/main.4123bbe7.chunk.js"
   ]
 }
