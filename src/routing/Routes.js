@@ -13,6 +13,7 @@ const Routes = (props) => {
   return (
     <section className="container">
       <Switch>
+        <Route path="/" element={<Navigate to="/restaurant" replace />} />
         <Route path="/restaurant">
           <Route index element={<SplashScreen />} />
           <Route
