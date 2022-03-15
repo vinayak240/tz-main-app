@@ -304,11 +304,9 @@ function CustumizationPage(props) {
     }
 
     window.addEventListener("popstate", onBackButtonEvent);
-    // window.addEventListener("beforeunload", onBackButtonEvent);
     setInitialState();
     return () => {
       window.removeEventListener("popstate", onBackButtonEvent);
-      // window.addEventListener("beforeunload", onBackButtonEvent);
     };
   }, []);
 

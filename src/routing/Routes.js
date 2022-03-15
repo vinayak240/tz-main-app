@@ -8,12 +8,16 @@ import Cart from "../pages/cart/Cart";
 import OrderDetails from "../pages/order-details/OrderDetails";
 import SplashScreen from "../pages/SplashScreen";
 import Orders from "../pages/orders/Orders";
+import { CheckOut } from "../pages/checkout/CheckOut";
 
 const Routes = (props) => {
   return (
     <section className="container">
       <Switch>
-        <Route path="/" element={<Navigate to="/restaurant" replace />} />
+        <Route
+          path="/"
+          element={<Navigate to="/restaurant" replace={true} />}
+        />
         <Route path="/restaurant">
           <Route index element={<SplashScreen />} />
           <Route
@@ -34,7 +38,7 @@ const Routes = (props) => {
               props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : isObjEmpty(props.cart?.items) ? (
-                <Navigate to="/restaurant/menu" />
+                <Navigate to="/restaurant/menu" replace={true} />
               ) : (
                 <Cart />
               )
@@ -47,7 +51,7 @@ const Routes = (props) => {
               props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : isObjEmpty(props.table?.orders) ? (
-                <Navigate to="/restaurant/cart" />
+                <Navigate to="/restaurant/cart" replace={true} />
               ) : (
                 <OrderDetails />
               )
@@ -61,6 +65,17 @@ const Routes = (props) => {
                 <LoadingPage /> // Replace this with skeletons
               ) : (
                 <Orders />
+              )
+            }
+          />
+          <Route
+            index={false}
+            path="checkout"
+            element={
+              props.common?.loading ? (
+                <LoadingPage /> // Replace this with skeletons
+              ) : (
+                <CheckOut />
               )
             }
           />
