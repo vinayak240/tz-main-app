@@ -51,7 +51,7 @@ const Routes = (props) => {
               props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : isObjEmpty(props.table?.orders) ? (
-                <Navigate to="/restaurant/cart" replace={true} />
+                <Navigate to="/restaurant/menu" replace={true} />
               ) : (
                 <OrderDetails />
               )

@@ -159,7 +159,7 @@ function Cart(props) {
   };
 
   const goBack = () => {
-    navigate("/restaurant/menu");
+    window.history.back();
   };
 
   useEffect(() => {
