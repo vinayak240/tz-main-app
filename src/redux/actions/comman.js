@@ -1,9 +1,21 @@
 import { clone } from "ramda";
 import { v4 } from "uuid";
-import { SET_USER, UNSET_USER } from "./types";
+import { SET_LOADING, SET_USER, UNSET_LOADING, UNSET_USER } from "./types";
 import { isObjEmpty } from "../../utils/helpers";
 import { setAlert } from "./alert";
 import ALERT_TYPES from "../../enums/alert_types";
+
+export const setLoading = (delay) => (dispatch) => {
+  dispatch({
+    type: SET_LOADING,
+  });
+};
+
+export const unSetLoading = () => (dispatch) => {
+  dispatch({
+    type: UNSET_LOADING,
+  });
+};
 
 export const setUser = (curUser) => (dispatch) => {
   try {

@@ -78,13 +78,23 @@ function OrderDetails(props) {
     return order?.offers?.reduce((tot, o) => Number(o.discount) + tot, 0);
   };
 
+  const getItemsTotal = () => {
+    return order?.items?.reduce((tot, i) => Number(i.item_price) + tot, 0);
+  };
+
   const getTotal = () => {
     let discount = getTotalDiscount();
     return Number(order.total_price) - discount;
   };
 
   return (
-    <div>
+    <div
+      style={{
+        background: "#efeff3",
+        height: "100vh",
+        paddingTop: "15px",
+      }}
+    >
       <OrderAppBar
         goBack={goBack}
         n_items={order.items.length}
@@ -93,179 +103,192 @@ function OrderDetails(props) {
       />
       <div
         style={{
-          border: "1px solid lightgray",
-          padding: "10px",
-          borderRadius: "6px",
-          margin: "15px",
+          background: "#ffffff",
+          paddingTop: "15px",
         }}
       >
-        <div>
-          <div
-            onClick={toggleStepperView}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
+        <div
+          style={{
+            border: "1px solid lightgray",
+            padding: "10px",
+            borderRadius: "6px",
+            margin: "15px",
+            marginTop: "0px",
+          }}
+        >
+          <div>
             <div
+              onClick={toggleStepperView}
               style={{
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <PulseLoader
+              <div
                 style={{
-                  backgroundColor: getCorrespondingHexCode(curStatusInfo.color),
-                  width: "30px",
-                  height: "30px",
-                }}
-              />
-              <p
-                style={{
-                  marginLeft: "6px",
-                  fontSize: "1.25rem",
-                  fontWeight: "600",
-                  fontFamily: "'Proxima Nova'",
-                  margin: "0 6px",
+                  display: "flex",
+                  alignItems: "center",
                 }}
               >
-                {curStatusInfo.short_label}{" "}
-                <span
+                <PulseLoader
                   style={{
-                    fontSize: "12px",
-                    color: "#3e3c3d",
-                    fontWeight: "300",
+                    backgroundColor: getCorrespondingHexCode(
+                      curStatusInfo.color
+                    ),
+                    width: "30px",
+                    height: "30px",
+                  }}
+                />
+                <p
+                  style={{
+                    marginLeft: "6px",
+                    fontSize: "1.25rem",
+                    fontWeight: "600",
+                    fontFamily: "'Proxima Nova'",
+                    margin: "0 6px",
                   }}
                 >
-                  (@{" "}
-                  {new Date(order.date).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                  )
-                </span>
-              </p>
-            </div>
-            <div>
-              {!state.f_view_stepper ? (
-                <ExpandMoreRoundedIcon />
-              ) : (
-                <ExpandLessRoundedIcon />
-              )}
-            </div>
-          </div>
-          <Collapse in={state.f_view_stepper}>
-            <div>
-              <VerticalStatusStepper statusMap={statusMap} />
-            </div>
-          </Collapse>
-        </div>
-        <div
-          style={{
-            marginTop: "12px",
-            display: "flex",
-            alignItems: "flex-end",
-            fontSize: "0.95rem",
-            fontWeight: "500",
-            fontFamily: "'Proxima Nova'",
-            padding: "6px",
-            borderTop: "1px solid #b8b5b5",
-          }}
-        >
-          <LocationOnOutlinedIcon style={{ width: "18px" }} /> Table #
-          {order.table_id}
-        </div>
-      </div>
-      <div>
-        <div
-          style={{
-            backgroundColor: "#efeff3",
-            padding: "15px",
-            fontFamily: "'Proxima Nova'",
-            fontWeight: "500",
-          }}
-        >
-          Item Details
-        </div>
-        <div
-          style={{
-            paddingTop: "14px",
-          }}
-        >
-          {(state.f_view_all ? items : getListForViewPort(items)).map(
-            (item, idx, arr) => (
-              <div key={item._id}>
-                <Item idx={idx} item={item} />
-                {arr.length !== idx + 1 && (
-                  <hr
+                  {curStatusInfo.short_label}{" "}
+                  <span
                     style={{
-                      borderWidth: "1.5px",
-                      margin: "6px 0px 5px",
+                      fontSize: "12px",
+                      color: "#3e3c3d",
+                      fontWeight: "300",
                     }}
-                    className={itmClasses.dottedSeperator}
-                  ></hr>
+                  >
+                    (@{" "}
+                    {new Date(order.date).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                    )
+                  </span>
+                </p>
+              </div>
+              <div>
+                {!state.f_view_stepper ? (
+                  <ExpandMoreRoundedIcon />
+                ) : (
+                  <ExpandLessRoundedIcon />
                 )}
               </div>
-            )
-          )}
-          {order.items.length > viewPortSize && (
-            <div style={{ textAlign: "center" }}>
-              <Button
-                style={{
-                  textTransform: "capitalize",
-                  color: "#FC8019",
-                  fontFamily: "'Proxima Nova'",
-                }}
-                onClick={toggleItemListView}
-              >
-                {" "}
-                {state.f_view_all ? "View less" : `View All`}
-              </Button>
             </div>
-          )}
+            <Collapse in={state.f_view_stepper}>
+              <div>
+                <VerticalStatusStepper statusMap={statusMap} />
+              </div>
+            </Collapse>
+          </div>
+          <div
+            style={{
+              marginTop: "12px",
+              display: "flex",
+              alignItems: "flex-end",
+              fontSize: "0.95rem",
+              fontWeight: "500",
+              fontFamily: "'Proxima Nova'",
+              padding: "6px",
+              borderTop: "1px solid #b8b5b5",
+            }}
+          >
+            <LocationOnOutlinedIcon style={{ width: "18px" }} /> Table #
+            {order.table_id}
+          </div>
         </div>
-      </div>
-      <div>
+        <div>
+          <div
+            style={{
+              backgroundColor: "#efeff3",
+              padding: "15px",
+              fontFamily: "'Proxima Nova'",
+              fontWeight: "500",
+            }}
+          >
+            Item Details
+          </div>
+          <div
+            style={{
+              paddingTop: "14px",
+            }}
+          >
+            {(state.f_view_all ? items : getListForViewPort(items)).map(
+              (item, idx, arr) => (
+                <div key={item._id}>
+                  <Item idx={idx} item={item} />
+                  {arr.length !== idx + 1 && (
+                    <hr
+                      style={{
+                        borderWidth: "1.5px",
+                        margin: "6px 0px 5px",
+                      }}
+                      className={itmClasses.dottedSeperator}
+                    ></hr>
+                  )}
+                </div>
+              )
+            )}
+            {order.items.length > viewPortSize && (
+              <div style={{ textAlign: "center" }}>
+                <Button
+                  style={{
+                    textTransform: "capitalize",
+                    color: "#FC8019",
+                    fontFamily: "'Proxima Nova'",
+                  }}
+                  onClick={toggleItemListView}
+                >
+                  {" "}
+                  {state.f_view_all ? "View less" : `View All`}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <div
+            style={{
+              backgroundColor: "#efeff3",
+              padding: "15px",
+              fontFamily: "'Proxima Nova'",
+              fontWeight: "500",
+            }}
+          >
+            Amount Details
+          </div>
+          <div style={{ padding: "15px" }}>
+            <div className={classes.paymentItemCtnr}>
+              <p className={classes.paymentItem}>Items Total</p>
+              <p className={classes.paymentItem}>
+                <span>&#8377;</span> {getItemsTotal()}
+              </p>
+            </div>
+            <div
+              style={{ color: "#03a103" }}
+              className={classes.paymentItemCtnr}
+            >
+              <p className={classes.paymentItem}>Total Discount</p>
+              <p className={classes.paymentItem}>
+                -<span>&#8377;</span> {getTotalDiscount()}
+              </p>
+            </div>
+            <div className={classes.borderedSeparator}></div>
+            <div style={{ margin: "0px" }} className={classes.paymentItemCtnr}>
+              <p className={classes.totalMnText}>Order Total</p>
+              <p className={classes.totalMnText}>
+                <span>&#8377;</span> {order.total_price || getTotal()}
+              </p>
+            </div>
+          </div>
+        </div>
         <div
+          // onClick={() => navigate("/restaurant/orders")}
           style={{
             backgroundColor: "#efeff3",
-            padding: "15px",
-            fontFamily: "'Proxima Nova'",
-            fontWeight: "500",
+            height: "137px",
           }}
-        >
-          Amount Details
-        </div>
-        <div style={{ padding: "15px" }}>
-          <div className={classes.paymentItemCtnr}>
-            <p className={classes.paymentItem}>Items Total</p>
-            <p className={classes.paymentItem}>
-              <span>&#8377;</span> {order?.total_price}
-            </p>
-          </div>
-          <div style={{ color: "#03a103" }} className={classes.paymentItemCtnr}>
-            <p className={classes.paymentItem}>Total Discount</p>
-            <p className={classes.paymentItem}>
-              -<span>&#8377;</span> {getTotalDiscount()}
-            </p>
-          </div>
-          <div className={classes.borderedSeparator}></div>
-          <div style={{ margin: "0px" }} className={classes.paymentItemCtnr}>
-            <p className={classes.totalMnText}>Order Total</p>
-            <p className={classes.totalMnText}>
-              <span>&#8377;</span> {getTotal()}
-            </p>
-          </div>
-        </div>
+        ></div>
       </div>
-      <div
-        // onClick={() => navigate("/restaurant/orders")}
-        style={{
-          backgroundColor: "#efeff3",
-          height: "137px",
-        }}
-      ></div>
     </div>
   );
 }

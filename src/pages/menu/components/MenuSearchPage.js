@@ -19,6 +19,7 @@ import {
 } from "../utils/helper";
 import Package from "./Package";
 import { connect } from "react-redux";
+import { getPropagationFlag } from "../../../utils/back_btn_handle";
 
 const SearchItem = memo(Item);
 
@@ -175,17 +176,19 @@ function MenuSearchPage(props) {
     return list.map((cat) => cat.items).flat();
   };
 
-  const goBack = (isPopped = false) => {
+  const goBack = (isPopped = false, isStopPropagation = false) => {
     if (!isPopped) {
       window.history.back();
     }
 
-    props.handleClose();
+    if (!isStopPropagation) {
+      props.handleClose();
+    }
   };
 
   const onBackButtonEvent = (e) => {
     e.preventDefault();
-    goBack(true);
+    goBack(true, getPropagationFlag());
   };
 
   useEffect(() => {

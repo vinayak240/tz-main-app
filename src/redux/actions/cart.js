@@ -4,7 +4,7 @@ import {
   checkIfCustumizationSame,
   filterSameVersions,
 } from "../../pages/cart/utils/helpers";
-import { isOfferApplicable } from "../../pages/cart/utils/offers";
+import { isOfferApplicable, processOffer } from "../../pages/cart/utils/offers";
 import { getItemsTotalCost } from "../../pages/menu/utils/helper";
 import store from "../store";
 import { setAlert } from "./alert";
@@ -234,6 +234,13 @@ const reApplyAllOffers = (cart) => {
 
   cart.offers = cart.offers.map((o) => {
     o.is_applicable = !remIds.includes(o.offer_id);
+
+    if (o.is_applicable) {
+      let offer = restOffers.find((off) => off._id === o.offer_id);
+      let discount = processOffer(offer, cart);
+      o.discount = discount;
+    }
+
     return o;
   });
 

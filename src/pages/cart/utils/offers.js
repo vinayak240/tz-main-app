@@ -12,11 +12,7 @@ function processOffer(offer, payload) {
   let discountedValue = 0;
   if (offer.process_type === OFFER_PROCESS_TYPE.COMPUTED) {
     let operators = offer.value_type.split("-");
-    discountedValue = operate(
-      operators[0],
-      operate(operators[1], payload.totalCost, offer.value),
-      offer.value
-    );
+    discountedValue = operate(operators[1], payload.totalCost, offer.value);
 
     discountedValue =
       discountedValue > Number(offer.cap_value)
@@ -74,6 +70,8 @@ function getFieldFromFieldType(field) {
   switch (field) {
     case FIELD_TYPE.ORDER_TOTAL:
       return FIELDS.ORDER_TOTAL;
+    case FIELD_TYPE.TABLE_TOTAL:
+      return FIELDS.TABLE_TOTAL;
     default:
       return "";
   }

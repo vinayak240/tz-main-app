@@ -25,7 +25,6 @@ function CheckOutAppBar(props) {
         <Toolbar
           style={{
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
           }}
           id="cart-tool-bar"
@@ -40,19 +39,14 @@ function CheckOutAppBar(props) {
           >
             <BackIcon />
           </IconButton>
-          <div>
+          <div style={{ marginLeft: "8px" }}>
             <Typography className={classes.abrMainText} noWrap>
-              Checkout - Table #12
+              Checkout - Table #{props.table_id}
+            </Typography>
+            <Typography className={classes.abrLightText} noWrap>
+              {props.n_orders} Orders | <span>&#8377;</span> {props.total}
             </Typography>
           </div>
-          <IconButton //Dummy Btn
-            style={{ padding: "16px", visibility: "hidden" }}
-            edge="start"
-            color="inherit"
-            aria-label="close"
-          >
-            <BackIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
     </React.Fragment>

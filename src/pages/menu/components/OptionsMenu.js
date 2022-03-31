@@ -49,7 +49,7 @@ const OptionsMenu = (props) => {
         <Button
           onClick={(evt) => {
             evt.stopPropagation();
-            console.log("Btn clicked");
+            navigate("/restaurant/checkout");
           }}
           style={{
             width: "94%",

@@ -151,10 +151,10 @@ function Cart(props) {
   const placeOrder = () => {
     let orderNum = getNextOrderNumber(props.common?.user?.user_name);
     dispatch(
-      placeOrderAction({ ...props.cart, totoalCost: getOrderTotal(), orderNum })
+      placeOrderAction({ ...props.cart, totalCost: getOrderTotal(), orderNum })
     );
 
-    navigate(`/restaurant/orders/${orderNum}`);
+    navigate(`/restaurant/orders/${orderNum}`, { replace: true });
     dispatch(clearCart());
   };
 
@@ -164,7 +164,7 @@ function Cart(props) {
 
   useEffect(() => {
     if (props.cart?.items?.length === 0) {
-      navigate("/restaurant/menu");
+      navigate("/restaurant/menu", { replace: true });
       dispatch(clearCart());
     }
   }, [props.cart, props.cart?.items]);
@@ -270,10 +270,11 @@ function Cart(props) {
               style={{
                 fontWeight: "600",
                 fontFamily: "'Proxima Nova'",
-                color: "#e59502",
+                color: "green",
+                textTransform: "none",
               }}
             >
-              Ok
+              Ok, Great!
             </Button>
           </DialogActions>
         </Dialog>
@@ -508,9 +509,9 @@ function Cart(props) {
       <Paper className={classes.paymentsCtnr} elevation={0}>
         <p className={classes.offerMnText}>Order Details</p>
         <div className={classes.paymentItemCtnr}>
-          <p className={classes.paymentItem}>Item Total</p>
+          <p className={classes.paymentItem}>Items Total</p>
           <p className={classes.paymentItem}>
-            <span>&#8377;</span> {props.cart.totalCost}
+            <span>&#8377;</span> {round(props.cart.totalCost, 2)}
           </p>
         </div>
         {props.cart.offers.length > 0 &&

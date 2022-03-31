@@ -17,6 +17,7 @@ import CustumizationPage from "./CutumizationPage";
 import ExpandableText from "./ExpandableText";
 import { addItem as addItemToCart } from "../../../redux/actions/cart";
 import { removeItem as removeItemFromCart } from "../../../redux/actions/cart";
+import { getPropagationFlag } from "../../../utils/back_btn_handle";
 
 export default function Item(props) {
   const classes = useStyles();
@@ -25,26 +26,27 @@ export default function Item(props) {
     itemCount: props.cart_item?.itemCount || 0,
     f_cust_dialog: false,
     f_repeat_drawer: false,
+    is_from_rpt: false,
     versions: clone(props.cart_item?.versions) || [],
   });
 
-  const handleDialogOpen = (flagName) => {
-    setState({
-      ...state,
-      [flagName]: true,
-    });
-  };
+  // const handleDialogOpen = (flagName) => {
+  //   setState({
+  //     ...state,
+  //     [flagName]: true,
+  //   });
+  // };
 
-  const handleDialogClose = (flagName) => {
-    setState({
-      ...state,
-      [flagName]: false,
-    });
-  };
+  // const handleDialogClose = (flagName) => {
+  //   setState({
+  //     ...state,
+  //     [flagName]: false,
+  //   });
+  // };
 
   const { item } = props;
 
-  async function addItem(
+  function addItem(
     isRepeatLast = false,
     itemCustomizations = [],
     totalItemCost = 0,
@@ -122,6 +124,67 @@ export default function Item(props) {
     }));
   }, [props.cart_item, props.cart_item?.itemCount, props.cart_item?.versions]);
 
+  const goBack = (isPopped = false, isStopPropagation = false) => {
+    if (!isPopped) {
+      window.history.back();
+    }
+
+    // if (!isStopPropagation) {
+    setState({
+      ...state,
+      f_repeat_drawer: false,
+      is_from_rpt: false,
+    });
+    // }
+  };
+
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    goBack(true);
+  };
+
+  const handleDialogOpen = (flagName) => {
+    if (flagName === "f_repeat_drawer") {
+      // setCurState(window.history.state);
+      window.history.pushState(
+        window.history.state,
+        null,
+        window.location.pathname + "#repeat"
+      );
+
+      window.addEventListener("popstate", onBackButtonEvent);
+      setState({
+        ...state,
+        f_repeat_drawer: true,
+        is_from_rpt: true,
+      });
+    } else {
+      setState({
+        ...state,
+        [flagName]: true,
+      });
+    }
+  };
+
+  const handleDialogClose = (flagName) => {
+    if (flagName === "f_repeat_drawer") {
+      goBack();
+      window.removeEventListener("popstate", onBackButtonEvent);
+    } else if (state.f_repeat_drawer && flagName === "f_cust_dialog") {
+      setState({
+        ...state,
+        [flagName]: false,
+        f_repeat_drawer: false,
+        is_from_rpt: false,
+      });
+    } else {
+      setState({
+        ...state,
+        [flagName]: false,
+      });
+    }
+  };
+
   return (
     <div>
       <div className="partials">
@@ -135,6 +198,7 @@ export default function Item(props) {
             item={item}
             handleClose={() => handleDialogClose("f_cust_dialog")}
             addItem={addItem}
+            isFromRepeat={state.is_from_rpt}
           />
         </Dialog>
         <Drawer
@@ -197,7 +261,10 @@ export default function Item(props) {
               I'LL CHOOSE
             </Button>
             <Button
-              onClick={() => addItem(true)}
+              onClick={() => {
+                goBack();
+                setTimeout(() => addItem(true), 10);
+              }}
               className={classes.repeatBtn}
               style={{
                 backgroundColor: "#ffa400",

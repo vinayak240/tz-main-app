@@ -8,7 +8,7 @@ import Cart from "../pages/cart/Cart";
 import OrderDetails from "../pages/order-details/OrderDetails";
 import SplashScreen from "../pages/SplashScreen";
 import Orders from "../pages/orders/Orders";
-import { CheckOut } from "../pages/checkout/CheckOut";
+import CheckOut from "../pages/checkout/CheckOut";
 
 const Routes = (props) => {
   return (

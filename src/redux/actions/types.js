@@ -13,9 +13,11 @@ export const CLEAR_CART = "CLEAR_CART";
 export const INIT_CART = "INIT_CART";
 
 // TABLE
+export const INIT_TABLE = "INIT_TABLE";
 export const INIT_ORDERS = "INIT_ORDERS";
 export const PLACE_ORDER = "PLACE_ORDER";
 export const CHECKOUT = "CHECKOUT";
+export const UPDATE_TABLE = "UPDATE_TABLE";
 
 //ALERT
 export const SET_ALERT = "SET_ALERT";

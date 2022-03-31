@@ -23,6 +23,10 @@ import { setAlert } from "../../../redux/actions/alert";
 import ALERT_TYPES from "../../../enums/alert_types";
 import { decideFoodType } from "../utils/helper";
 import { useNavigate } from "react-router-dom";
+import {
+  setPropagation,
+  stopPropagation,
+} from "../../../utils/back_btn_handle";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -275,7 +279,15 @@ function CustumizationPage(props) {
 
   const goBack = (isPopped = false) => {
     if (!isPopped) {
+      // if (props.isFromRepeat) {
+      //   window.history.replaceState(
+      //     curState,
+      //     null,
+      //     window.location.pathname + "#repeat"
+      //   );
+      // } else {
       window.history.back();
+      // }
     }
 
     props.handleClose();
@@ -284,11 +296,11 @@ function CustumizationPage(props) {
   const onBackButtonEvent = (e) => {
     e.preventDefault();
     goBack(true);
-    e.stopPropagation();
   };
 
   useEffect(() => {
     setCurState(window.history.state);
+    stopPropagation();
     if (props.isPackage || props.isFromRepeat) {
       window.history.replaceState(
         window.history.state,
@@ -307,6 +319,7 @@ function CustumizationPage(props) {
     setInitialState();
     return () => {
       window.removeEventListener("popstate", onBackButtonEvent);
+      setPropagation();
     };
   }, []);
 
@@ -317,7 +330,7 @@ function CustumizationPage(props) {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={() => goBack()}
+            onClick={(e) => goBack()}
             aria-label="close"
           >
             <BackIcon />
@@ -438,6 +451,7 @@ function CustumizationPage(props) {
                                 <span
                                   style={{
                                     color: "#3d4152",
+                                    fontFamily: "'Proxima Nova'",
                                   }}
                                 >
                                   {opt.option}
@@ -446,7 +460,11 @@ function CustumizationPage(props) {
                             />
                           </div>
                           <span
-                            style={{ marginRight: "5px", fontWeight: "600" }}
+                            style={{
+                              marginRight: "5px",
+                              fontWeight: "500",
+                              fontFamily: "'Proxima Nova'",
+                            }}
                           >
                             <span style={{ marginRight: "2px" }}>
                               {opt.option_type === "minus" && "-"}
@@ -498,6 +516,7 @@ function CustumizationPage(props) {
                                 <span
                                   style={{
                                     color: "#3d4152",
+                                    fontFamily: "'Proxima Nova'",
                                   }}
                                 >
                                   {opt.option}
@@ -506,7 +525,11 @@ function CustumizationPage(props) {
                             />
                           </div>
                           <span
-                            style={{ marginRight: "5px", fontWeight: "600" }}
+                            style={{
+                              marginRight: "5px",
+                              fontWeight: "500",
+                              fontFamily: "'Proxima Nova'",
+                            }}
                           >
                             <span style={{ marginRight: "2px" }}>
                               {opt.option_type === "minus" && "-"}

@@ -37,13 +37,37 @@
                "operator": "gt"
             }
          ]
+      },
+      {
+         "_id": "7258ugu35aapodghe45540",
+         "label_text": "Get 50% Off",
+         "scope": "total",
+         "code": "TRYNEW",
+         "process_type": "computed",
+         "value_type": "minus-perc",
+         "cap_value": "200",
+         "value": "50",
+         "desc": "Use code TRYNEW & get 50% off on total above ₹249. Maximum discount: ₹200.",
+         "conditions": [
+            {
+               "label_text": "Offer is valid only on select restaurants",
+               "always_valid": true
+            },
+            {
+               "label_text": "Offer is valid only on total above ₹149",
+               "always_valid": false,
+               "decider_field": "table-total",
+               "decider_value": 249,
+               "operator": "gt"
+            }
+         ]
       }
    ],
    "settings": {
       "charges": [
          {
             "label_text": "GST by Govt.",
-            "scope": "order",
+            "scope": "total",
             "method": "compound",
             "sub_charges": [
                {

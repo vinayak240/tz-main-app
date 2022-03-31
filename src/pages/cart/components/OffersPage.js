@@ -35,12 +35,13 @@ export default function OffersPage(props) {
   const applyCouponCode = () => {
     let offer = props.offers.find((o) => o.code === state.coupon_code);
 
-    props.applyOffer(offer);
-
     setState({
       ...state,
       coupon_code: "",
     });
+
+    goBack();
+    setTimeout(() => props.applyOffer(offer), 10);
   };
 
   const goBack = (isPopped = false) => {
@@ -171,7 +172,10 @@ export default function OffersPage(props) {
             props.offers.map((offer) => (
               <Offer
                 offer={offer}
-                applyOffer={props.applyOffer}
+                applyOffer={(offer) => {
+                  goBack();
+                  setTimeout(() => props.applyOffer(offer), 10);
+                }}
                 cart={props.cart}
               />
             ))}

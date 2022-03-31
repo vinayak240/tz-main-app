@@ -12,13 +12,17 @@ export const OPERATOR_TYPE = {
 
 export const FIELD_TYPE = {
   ORDER_TOTAL: "order-total",
+  TABLE_TOTAL: "table-total",
 };
 
 export const FIELDS = {
   ORDER_TOTAL: "totalCost",
+  TABLE_TOTAL: "totalCost",
 };
 
 export const OPERATORS = {
   MINUS: "minus",
-  DIVIDE: "DIVIDE",
+  ADD: "divide",
+  DIVIDE: "divide",
+  PERC: "perc",
 };

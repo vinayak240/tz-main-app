@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Logo from "../layouts/components/Logo";
-import { Fade } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 
 const TZLinearProgress = withStyles({
@@ -26,7 +25,7 @@ export default function SplashScreen() {
         scale: 1,
       });
       setTimeout(() => {
-        navigate("/restaurant/menu");
+        navigate("/restaurant/menu", { replace: true });
       }, 2000);
     }, 300);
   }, []);
