@@ -19,7 +19,10 @@ export default function Order(props) {
   };
 
   const getItemsTotal = () => {
-    return order?.items?.reduce((tot, i) => Number(i.item_price) + tot, 0);
+    return order?.items?.reduce(
+      (tot, i) => Number(i.itemCount) * Number(i.item_price) + tot,
+      0
+    );
   };
 
   const getTotalDiscount = () => {

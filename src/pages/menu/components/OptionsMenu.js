@@ -21,7 +21,13 @@ const OptionsMenu = (props) => {
     <MenuList>
       <MenuItem>
         <ListItemIcon>
-          <TimelapseRoundedIcon />
+          <i
+            style={{
+              fontSize: "1.195rem",
+              marginLeft: "4px",
+            }}
+            className="fas fa-qrcode"
+          ></i>
         </ListItemIcon>
         <ListItemText style={{ paddingRight: "15px" }}>Your Table</ListItemText>
         <Typography variant="body2" color="text.secondary"></Typography>

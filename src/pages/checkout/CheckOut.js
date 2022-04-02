@@ -26,6 +26,7 @@ import PaperComponent from "../cart/shared/PaperComponent";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import { applyOfferOnTable, removeOffers } from "../../redux/actions/table";
+import { BottomActionsArea } from "./components/BottomActionsArea";
 
 function CheckOut(props) {
   const cartClasses = useCartStyles();
@@ -581,6 +582,7 @@ function CheckOut(props) {
           </div>
         </Paper>
       </div>
+      <BottomActionsArea total={getTotal()} />
       <div
         style={{
           height: "50px",

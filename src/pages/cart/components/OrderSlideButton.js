@@ -1,5 +1,3 @@
-import { Skeleton } from "@material-ui/lab";
-import { withStyles } from "@material-ui/styles";
 import React, { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 import useStyles from "../../styles/comman_styles";

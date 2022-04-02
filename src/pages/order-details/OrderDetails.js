@@ -92,7 +92,6 @@ function OrderDetails(props) {
       style={{
         background: "#efeff3",
         height: "100vh",
-        paddingTop: "15px",
       }}
     >
       <OrderAppBar
