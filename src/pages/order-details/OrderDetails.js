@@ -19,6 +19,8 @@ import {
   getOrderStatusLabels,
   getStatusIndfoMap,
 } from "./utils/helper";
+import { getChargesMap, round } from "../cart/utils/helpers";
+import ITEM_STATUS from "../../enums/item_status";
 
 // Get current order id from route params
 function OrderDetails(props) {
@@ -79,12 +81,27 @@ function OrderDetails(props) {
   };
 
   const getItemsTotal = () => {
-    return order?.items?.reduce((tot, i) => Number(i.item_price) + tot, 0);
+    return getActiveItems()?.reduce((tot, i) => Number(i.item_price) + tot, 0);
+  };
+
+  const getActiveItems = () => {
+    return order?.items.filter(
+      (i) =>
+        ![ITEM_STATUS.UNAVAILABLE, ITEM_STATUS.CANCELLED].includes(i?.status)
+    );
+  };
+
+  const getChargesTotal = () => {
+    return getChargesMap(
+      props.charges.filter((chr) => chr?.scope === "order"),
+      Number(getItemsTotal())
+    ).reduce((c_total, chr) => c_total + chr.total, 0);
   };
 
   const getTotal = () => {
     let discount = getTotalDiscount();
-    return Number(order.total_price) - discount;
+    let chargeTotal = getChargesTotal();
+    return round(Number(getItemsTotal()) - discount + chargeTotal, 1);
   };
 
   return (
@@ -271,6 +288,12 @@ function OrderDetails(props) {
                 -<span>&#8377;</span> {getTotalDiscount()}
               </p>
             </div>
+            <div className={classes.paymentItemCtnr}>
+              <p className={classes.paymentItem}>Additional Charges</p>
+              <p className={classes.paymentItem}>
+                -<span>&#8377;</span> {getChargesTotal()}
+              </p>
+            </div>
             <div className={classes.borderedSeparator}></div>
             <div style={{ margin: "0px" }} className={classes.paymentItemCtnr}>
               <p className={classes.totalMnText}>Order Total</p>
@@ -295,6 +318,7 @@ function OrderDetails(props) {
 const mapStateToProps = (state) => ({
   orders: clone(state.table?.orders),
   common: clone(state.common),
+  charges: clone(state.restaurant?.settings?.charges),
 });
 
 export default connect(mapStateToProps)(OrderDetails);

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@material-ui/core";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 export function BottomActionsArea(props) {
   return (
@@ -15,6 +16,20 @@ export function BottomActionsArea(props) {
       }}
     >
       <div>
+        {props.isOngoing && (
+          <div>
+            <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="error">
+              <AlertTitle>
+                <strong>Cannot Check Out</strong>
+              </AlertTitle>
+              <strong>Some orders are still on-going</strong>, Please wait for
+              them to finish or you can{" "}
+              <a style={{ color: "#0388ca", textDecoration: "underline" }}>
+                call waiter
+              </a>
+            </Alert>
+          </div>
+        )}
         <Button
           style={{
             display: "block",
@@ -30,7 +45,9 @@ export function BottomActionsArea(props) {
             display: "flex",
             padding: "9px",
             justifyContent: "space-between",
+            opacity: props.isOngoing ? 0.45 : 1,
           }}
+          disabled={props.isOngoing}
         >
           <div>
             {" "}

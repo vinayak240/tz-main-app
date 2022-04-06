@@ -108,6 +108,12 @@ export const getItemStatusLabels = (status) => {
         label: "Item Cancelled",
         color: "red",
       };
+    case ITEM_STATUS.UNAVAILABLE:
+      return {
+        short_label: "Unavailable",
+        label: "Item Unavailable",
+        color: "red",
+      };
 
     default:
       return {

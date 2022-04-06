@@ -9,6 +9,7 @@ const ITEM_STATUS = {
 
   CANCEL: "CANCEL", // manual
   CANCELLED: "CANCELLED", // manual only After ACCEPT from Rest
+  UNAVAILABLE: "UNAVAILABLE", // manual only After ACCEPT from Rest
 
   SERVED: "SERVED", // manual
 };

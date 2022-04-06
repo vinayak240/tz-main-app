@@ -3,6 +3,7 @@ import { Collapse, Typography } from "@material-ui/core";
 import { Item } from "./Item";
 import { getChargesMap } from "../../cart/utils/helpers";
 import { isOrderOngoing } from "../utils/helper";
+import ITEM_STATUS from "../../../enums/item_status";
 
 export default function Order(props) {
   const [state, setState] = useState({
@@ -19,9 +20,16 @@ export default function Order(props) {
   };
 
   const getItemsTotal = () => {
-    return order?.items?.reduce(
+    return getActiveItems()?.reduce(
       (tot, i) => Number(i.itemCount) * Number(i.item_price) + tot,
       0
+    );
+  };
+
+  const getActiveItems = () => {
+    return order?.items.filter(
+      (i) =>
+        ![ITEM_STATUS.UNAVAILABLE, ITEM_STATUS.CANCELLED].includes(i?.status)
     );
   };
 
@@ -30,10 +38,10 @@ export default function Order(props) {
   };
 
   const getChargesTotal = () => {
-    return getChargesMap(props.charges, Number(getItemsTotal())).reduce(
-      (c_total, chr) => c_total + chr.total,
-      0
-    );
+    return getChargesMap(
+      props.charges.filter((chr) => chr?.scope === "order"),
+      Number(getItemsTotal())
+    ).reduce((c_total, chr) => c_total + chr.total, 0);
   };
 
   return (
@@ -69,7 +77,9 @@ export default function Order(props) {
               style={{
                 marginLeft: "6px",
                 fontSize: "0.7rem",
-                background: isOrderOngoing(order) ? "#ffa400" : "#059424",
+                background: isOrderOngoing(order)
+                  ? "rgb(255 164 0)"
+                  : "#059424",
                 padding: "2px 6px",
                 color: "white",
                 borderRadius: "4px",
@@ -118,7 +128,7 @@ export default function Order(props) {
             marginLeft: "7px",
           }}
         >
-          {order.items.map((i) => (
+          {getActiveItems().map((i) => (
             <Item item={i} />
           ))}
         </ul>
@@ -238,7 +248,7 @@ export default function Order(props) {
           <Typography
             style={{ fontSize: "0.85rem", fontFamily: "'Proxima Nova'" }}
           >
-            {order?.items?.length} Items
+            {getActiveItems()?.length} Items
           </Typography>
         )}
         <Typography
