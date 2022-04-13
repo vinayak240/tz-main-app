@@ -64,9 +64,9 @@ function TableLoading(props) {
         autoplay: true,
       });
 
-      // setTimeout(() => {
-      //   navigate("/restaurant/menu", { replace: true });
-      // }, 2500);
+      setTimeout(() => {
+        navigate("/restaurant/menu", { replace: true });
+      }, 2500);
     }
   }, [props.table?.status]);
 
@@ -108,7 +108,7 @@ function TableLoading(props) {
             ? "Table Accepted!"
             : props.table?.status === TABLE_STATUS.TABLE_REQUESTED
             ? "Table Request Received"
-            : "Request You Table"}
+            : "Requesting Table"}
         </Typography>
         <Typography
           style={{
