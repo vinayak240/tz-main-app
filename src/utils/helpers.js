@@ -7,3 +7,13 @@ export const isObjEmpty = (obj) => {
   }
   return true;
 };
+
+export const delay = async (secs) => {
+  return new Promise((res, rej) => {
+    try {
+      setTimeout(res, secs);
+    } catch (err) {
+      rej();
+    }
+  });
+};

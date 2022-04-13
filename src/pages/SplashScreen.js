@@ -25,7 +25,7 @@ export default function SplashScreen() {
         scale: 1,
       });
       setTimeout(() => {
-        navigate("/restaurant/menu", { replace: true });
+        navigate("/table/request", { replace: true });
       }, 2000);
     }, 300);
   }, []);

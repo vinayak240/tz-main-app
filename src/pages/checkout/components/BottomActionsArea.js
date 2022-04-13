@@ -16,7 +16,7 @@ export function BottomActionsArea(props) {
       }}
     >
       <div>
-        {props.isOngoing && (
+        {props.isOngoing ? (
           <div>
             <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="error">
               <AlertTitle>
@@ -29,36 +29,36 @@ export function BottomActionsArea(props) {
               </a>
             </Alert>
           </div>
+        ) : (
+          <Button
+            style={{
+              display: "block",
+              width: "95%",
+              textTransform: "capitalize",
+              fontSize: "1rem",
+              fontFamily: "'Proxima Nova'",
+              fontWeight: "600",
+              margin: "8px auto",
+              borderRadius: "5px",
+              background: "#fcd601",
+              color: "black",
+              display: "flex",
+              padding: "9px",
+              justifyContent: "space-between",
+            }}
+            disabled={props.isOngoing}
+          >
+            <div>
+              {" "}
+              Total: <span>&#8377;</span> {props.total}{" "}
+            </div>
+            <div>
+              {" "}
+              Check Out{" "}
+              <PlayArrowRoundedIcon style={{ verticalAlign: "middle" }} />
+            </div>
+          </Button>
         )}
-        <Button
-          style={{
-            display: "block",
-            width: "95%",
-            textTransform: "capitalize",
-            fontSize: "1rem",
-            fontFamily: "'Proxima Nova'",
-            fontWeight: "600",
-            margin: "8px auto",
-            borderRadius: "5px",
-            background: "#fcd601",
-            color: "black",
-            display: "flex",
-            padding: "9px",
-            justifyContent: "space-between",
-            opacity: props.isOngoing ? 0.45 : 1,
-          }}
-          disabled={props.isOngoing}
-        >
-          <div>
-            {" "}
-            Total: <span>&#8377;</span> {props.total}{" "}
-          </div>
-          <div>
-            {" "}
-            Check Out{" "}
-            <PlayArrowRoundedIcon style={{ verticalAlign: "middle" }} />
-          </div>
-        </Button>
       </div>
     </div>
   );

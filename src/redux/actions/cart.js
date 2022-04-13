@@ -8,9 +8,22 @@ import { isOfferApplicable, processOffer } from "../../pages/cart/utils/offers";
 import { getItemsTotalCost } from "../../pages/menu/utils/helper";
 import store from "../store";
 import { setAlert } from "./alert";
-import { CLEAR_CART, UPDATE_CART } from "./types";
+import { CLEAR_CART, INIT_CART, SET_CART_STATUS, UPDATE_CART } from "./types";
 
 //#region Action creators
+
+export const iniCart = () => (dispatch) => {
+  const iniCart = {
+    items: [],
+    offers: [],
+    totalCost: 0,
+  };
+
+  dispatch({
+    type: INIT_CART,
+    payload: iniCart,
+  });
+};
 
 export const addItem =
   (payload, itemId, versionIdx = -1) =>
@@ -178,6 +191,13 @@ export const updateItem = (itemId, version, versionIdx) => (dispatch) => {
 export const clearCart = () => (dispatch) => {
   dispatch({
     type: CLEAR_CART,
+  });
+};
+
+export const setCartStatus = (status) => (dispatch) => {
+  dispatch({
+    type: SET_CART_STATUS,
+    payload: status,
   });
 };
 

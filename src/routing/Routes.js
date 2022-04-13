@@ -9,17 +9,41 @@ import OrderDetails from "../pages/order-details/OrderDetails";
 import SplashScreen from "../pages/SplashScreen";
 import Orders from "../pages/orders/Orders";
 import CheckOut from "../pages/checkout/CheckOut";
+import TableRequest from "../pages/table-request/TableRequest";
+import TableLoading from "../pages/table-request/components/TableLoading";
 
 const Routes = (props) => {
   return (
     <section className="container">
       <Switch>
-        <Route
-          path="/"
-          element={<Navigate to="/restaurant" replace={true} />}
-        />
+        <Route path="/" element={<SplashScreen />} />
+
+        <Route path="/table">
+          <Route
+            index={false}
+            path="request"
+            element={
+              props.common?.loading ? (
+                <LoadingPage /> // Replace this with skeletons
+              ) : (
+                <TableRequest />
+              )
+            }
+          />
+          <Route
+            index={false}
+            path="load"
+            element={
+              props.common?.loading ? (
+                <LoadingPage /> // Replace this with skeletons
+              ) : (
+                <TableLoading />
+              )
+            }
+          />
+        </Route>
+
         <Route path="/restaurant">
-          <Route index element={<SplashScreen />} />
           <Route
             index={false}
             path="menu"

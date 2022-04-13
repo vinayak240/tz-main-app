@@ -264,11 +264,11 @@ function CheckOut(props) {
                   style={{
                     fontWeight: "600",
                     fontFamily: "'Proxima Nova'",
-                    color: "green",
+                    color: curOffer.is_applied ? "green" : "#ab0404",
                     textTransform: "none",
                   }}
                 >
-                  Ok, Great!
+                  {curOffer.is_applied ? "Ok, Great!" : "Ok!"}
                 </Button>
               </DialogActions>
             </Dialog>

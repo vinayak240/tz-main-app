@@ -10,6 +10,7 @@ export const ERROR_ON_LOAD = "ERROR_ON_LOAD";
 // CART
 export const UPDATE_CART = "UPDATE_CART";
 export const CLEAR_CART = "CLEAR_CART";
+export const SET_CART_STATUS = "SET_CART_STATUS";
 export const INIT_CART = "INIT_CART";
 
 // TABLE
@@ -18,6 +19,7 @@ export const INIT_ORDERS = "INIT_ORDERS";
 export const PLACE_ORDER = "PLACE_ORDER";
 export const CHECKOUT = "CHECKOUT";
 export const UPDATE_TABLE = "UPDATE_TABLE";
+export const SET_TABLE_STATUS = "SET_TABLE_STATUS";
 
 //ALERT
 export const SET_ALERT = "SET_ALERT";

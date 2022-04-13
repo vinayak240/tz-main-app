@@ -71,7 +71,10 @@ const Menu = (props) => {
   }, [showTopSearchBar, tabValue, menuMap, restaurant.menu]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    let height = document.getElementById("rest-info")?.clientHeight;
+    if (Boolean(document.scrollingElement.scrollTop >= height + 22)) {
+      window.scrollTo(0, height + 22);
+    }
   }, [tabValue]);
 
   if (isObjEmpty(restaurant)) {

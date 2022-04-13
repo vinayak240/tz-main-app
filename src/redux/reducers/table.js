@@ -1,13 +1,16 @@
+import { TABLE_STATUS } from "../../enums/table_status";
 import {
   PLACE_ORDER,
   CHECKOUT,
   INIT_ORDERS,
   UPDATE_TABLE,
   INIT_TABLE,
+  SET_TABLE_STATUS,
 } from "../actions/types";
 
 const initialState = {
   table_id: "",
+  status: TABLE_STATUS.TABLE_REQUEST,
   session: null, //Contains all the order, table session
   orders: [],
   offers: [], // these offers will added when the final bill is paid...
@@ -25,6 +28,12 @@ export default function (state = initialState, action) {
         ...payload,
       };
     case INIT_ORDERS:
+      return {
+        ...state,
+        ...payload,
+      };
+
+    case SET_TABLE_STATUS:
       return {
         ...state,
         ...payload,

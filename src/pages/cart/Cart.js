@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Paper,
   Typography,
+  Drawer,
 } from "@material-ui/core";
 import React, { Fragment, useEffect, useState } from "react";
 import CartAppBar from "./components/CartAppBar";
@@ -36,6 +37,8 @@ import {
   placeOrder as placeOrderAction,
 } from "../../redux/actions/table";
 import { useNavigate } from "react-router-dom";
+import LoadingDrawer from "../shared/LoadingDrawer";
+import CART_STATUS from "../../enums/cart_status";
 
 function Cart(props) {
   const classes = useStyles();
@@ -47,8 +50,10 @@ function Cart(props) {
     is_open: false,
     f_offer_page: false,
     f_offer_msg: false,
+    f_place_drawer: false,
     infolist: [],
     infoHead: "",
+    order_num: 0,
   });
   const [curOffer, setCurOffer] = useState({
     is_applied: false,
@@ -56,11 +61,19 @@ function Cart(props) {
     discount: 0,
   });
 
-  const handleDialogOpen = (flagName) => {
-    setState((prevState) => ({
-      ...prevState,
-      [flagName]: true,
-    }));
+  const handleDialogOpen = (flagName, orderNum = 0) => {
+    if (flagName === "f_place_drawer") {
+      setState((prevState) => ({
+        ...prevState,
+        [flagName]: true,
+        order_num: orderNum,
+      }));
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        [flagName]: true,
+      }));
+    }
   };
 
   const handleDialogClose = (flagName) => {
@@ -148,14 +161,13 @@ function Cart(props) {
     dispatch(removeOffers([curOffer.offer_id]));
   };
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     let orderNum = getNextOrderNumber(props.common?.user?.user_name);
+    handleDialogOpen("f_place_drawer", orderNum);
+
     dispatch(
       placeOrderAction({ ...props.cart, totalCost: getOrderTotal(), orderNum })
     );
-
-    navigate(`/restaurant/orders/${orderNum}`, { replace: true });
-    dispatch(clearCart());
   };
 
   const goBack = () => {
@@ -270,11 +282,11 @@ function Cart(props) {
               style={{
                 fontWeight: "600",
                 fontFamily: "'Proxima Nova'",
-                color: "green",
+                color: "#ab0404",
                 textTransform: "none",
               }}
             >
-              Ok, Great!
+              Ok!
             </Button>
           </DialogActions>
         </Dialog>
@@ -388,6 +400,22 @@ function Cart(props) {
             </div>
           ))}
         </div>
+        <Drawer
+          anchor="bottom"
+          open={state.f_place_drawer}
+          onClose={() => handleDialogClose("f_place_drawer")}
+        >
+          <LoadingDrawer
+            is_finished={props.cart?.status === CART_STATUS.PLACED}
+            msg={
+              props.cart?.status !== CART_STATUS.PLACED
+                ? "Placing your order.."
+                : "Order has been placed"
+            }
+            alert_msg={"Please wait, Don't quit the application"}
+            order_num={state.order_num}
+          />
+        </Drawer>
       </div>
       <CartAppBar n_items={props.cart.items.length} goBack={goBack} />
       <Paper className={classes.itemList} elevation={0}>
