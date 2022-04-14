@@ -56,7 +56,8 @@ export default function Item(props) {
             food_type={item.food_type}
           />
           <p style={{ margin: "0px", marginLeft: "6px" }}>
-            {item.item_name} x {item.itemCount}
+            {item.type === "package" ? item.package_name : item.item_name} x{" "}
+            {item.itemCount}
           </p>
         </div>
         <div

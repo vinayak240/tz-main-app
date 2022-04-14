@@ -81,7 +81,11 @@ function OrderDetails(props) {
   };
 
   const getItemsTotal = () => {
-    return getActiveItems()?.reduce((tot, i) => Number(i.item_price) + tot, 0);
+    return getActiveItems()?.reduce(
+      (tot, i) =>
+        Number(i.type === "package" ? i.package_price : i.item_price) + tot,
+      0
+    );
   };
 
   const getActiveItems = () => {
@@ -304,7 +308,6 @@ function OrderDetails(props) {
           </div>
         </div>
         <div
-          // onClick={() => navigate("/restaurant/orders")}
           style={{
             backgroundColor: "#efeff3",
             height: "137px",
