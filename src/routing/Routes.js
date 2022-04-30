@@ -11,6 +11,7 @@ import Orders from "../pages/orders/Orders";
 import CheckOut from "../pages/checkout/CheckOut";
 import TableRequest from "../pages/table-request/TableRequest";
 import TableLoading from "../pages/table-request/components/TableLoading";
+import { TABLE_STATUS } from "../enums/table_status";
 
 const Routes = (props) => {
   return (
@@ -48,7 +49,13 @@ const Routes = (props) => {
             index={false}
             path="menu"
             element={
-              props.common?.loading || isObjEmpty(props.restaurant) ? (
+              ![
+                TABLE_STATUS.TABLE_ACCEPTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading || isObjEmpty(props.restaurant) ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : (
                 <Menu />
@@ -59,7 +66,13 @@ const Routes = (props) => {
             index={false}
             path="cart"
             element={
-              props.common?.loading ? (
+              ![
+                TABLE_STATUS.TABLE_ACCEPTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : isObjEmpty(props.cart?.items) ? (
                 <Navigate to="/restaurant/menu" replace={true} />
@@ -72,7 +85,13 @@ const Routes = (props) => {
             index={false}
             path="orders/:orderId"
             element={
-              props.common?.loading ? (
+              ![
+                TABLE_STATUS.TABLE_ACCEPTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : isObjEmpty(props.table?.orders) ? (
                 <Navigate to="/restaurant/menu" replace={true} />
@@ -85,7 +104,13 @@ const Routes = (props) => {
             index={false}
             path="orders"
             element={
-              props.common?.loading ? (
+              ![
+                TABLE_STATUS.TABLE_ACCEPTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : (
                 <Orders />
@@ -96,7 +121,13 @@ const Routes = (props) => {
             index={false}
             path="checkout"
             element={
-              props.common?.loading ? (
+              ![
+                TABLE_STATUS.TABLE_ACCEPTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : (
                 <CheckOut />

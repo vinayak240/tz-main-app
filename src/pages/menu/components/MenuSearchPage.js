@@ -15,6 +15,7 @@ import {
   decideFoodType,
   findCartItem,
   findOriginalPackage,
+  getMenuName,
   getMenuType,
 } from "../utils/helper";
 import Package from "./Package";
@@ -71,23 +72,17 @@ function MenuSearchPage(props) {
   const filterItems = (query) => {
     const key = query.toLowerCase();
     let menu = clone(props.menu);
-    let filteredMenu = [
-      {
-        section_name: "Food Menu",
-        type: getMenuType(menu.food),
-        list: search(key, menu.food, getMenuType(menu.food)),
-      },
-      {
-        section_name: "Bar Menu",
-        type: getMenuType(menu.bar),
-        list: search(key, menu.bar, getMenuType(menu.bar)),
-      },
-      {
-        section_name: "Buffet Menu",
-        type: getMenuType(menu.buffet),
-        list: search(key, menu.buffet, getMenuType(menu.buffet)),
-      },
-    ];
+
+    let filteredMenu = [];
+
+    for (const mt in menu) {
+      let type = getMenuType(menu[mt]);
+      filteredMenu.push({
+        section_name: getMenuName(mt, props.original_menu),
+        type,
+        list: search(key, menu[mt], getMenuType(menu[mt])),
+      });
+    }
 
     filteredMenu = filteredMenu.filter((section) => section.list.length > 0);
 
@@ -291,7 +286,10 @@ function MenuSearchPage(props) {
                   ) : (
                     <div>
                       <Package
-                        package={findOriginalPackage(menu, item._id)}
+                        package={findOriginalPackage(
+                          props.original_menu,
+                          item._id
+                        )}
                         key={`${item._id}-${itemIdx}`}
                       />
                       {item.items.length > 0 && (
@@ -356,6 +354,7 @@ function MenuSearchPage(props) {
 
 const mapStateToProps = (state) => ({
   cart: state.cart,
+  original_menu: state.restaurant?.menu,
 });
 
 export default connect(mapStateToProps)(MenuSearchPage);

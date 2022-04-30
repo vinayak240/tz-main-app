@@ -4,7 +4,11 @@ import lottie from "lottie-web";
 import three_dots from "../../../assets/three_dots.json";
 import success_check from "../../../assets/success_check.json";
 import useCustumSearchParams from "../hooks/useCustumSearchParams";
-import { bootstrap, requestTable } from "../../../redux/actions/table";
+import {
+  bootstrap,
+  clearSession,
+  requestTable,
+} from "../../../redux/actions/table";
 import { connect, useDispatch } from "react-redux";
 import { TABLE_STATUS } from "../../../enums/table_status";
 import { useNavigate } from "react-router-dom";

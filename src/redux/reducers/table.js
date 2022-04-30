@@ -6,6 +6,7 @@ import {
   UPDATE_TABLE,
   INIT_TABLE,
   SET_TABLE_STATUS,
+  CLEAR_SESSION,
 } from "../actions/types";
 
 const initialState = {
@@ -50,6 +51,17 @@ export default function (state = initialState, action) {
       };
     case CHECKOUT:
       return state;
+    case CLEAR_SESSION:
+      return {
+        ...state,
+        table_id: "",
+        status: TABLE_STATUS.TABLE_REQUEST,
+        session: null, //Contains all the order, table session
+        orders: [],
+        offers: [], // these offers will added when the final bill is paid...
+        totalCost: 0,
+        // user: null,
+      };
     default:
       return state;
   }

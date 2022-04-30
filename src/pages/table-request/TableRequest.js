@@ -1,9 +1,12 @@
 import { Button, Slide, Typography } from "@material-ui/core";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { clearSession } from "../../redux/actions/table";
 import useNavigateSearch from "./hooks/useNavigateWithQuery";
 
 function TableRequest(props) {
   const navigate = useNavigateSearch();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     search_id: "",
   });
@@ -22,6 +25,7 @@ function TableRequest(props) {
   };
 
   const request = () => {
+    dispatch(clearSession());
     navigate("/table/load", {
       qr: false,
       sid: state.search_id,

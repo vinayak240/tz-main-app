@@ -20,6 +20,7 @@ export const PLACE_ORDER = "PLACE_ORDER";
 export const CHECKOUT = "CHECKOUT";
 export const UPDATE_TABLE = "UPDATE_TABLE";
 export const SET_TABLE_STATUS = "SET_TABLE_STATUS";
+export const CLEAR_SESSION = "CLEAR_SESSION";
 
 //ALERT
 export const SET_ALERT = "SET_ALERT";

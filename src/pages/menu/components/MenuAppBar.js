@@ -123,7 +123,8 @@ const MenuAppBar = (props) => {
         {props.isAtTop && (
           <>
             <MenuTabs
-              numTabs={3}
+              numTabs={props.numTabs}
+              tabs={props.tabs}
               tabValue={props.tabValue}
               setTabValue={props.setTabValue}
             />

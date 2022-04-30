@@ -21,7 +21,7 @@ import ErrorAlert from "../shared/ErrorAlert";
 import { connect, useDispatch } from "react-redux";
 import { setAlert } from "../../../redux/actions/alert";
 import ALERT_TYPES from "../../../enums/alert_types";
-import { decideFoodType } from "../utils/helper";
+import { decideFoodType, makeCustUnique } from "../utils/helper";
 import { useNavigate } from "react-router-dom";
 import {
   setPropagation,
@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 function CustumizationPage(props) {
   const classes = useStyles();
-  const navigate = useNavigate();
   const [state, setState] = useState({
     itemCost: Number(
       props.isPackage ? props.item.package_price : props.item.item_price
@@ -48,6 +47,7 @@ function CustumizationPage(props) {
   });
   const [curState, setCurState] = useState(null);
   const dispatch = useDispatch();
+  props.item.custumization_arr = makeCustUnique(props.item.custumization_arr);
   const { custumization_arr } = props.item;
 
   const handleCheckBoxInput = (evt) => {

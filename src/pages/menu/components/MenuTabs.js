@@ -4,6 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { withStyles } from "@material-ui/styles";
+import { getMenuName } from "../utils/helper";
 
 function a11yProps(index) {
   return {
@@ -73,9 +74,9 @@ export default function MenuTabs(props) {
           aria-label="scrollable auto tabs menu"
           centered={props.numTabs < 3}
         >
-          <MyTab label={<span>{"Food Menu"}</span>} {...a11yProps(0)} />
-          <MyTab label={<span>{"Bar Menu"}</span>} {...a11yProps(1)} />
-          <MyTab label={<span>{"Buffet Menu"}</span>} {...a11yProps(2)} />
+          {props.tabs.map((t, idx) => (
+            <MyTab label={<span>{t}</span>} {...a11yProps(idx)} />
+          ))}
         </MyTabs>
       </AppBar>
     </div>

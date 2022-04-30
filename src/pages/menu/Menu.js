@@ -9,11 +9,18 @@ import MenuSearchBar from "./components/MenuSearchBar";
 import Category from "./components/Category";
 import BottomActionsArea from "./components/BottomActionsArea";
 import Package from "./components/Package";
-import { decideFoodType, decideToShowMenuFAB } from "./utils/helper";
+import {
+  createMenuMap,
+  decideFoodType,
+  decideToShowMenuFAB,
+  getMenuName,
+  isBuffetType,
+} from "./utils/helper";
 import { getElementPosition } from "./utils/scroll";
 import { connect } from "react-redux";
 import { isObjEmpty } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
+import { clone } from "ramda";
 
 const Menu = (props) => {
   // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
@@ -23,9 +30,10 @@ const Menu = (props) => {
   const [isVegOnly, setVegOnly] = useState(false);
   const [showTopSearchBar, setShowTopSearchBar] = useState(false);
   const [s_active_cat, setScrollActiveCat] = useState(0);
-  const { restaurant } = props;
+  const restaurant = clone(props.restaurant);
 
-  const menuMap = ["food", "bar", "buffet"];
+  const menuMap = restaurant?.menu?.map((mt) => mt._id || mt.name);
+  restaurant.menu = createMenuMap(clone(props.restaurant?.menu));
 
   const handleMenuScroll = () => {
     try {
@@ -62,6 +70,10 @@ const Menu = (props) => {
     navigate("/restaurant/cart");
   };
 
+  // const onBackButtonEvent = () => {
+  //   alert("Do you want to Quit, Quiting would clear your Table Session!!");
+  // };
+
   useEffect(() => {
     document.addEventListener("scroll", handleMenuScroll);
 
@@ -76,6 +88,11 @@ const Menu = (props) => {
       window.scrollTo(0, height + 22);
     }
   }, [tabValue]);
+
+  // useEffect(() => {
+  //   window.addEventListener("popstate", onBackButtonEvent);
+  //   return () => window.removeEventListener("popstate", onBackButtonEvent);
+  // }, []);
 
   if (isObjEmpty(restaurant)) {
     return <Fragment>Loading menu..</Fragment>;
@@ -98,6 +115,8 @@ const Menu = (props) => {
         isAtTop={showTopSearchBar}
         tabValue={tabValue}
         setTabValue={setTabValue}
+        numTabs={menuMap.length}
+        tabs={menuMap.map((mt) => getMenuName(mt, props.restaurant.menu))}
         menu={restaurant.menu}
       />
 
@@ -197,7 +216,12 @@ const Menu = (props) => {
       </Paper>
       <div id="rest-menu">
         {!showTopSearchBar && (
-          <MenuTabs numTabs={3} tabValue={tabValue} setTabValue={setTabValue} />
+          <MenuTabs
+            numTabs={menuMap.length}
+            tabValue={tabValue}
+            setTabValue={setTabValue}
+            tabs={menuMap.map((mt) => getMenuName(mt, props.restaurant.menu))}
+          />
         )}
         {!showTopSearchBar && (
           <MenuSearchBar
@@ -214,63 +238,56 @@ const Menu = (props) => {
           }}
           className={classes.dottedSeperator}
         ></hr>
-        <TabPanel value={tabValue} index={0}>
-          {restaurant.menu["food"].map((ele, idx, arr) => (
-            <div key={idx}>
-              <Category
-                id={`menu-cat-${idx + 1}`}
-                key={ele._id}
-                category={ele}
-                is_veg={isVegOnly}
-              />
-              {arr.length !== idx + 1 && (
-                <hr
-                  style={{ borderWidth: "16px", margin: 0 }}
-                  className={classes.dottedSeperator}
-                ></hr>
-              )}
-            </div>
-          ))}
-        </TabPanel>
-        <TabPanel value={tabValue} index={1}>
-          {restaurant.menu["bar"].map((ele, idx, arr) => (
-            <div key={idx}>
-              <Category
-                id={`menu-cat-${idx + 1}`}
-                key={ele._id}
-                category={ele}
-                is_veg={isVegOnly}
-              />
-              {arr.length !== idx + 1 && (
-                <hr
-                  style={{ borderWidth: "16px", margin: 0 }}
-                  className={classes.dottedSeperator}
-                ></hr>
-              )}
-            </div>
-          ))}
-        </TabPanel>
-        <TabPanel style={{ padding: "15px" }} value={tabValue} index={2}>
-          {restaurant.menu["buffet"]
-            .filter(
-              (i_package) =>
-                !isVegOnly || decideFoodType(i_package.items) === "veg"
+        <div>
+          {menuMap.map((mt, midx) =>
+            !isBuffetType(mt, props.restaurant?.menu) ? (
+              <TabPanel value={tabValue} index={midx}>
+                {restaurant.menu[mt].map((ele, idx, arr) => (
+                  <div key={idx}>
+                    <Category
+                      id={`menu-cat-${idx + 1}`}
+                      key={ele._id}
+                      category={ele}
+                      is_veg={isVegOnly}
+                    />
+                    {arr.length !== idx + 1 && (
+                      <hr
+                        style={{ borderWidth: "16px", margin: 0 }}
+                        className={classes.dottedSeperator}
+                      ></hr>
+                    )}
+                  </div>
+                ))}
+              </TabPanel>
+            ) : (
+              <TabPanel
+                style={{ padding: "15px" }}
+                value={tabValue}
+                index={midx}
+              >
+                {restaurant.menu[mt]
+                  .filter(
+                    (i_package) =>
+                      !isVegOnly || decideFoodType(i_package.items) === "veg"
+                  )
+                  .map((ele, idx, arr) => (
+                    <>
+                      <Package package={ele} key={ele._id} />
+                      {arr.length !== idx + 1 && (
+                        <hr
+                          style={{
+                            borderWidth: "1.5px",
+                            margin: "6px 0 20px 0",
+                          }}
+                          className={classes.dottedSeperator}
+                        ></hr>
+                      )}
+                    </>
+                  ))}
+              </TabPanel>
             )
-            .map((ele, idx, arr) => (
-              <>
-                <Package package={ele} key={ele._id} />
-                {arr.length !== idx + 1 && (
-                  <hr
-                    style={{
-                      borderWidth: "1.5px",
-                      margin: "6px 0 20px 0",
-                    }}
-                    className={classes.dottedSeperator}
-                  ></hr>
-                )}
-              </>
-            ))}
-        </TabPanel>
+          )}
+        </div>
       </div>
       <BottomActionsArea
         active_cat={s_active_cat}

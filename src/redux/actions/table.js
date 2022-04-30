@@ -8,6 +8,7 @@ import store from "../store";
 import { setAlert } from "./alert";
 import { setLoading, setUser, unSetLoading } from "./comman";
 import {
+  CLEAR_SESSION,
   INIT_TABLE,
   PLACE_ORDER,
   SET_TABLE_STATUS,
@@ -51,7 +52,7 @@ export const requestTable = (query) => (dispatch) => {
           // user: null,
         },
       }),
-    1000
+    2000
   );
 };
 
@@ -74,6 +75,12 @@ export const bootstrap = (table) => (dispatch) => {
       status: TABLE_STATUS.TABLE_ACCEPTED,
       // user: null,
     },
+  });
+};
+
+export const clearSession = () => (dispatch) => {
+  dispatch({
+    type: CLEAR_SESSION,
   });
 };
 
