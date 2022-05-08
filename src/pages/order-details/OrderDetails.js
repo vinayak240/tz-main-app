@@ -295,7 +295,7 @@ function OrderDetails(props) {
             <div className={classes.paymentItemCtnr}>
               <p className={classes.paymentItem}>Additional Charges</p>
               <p className={classes.paymentItem}>
-                -<span>&#8377;</span> {getChargesTotal()}
+                <span>&#8377;</span> {getChargesTotal()}
               </p>
             </div>
             <div className={classes.borderedSeparator}></div>
