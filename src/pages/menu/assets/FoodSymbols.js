@@ -30,7 +30,7 @@ export function EggFoodSymbol(props) {
       width={props.style.width}
       height={props.style.height}
       viewBox="0 0 172 172"
-      style={{ fill: "#000000" }}
+      style={{ fill: "#000000", ...props.style }}
     >
       <g
         fill="none"

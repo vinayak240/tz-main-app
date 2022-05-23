@@ -10,7 +10,9 @@ import {
 } from "../actions/types";
 
 const initialState = {
+  tabm_id: "",
   table_id: "",
+  restaurant_id: "",
   status: TABLE_STATUS.TABLE_REQUEST,
   session: null, //Contains all the order, table session
   orders: [],
@@ -37,7 +39,7 @@ export default function (state = initialState, action) {
     case SET_TABLE_STATUS:
       return {
         ...state,
-        ...payload,
+        status: payload,
       };
     case PLACE_ORDER:
       return {

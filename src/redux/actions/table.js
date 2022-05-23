@@ -19,41 +19,40 @@ import { iniCart, setCartStatus } from "./cart";
 import CART_STATUS from "../../enums/cart_status";
 import { TABLE_STATUS } from "../../enums/table_status";
 import { loadRestaurant } from "./restaurant";
-
+import SESSION_STATUS from "../../enums/session_status";
+import { requestTable as requestTableApi } from "../../apis/table_api";
+import { setCookie } from "../../utils/cookies";
 /**
  * Request for the table in 2 flows
  * 1 - flow [QR] - the link will contain restaurant ID and Table ID direct request is created
  * 2 - flow [search ID] - this will contain only the Table Search Code
  * Using that we will get Rest ID and Table ID and follow 1st flow
  */
-export const requestTable = (query) => (dispatch) => {
+export const requestTable = (query) => async (dispatch) => {
   let table;
-  if (query?.qr) {
-    // use rest id and table id and directly request
-    table = { table_id: "T00" };
-  } else {
-    // use search id -> (in Server - load table + request)
-    table = { table_id: "T00" };
-  }
 
-  // TO-DO : CALL API
+  let tableReq = { ...query, status: TABLE_STATUS.TABLE_REQUEST };
+  let response = await requestTableApi(tableReq);
+  table = response.payload?.table;
 
-  setTimeout(
-    () =>
-      dispatch({
-        type: INIT_TABLE,
-        payload: {
-          table_id: table.table_id,
-          session: { token: null }, //Contains all the order, table session
-          orders: [],
-          offers: [], // these offers will added when the final bill is paid...
-          totalCost: 0,
-          status: TABLE_STATUS.TABLE_REQUESTED,
-          // user: null,
-        },
-      }),
-    2000
-  );
+  // setTimeout(
+  //   () =>
+  dispatch({
+    type: INIT_TABLE,
+    payload: {
+      tabm_id: table?._id,
+      table_id: table?.table_id,
+      restaurant_id: table?.restaurant_id,
+      session: { status: SESSION_STATUS.NEW, token: null }, //Contains all the order, table session
+      orders: [],
+      offers: [], // these offers will added when the final bill is paid...
+      totalCost: 0,
+      status: TABLE_STATUS.TABLE_REQUESTED,
+      // user: null,
+    },
+  });
+  //   2000
+  // );
 };
 
 /**
@@ -62,17 +61,24 @@ export const requestTable = (query) => (dispatch) => {
 export const bootstrap = (table) => (dispatch) => {
   // TO-DO : CALL API {GET Restaurant and all other things}; API CALL to set cookie
 
+  setCookie("_session_token_", table?.session?.session_token, 1);
+
   dispatch(setUser(null));
 
-  dispatch(loadRestaurant(table.restaurant_id));
+  dispatch(loadRestaurant(table?.restaurant_id));
 
   dispatch(iniCart());
 
   dispatch({
     type: UPDATE_TABLE,
     payload: {
-      session: { token: table.session_token }, //Contains all the order, table session
-      status: TABLE_STATUS.TABLE_ACCEPTED,
+      table_id: table?.table_id,
+      session: {
+        token: table?.session?.session_token,
+        passcode: table?.session?.passcode,
+        status: SESSION_STATUS.ACTIVE,
+      }, //Contains all the order, table session
+      status: TABLE_STATUS.TABLE_ACTIVE,
       // user: null,
     },
   });
@@ -184,6 +190,77 @@ export const removeOffers = (offerIds) => (dispatch) => {
   });
 };
 
+export const setTableStatus = (status) => (dispatch) => {
+  dispatch({
+    type: SET_TABLE_STATUS,
+    payload: status,
+  });
+};
+
+//#endregion
+
+//#region Table Status Actions
+
+export const tableActive = (payload) => (dispatch) => {
+  dispatch(bootstrap(payload));
+};
+
+export const tableOccupied = (payload) => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      table_id: payload?.table_id,
+      status: TABLE_STATUS.TABLE_OCCUPIED,
+      session: { ...session, status: SESSION_STATUS.NEW },
+      orders: [],
+      offers: [],
+      totalCost: 0,
+    },
+  });
+};
+
+export const passcodeInvalid = (payload) => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      table_id: payload?.table_id,
+      status: TABLE_STATUS.PASSCODE_INVALID,
+      session: { ...session, status: SESSION_STATUS.REJECTED },
+      orders: [],
+      offers: [],
+      totalCost: 0,
+    },
+  });
+};
+
+export const tableRejected = (payload) => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      table_id: payload?.table_id,
+      status: TABLE_STATUS.TABLE_REJECTED,
+      session: { ...session, status: SESSION_STATUS.REJECTED },
+      orders: [],
+      offers: [],
+      totalCost: 0,
+    },
+  });
+};
+
+export const checkoutDone = (payload) => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      status: TABLE_STATUS.TABLE_CHECKOUT_DONE,
+      session: { ...session, status: SESSION_STATUS.CLOSED },
+    },
+  });
+};
+
 //#endregion
 
 //#region Helper methods
@@ -228,13 +305,6 @@ const reApplyAllOffers = (table) => {
   });
 
   return table;
-};
-
-export const setTableStatus = (status) => (dispatch) => {
-  dispatch({
-    type: SET_TABLE_STATUS,
-    payload: status,
-  });
 };
 
 //#endregion

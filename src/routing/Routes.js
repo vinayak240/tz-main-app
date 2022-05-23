@@ -50,7 +50,6 @@ const Routes = (props) => {
             path="menu"
             element={
               ![
-                TABLE_STATUS.TABLE_ACCEPTED,
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
               ].includes(props.table?.status) ? (
@@ -67,7 +66,6 @@ const Routes = (props) => {
             path="cart"
             element={
               ![
-                TABLE_STATUS.TABLE_ACCEPTED,
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
               ].includes(props.table?.status) ? (
@@ -86,7 +84,6 @@ const Routes = (props) => {
             path="orders/:orderId"
             element={
               ![
-                TABLE_STATUS.TABLE_ACCEPTED,
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
               ].includes(props.table?.status) ? (
@@ -105,7 +102,6 @@ const Routes = (props) => {
             path="orders"
             element={
               ![
-                TABLE_STATUS.TABLE_ACCEPTED,
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
               ].includes(props.table?.status) ? (
@@ -122,7 +118,6 @@ const Routes = (props) => {
             path="checkout"
             element={
               ![
-                TABLE_STATUS.TABLE_ACCEPTED,
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
               ].includes(props.table?.status) ? (

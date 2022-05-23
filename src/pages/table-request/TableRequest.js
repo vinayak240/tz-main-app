@@ -28,7 +28,7 @@ function TableRequest(props) {
     dispatch(clearSession());
     navigate("/table/load", {
       qr: false,
-      sid: state.search_id,
+      sid: state.search_id.toUpperCase(),
     });
 
     setState({
