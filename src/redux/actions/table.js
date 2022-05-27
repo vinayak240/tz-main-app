@@ -21,6 +21,7 @@ import { TABLE_STATUS } from "../../enums/table_status";
 import { loadRestaurant } from "./restaurant";
 import SESSION_STATUS from "../../enums/session_status";
 import { requestTable as requestTableApi } from "../../apis/table_api";
+import tableResponseHandlers from "../../sockets/listeners/handlers/table_response_handlers";
 import { setCookie } from "../../utils/cookies";
 /**
  * Request for the table in 2 flows
@@ -33,6 +34,10 @@ export const requestTable = (query) => async (dispatch) => {
 
   let tableReq = { ...query, status: TABLE_STATUS.TABLE_REQUEST };
   let response = await requestTableApi(tableReq);
+  if (!response.success) {
+    tableResponseHandlers.handle(response.payload, dispatch);
+    return;
+  }
   table = response.payload?.table;
 
   // setTimeout(

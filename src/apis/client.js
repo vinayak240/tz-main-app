@@ -9,7 +9,7 @@ const axiosClient = (apiType) => {
   const instance = axios.create({
     baseURL: BASE_URL[apiType],
     headers,
-    withCredentials: true,
+    // withCredentials: true,
   });
   // Add response interceptor when routes are done!,To handle ERR Reponses
 

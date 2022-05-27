@@ -8,9 +8,9 @@ import {
   tableRejected,
 } from "../../../redux/actions/table";
 
-const handle = (tableRes) => {
+const handle = (tableRes, dispatch) => {
   const { status } = tableRes;
-  const dispatch = Boolean(getDispatcher) || getDispatcher();
+  dispatch = dispatch || Boolean(getDispatcher) || getDispatcher();
 
   if (!Boolean(dispatch)) {
     return;

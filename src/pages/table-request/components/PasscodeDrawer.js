@@ -175,7 +175,10 @@ export default function PasscodeDrawer(props) {
           />
         </div>
         <div style={{ marginTop: "20px" }}>
-          <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="info">
+          <Alert
+            style={{ fontFamily: '"Proxima Nova"', margin: "20px" }}
+            severity="info"
+          >
             You can find Table Passcode from <br></br>{" "}
             <span>
               <strong>

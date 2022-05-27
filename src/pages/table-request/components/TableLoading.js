@@ -78,14 +78,14 @@ function TableLoading(props) {
       navigate("/table/request");
     }
 
-    setTimeout(() => {
-      dispatch(
-        tableOccupied({
-          table_id: "jyefsyj",
-          session_token: "dummy_token",
-        })
-      );
-    }, 4000);
+    // setTimeout(() => {
+    //   dispatch(
+    //     tableOccupied({
+    //       table_id: "jyefsyj",
+    //       session_token: "dummy_token",
+    //     })
+    //   );
+    // }, 4000);
   };
 
   const isErrorStatus = (status) =>
@@ -143,7 +143,7 @@ function TableLoading(props) {
         return "If table is first requested by your friend, Plesae ask for Table Passcode ";
 
       case TABLE_STATUS.PASSCODE_INVALID:
-        return "The Table Passcode you entered is invalid!";
+        return "The Table Passcode you entered is invalid!, or The Table is in waiting status";
 
       case TABLE_STATUS.TABLE_REJECTED:
         return "Your Table Request was Rejected by the Restaurant Executive";
@@ -159,7 +159,7 @@ function TableLoading(props) {
       container: container.current,
       animationData: three_dots,
       renderer: "svg",
-      loop: false,
+      loop: true,
       autoplay: true,
     });
 
@@ -192,7 +192,7 @@ function TableLoading(props) {
         container: container.current,
         animationData: three_dots,
         renderer: "svg",
-        loop: false,
+        loop: true,
         autoplay: true,
       });
     } else {

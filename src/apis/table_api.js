@@ -9,12 +9,8 @@ export const requestTable = async (tableReq) => {
       tableReq
     );
 
-    if (!Boolean(res.data?.success)) {
-      throw new Error("Error Requesting Table : " + res.data?.msg);
-    }
-
     return res.data;
   } catch (err) {
-    throw err;
+    return err.response?.data;
   }
 };
