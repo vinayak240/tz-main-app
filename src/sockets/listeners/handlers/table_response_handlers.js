@@ -4,13 +4,16 @@ import {
   checkoutDone,
   passcodeInvalid,
   tableActive,
+  tableError,
+  tableNotFound,
   tableOccupied,
   tableRejected,
 } from "../../../redux/actions/table";
+import store from "../../../redux/store";
 
 const handle = (tableRes, dispatch) => {
   const { status } = tableRes;
-  dispatch = dispatch || Boolean(getDispatcher) || getDispatcher();
+  dispatch = store.dispatch;
 
   if (!Boolean(dispatch)) {
     return;
@@ -24,11 +27,17 @@ const handle = (tableRes, dispatch) => {
     case TABLE_STATUS.TABLE_OCCUPIED:
       dispatch(tableOccupied(tableRes));
       return;
+    case TABLE_STATUS.TABLE_NOT_FOUND:
+      dispatch(tableNotFound(tableRes));
+      return;
     case TABLE_STATUS.PASSCODE_INVALID:
       dispatch(passcodeInvalid(tableRes));
       return;
     case TABLE_STATUS.TABLE_REJECTED:
       dispatch(tableRejected(tableRes));
+      return;
+    case TABLE_STATUS.REQUEST_ERROR:
+      dispatch(tableError());
       return;
     case TABLE_STATUS.TABLE_CHECKOUT_DONE:
       dispatch(checkoutDone(tableRes));

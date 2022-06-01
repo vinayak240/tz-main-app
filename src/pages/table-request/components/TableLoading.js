@@ -90,9 +90,11 @@ function TableLoading(props) {
 
   const isErrorStatus = (status) =>
     [
+      TABLE_STATUS.TABLE_NOT_FOUND,
       TABLE_STATUS.TABLE_OCCUPIED,
       TABLE_STATUS.TABLE_REJECTED,
       TABLE_STATUS.PASSCODE_INVALID,
+      TABLE_STATUS.REQUEST_ERROR,
     ].includes(status);
 
   const isRequestingStatus = (status) =>
@@ -120,8 +122,14 @@ function TableLoading(props) {
       case TABLE_STATUS.PASSCODE_INVALID:
         return "Invalid Passcode!";
 
+      case TABLE_STATUS.TABLE_NOT_FOUND:
+        return "Table Not Found!";
+
       case TABLE_STATUS.TABLE_REJECTED:
         return "Table Rejected!";
+
+      case TABLE_STATUS.REQUEST_ERROR:
+        return "Something Went Wrong!";
 
       default:
         return "Requesting Table";
@@ -139,6 +147,9 @@ function TableLoading(props) {
       case TABLE_STATUS.TABLE_ACTIVE:
         return "Redirecting to the Restaurant Menu...";
 
+      case TABLE_STATUS.TABLE_NOT_FOUND:
+        return "We did not find any Table associated with the above ID";
+
       case TABLE_STATUS.TABLE_OCCUPIED:
         return "If table is first requested by your friend, Plesae ask for Table Passcode ";
 
@@ -147,6 +158,9 @@ function TableLoading(props) {
 
       case TABLE_STATUS.TABLE_REJECTED:
         return "Your Table Request was Rejected by the Restaurant Executive";
+
+      case TABLE_STATUS.REQUEST_ERROR:
+        return "Something went wrong while requesting the Table, Please be patient";
 
       default:
         return "Requesting Table";

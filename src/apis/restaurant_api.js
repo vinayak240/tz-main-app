@@ -10,7 +10,7 @@ export const loadRestaurant = async (restId) => {
       throw new Error("Error Loading Restarant : " + res.data?.msg);
     }
 
-    return res;
+    return res.data;
   } catch (err) {
     throw err;
   }

@@ -8,8 +8,10 @@ export const TABLE_STATUS = {
   TABLE_REJECTED: "TABLE_REJECTED",
 
   // PSEUDO STATUSES
+  TABLE_NOT_FOUND: "TABLE_NOT_FOUND",
   TABLE_OCCUPIED: "TABLE_OCCUPIED",
   PASSCODE_INVALID: "PASSCODE_INVALID",
+  REQUEST_ERROR: "REQUEST_ERROR",
 
   TABLE_ACTIVE: "TABLE_ACTIVE", // When table request is accepted the table status is set to TABLE_ACTIVE
   TABLE_FREE: "TABLE_FREE", //After checkout the rest table status is set to FREE

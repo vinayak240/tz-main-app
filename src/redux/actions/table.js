@@ -23,6 +23,7 @@ import SESSION_STATUS from "../../enums/session_status";
 import { requestTable as requestTableApi } from "../../apis/table_api";
 import tableResponseHandlers from "../../sockets/listeners/handlers/table_response_handlers";
 import { setCookie } from "../../utils/cookies";
+import { emitJoinRoom } from "../../sockets/emitters/join_room";
 /**
  * Request for the table in 2 flows
  * 1 - flow [QR] - the link will contain restaurant ID and Table ID direct request is created
@@ -34,11 +35,34 @@ export const requestTable = (query) => async (dispatch) => {
 
   let tableReq = { ...query, status: TABLE_STATUS.TABLE_REQUEST };
   let response = await requestTableApi(tableReq);
-  if (!response.success) {
+  if (!Boolean(response)) {
+    dispatch(tableError());
+    return;
+  }
+  if (
+    !response?.success ||
+    response.payload?.status !== TABLE_STATUS.TABLE_REQUESTED
+  ) {
     tableResponseHandlers.handle(response.payload, dispatch);
+    if (response?.success) {
+      table = response.payload?.table;
+      emitJoinRoom({
+        table_id: table?._id,
+        rest_id: table?.restaurant_id,
+        user_id: response?.payload?.user?._id,
+      });
+    }
     return;
   }
   table = response.payload?.table;
+
+  console.log(response);
+
+  emitJoinRoom({
+    table_id: table?._id,
+    rest_id: table?.restaurant_id,
+    user_id: response?.payload?.user?._id,
+  });
 
   // setTimeout(
   //   () =>
@@ -53,7 +77,7 @@ export const requestTable = (query) => async (dispatch) => {
       offers: [], // these offers will added when the final bill is paid...
       totalCost: 0,
       status: TABLE_STATUS.TABLE_REQUESTED,
-      // user: null,
+      user: response?.user,
     },
   });
   //   2000
@@ -63,24 +87,24 @@ export const requestTable = (query) => async (dispatch) => {
 /**
  * To be called whne we get reply from the sockets that the users table request has been accepted
  */
-export const bootstrap = (table) => (dispatch) => {
+export const bootstrap = (payload) => (dispatch) => {
   // TO-DO : CALL API {GET Restaurant and all other things}; API CALL to set cookie
 
-  setCookie("_session_token_", table?.session?.session_token, 1);
+  setCookie("_session_token_", payload?.session?.session_token, 1);
 
   dispatch(setUser(null));
 
-  dispatch(loadRestaurant(table?.restaurant_id));
+  dispatch(loadRestaurant(payload?.table?.restaurant_id));
 
   dispatch(iniCart());
 
   dispatch({
     type: UPDATE_TABLE,
     payload: {
-      table_id: table?.table_id,
+      table_id: payload?.table?.table_id,
       session: {
-        token: table?.session?.session_token,
-        passcode: table?.session?.passcode,
+        token: payload?.session?.session_token,
+        passcode: payload?.session?.passcode,
         status: SESSION_STATUS.ACTIVE,
       }, //Contains all the order, table session
       status: TABLE_STATUS.TABLE_ACTIVE,
@@ -251,6 +275,28 @@ export const tableRejected = (payload) => (dispatch) => {
       orders: [],
       offers: [],
       totalCost: 0,
+    },
+  });
+};
+
+export const tableError = () => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      status: TABLE_STATUS.REQUEST_ERROR,
+      session: { ...session, status: SESSION_STATUS.ANAMOLY },
+    },
+  });
+};
+
+export const tableNotFound = () => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      status: TABLE_STATUS.TABLE_NOT_FOUND,
+      session: { ...session, status: SESSION_STATUS.ANAMOLY },
     },
   });
 };

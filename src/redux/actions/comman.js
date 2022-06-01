@@ -26,6 +26,8 @@ export const setUser = (curUser) => (dispatch) => {
         : {
             user_name: v4(),
           };
+    } else {
+      user = { ...user, user_name: "Guest" };
     }
     localStorage.setItem("user", JSON.stringify(user));
 

@@ -12,6 +12,7 @@ import CheckOut from "../pages/checkout/CheckOut";
 import TableRequest from "../pages/table-request/TableRequest";
 import TableLoading from "../pages/table-request/components/TableLoading";
 import { TABLE_STATUS } from "../enums/table_status";
+import ErrorBoundary from "../pages/table-request/components/ErrorBoundry";
 
 const Routes = (props) => {
   return (
@@ -38,7 +39,9 @@ const Routes = (props) => {
               props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : (
-                <TableLoading />
+                <ErrorBoundary>
+                  <TableLoading />
+                </ErrorBoundary>
               )
             }
           />

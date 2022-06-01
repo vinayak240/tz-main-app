@@ -2,7 +2,8 @@
  * @summary All the defined Socket Events
  */
 const SKT_EVENT = {
-  CONNECTION: "connection",
+  CONNECTION: "connect",
+  RECONNECT: "reconnect",
   DISCONNECT: "disconnect",
   PING_ID: "socket-id-os",
   PING_USER_ID: "user-id-os",

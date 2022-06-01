@@ -11,14 +11,17 @@ export let getDispatcher;
  * @summary Initializes all the Socket.io listeners and emitters
  * @param {any} dispatch TO idspatch redux actions
  */
-const init = (dispatch) => {
+export const initSockets = (dispatch) => {
   const client = io.connect("http://localhost:5001", {
+    reconnection: true,
+    reconnectionDelay: 3000,
+    reconnectionAttempts: 10000,
     forceNew: true,
   });
 
   getDispatcher = () => dispatch;
-  initSktListeners.init(client, dispatch);
+  initSktListeners.init(client);
   initSktEmitters.init(client);
-};
 
-export default { init };
+  return client;
+};

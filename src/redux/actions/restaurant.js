@@ -10,11 +10,11 @@ export const loadRestaurant = (restId) => async (dispatch) => {
   try {
     // [API CALL] This is to be updated..
     setLoading();
-    const restaurant = laodRestApi(restId);
+    const payload = await laodRestApi(restId);
 
     dispatch({
       type: LOADED_REST,
-      payload: restaurant,
+      payload: payload?.restaurant,
     });
 
     unSetLoading();
