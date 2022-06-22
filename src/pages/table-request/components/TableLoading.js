@@ -16,6 +16,7 @@ import { TABLE_STATUS } from "../../../enums/table_status";
 import { useNavigate } from "react-router-dom";
 import KeyboardArrowRightRoundedIcon from "@material-ui/icons/KeyboardArrowRightRounded";
 import PasscodeDrawer from "./PasscodeDrawer";
+import TableAppBar from "./TableAppBar";
 
 function TableLoading(props) {
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ function TableLoading(props) {
   const isErrorStatus = (status) =>
     [
       TABLE_STATUS.TABLE_NOT_FOUND,
+      TABLE_STATUS.TABLE_UNAVAILABLE,
       TABLE_STATUS.TABLE_OCCUPIED,
       TABLE_STATUS.TABLE_REJECTED,
       TABLE_STATUS.PASSCODE_INVALID,
@@ -125,6 +127,9 @@ function TableLoading(props) {
       case TABLE_STATUS.TABLE_NOT_FOUND:
         return "Table Not Found!";
 
+      case TABLE_STATUS.TABLE_UNAVAILABLE:
+        return "Table UnAvailable";
+
       case TABLE_STATUS.TABLE_REJECTED:
         return "Table Rejected!";
 
@@ -149,6 +154,9 @@ function TableLoading(props) {
 
       case TABLE_STATUS.TABLE_NOT_FOUND:
         return "We did not find any Table associated with the above ID";
+
+      case TABLE_STATUS.TABLE_UNAVAILABLE:
+        return "Sorry, The Table you Requested is UnAvailable at the moment...";
 
       case TABLE_STATUS.TABLE_OCCUPIED:
         return "If table is first requested by your friend, Plesae ask for Table Passcode ";
@@ -231,6 +239,9 @@ function TableLoading(props) {
         >
           <PasscodeDrawer request={requestWithPasscode} />
         </Drawer>
+      </div>
+      <div>
+        <TableAppBar />
       </div>
       <div
         style={{

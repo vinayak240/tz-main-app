@@ -5,7 +5,7 @@ const tableResponseHandler =
 const listen = (socket) => {
   socket.on(SKT_EVENT.TAB_RES, (msg) => {
     try {
-      console.log(msg);
+      // console.log(msg);
       if (msg?.type && msg.type === MESSAGE_TYPE.RESPONSE_MESSAGE) {
         console.log(msg);
         tableResponseHandler.handle(msg.payload);

@@ -7,6 +7,7 @@ const SKT_EVENT = {
   DISCONNECT: "disconnect",
   PING_ID: "socket-id-os",
   PING_USER_ID: "user-id-os",
+  CHECK_RECOONET: "check-reconnect",
   /**
    * Event used to join a user to restaurant room
    */

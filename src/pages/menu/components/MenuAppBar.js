@@ -9,7 +9,8 @@ import Slide from "@material-ui/core/Slide";
 import useStyles from "../styles/app_bar";
 import { Button, Popover, Typography } from "@material-ui/core";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
-import NotificationsPausedRoundedIcon from "@material-ui/icons/NotificationsPausedRounded";
+import PanToolOutlinedIcon from "@material-ui/icons/PanToolOutlined";
+import PanToolRoundedIcon from "@material-ui/icons/PanToolRounded";
 import OptionsMenu from "./OptionsMenu";
 import MenuSearchBar from "./MenuSearchBar";
 import MenuTabs from "./MenuTabs";
@@ -66,18 +67,20 @@ const MenuAppBar = (props) => {
           <div className={classes.appBarOptions}>
             <Button
               style={{
+                padding: "5px",
                 width: "fit-content",
                 minWidth: "1rem",
-                color: "white",
-                borderRadius: "4px",
-                marginRight: "20px",
-                padding: "0px",
+                color: "#282c34",
+                marginRight: "28px",
+                paddingRight: "7.5px",
+                borderRadius: "50%",
+                background: "#fcd601",
                 "&:hover": {
                   opacity: 0.8,
                 },
               }}
             >
-              <NotificationsPausedRoundedIcon />
+              <PanToolOutlinedIcon style={{ width: "1.38rem" }} />
             </Button>
 
             <Button
@@ -97,6 +100,15 @@ const MenuAppBar = (props) => {
                 },
               }}
             >
+              <span
+                style={{
+                  padding: "2px 4px",
+                  fontFamily: "'Proxima Nova'",
+                  fontWeight: 600,
+                }}
+              >
+                #{props.tableId}
+              </span>
               <MenuRoundedIcon />
             </Button>
 

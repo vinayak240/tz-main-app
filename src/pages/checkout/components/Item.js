@@ -144,7 +144,7 @@ export function Item(props) {
               }}
             >
               <span>&#8377;</span>
-              {v.totalCost}
+              {Number(v.totalCost) * Number(v.itemCount)}
             </Typography>
           </div>
         </li>

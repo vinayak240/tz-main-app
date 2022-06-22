@@ -89,7 +89,9 @@ export default function PasscodeDrawer(props) {
             className={classes.focusBorder}
             id="0"
             style={{
-              width: "2rem",
+              width: "10%",
+              maxWidth: "65px",
+              minWidth: "50px",
               padding: "15px 10px",
               textAlign: "center",
               border: "none",
@@ -111,7 +113,9 @@ export default function PasscodeDrawer(props) {
             className={classes.focusBorder}
             id="1"
             style={{
-              width: "2rem",
+              width: "10%",
+              maxWidth: "65px",
+              minWidth: "50px",
               padding: "15px 10px",
               textAlign: "center",
               border: "none",
@@ -133,7 +137,9 @@ export default function PasscodeDrawer(props) {
             className={classes.focusBorder}
             id="2"
             style={{
-              width: "2rem",
+              width: "10%",
+              maxWidth: "65px",
+              minWidth: "50px",
               padding: "15px 10px",
               textAlign: "center",
               border: "none",
@@ -155,7 +161,9 @@ export default function PasscodeDrawer(props) {
             className={classes.focusBorder}
             id="3"
             style={{
-              width: "2rem",
+              width: "10%",
+              maxWidth: "65px",
+              minWidth: "50px",
               padding: "15px 10px",
               textAlign: "center",
               border: "none",

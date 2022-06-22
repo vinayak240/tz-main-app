@@ -6,7 +6,7 @@ import ORDER_STATUS from "../../enums/order_status";
 import { isOfferApplicable, processOffer } from "../../pages/cart/utils/offers";
 import store from "../store";
 import { setAlert } from "./alert";
-import { setLoading, setUser, unSetLoading } from "./comman";
+import { setUser } from "./comman";
 import {
   CLEAR_SESSION,
   INIT_TABLE,
@@ -14,7 +14,7 @@ import {
   SET_TABLE_STATUS,
   UPDATE_TABLE,
 } from "./types";
-import { delay } from "../../utils/helpers";
+import { canRequestJoin, isObjEmpty } from "../../utils/helpers";
 import { iniCart, setCartStatus } from "./cart";
 import CART_STATUS from "../../enums/cart_status";
 import { TABLE_STATUS } from "../../enums/table_status";
@@ -24,6 +24,7 @@ import { requestTable as requestTableApi } from "../../apis/table_api";
 import tableResponseHandlers from "../../sockets/listeners/handlers/table_response_handlers";
 import { setCookie } from "../../utils/cookies";
 import { emitJoinRoom } from "../../sockets/emitters/join_room";
+import { placeOrderApi, refreshOrderApi } from "../../apis/orders_api";
 /**
  * Request for the table in 2 flows
  * 1 - flow [QR] - the link will contain restaurant ID and Table ID direct request is created
@@ -34,6 +35,13 @@ export const requestTable = (query) => async (dispatch) => {
   let table;
 
   let tableReq = { ...query, status: TABLE_STATUS.TABLE_REQUEST };
+
+  let joinInfo = JSON.parse(localStorage.getItem("JOIN_INFO"));
+
+  if (Boolean(joinInfo) && Boolean(joinInfo?.user_id)) {
+    tableReq.user_id = joinInfo?.user_id;
+  }
+
   let response = await requestTableApi(tableReq);
   if (!Boolean(response)) {
     dispatch(tableError());
@@ -46,26 +54,37 @@ export const requestTable = (query) => async (dispatch) => {
     tableResponseHandlers.handle(response.payload, dispatch);
     if (response?.success) {
       table = response.payload?.table;
-      emitJoinRoom({
-        table_id: table?._id,
-        rest_id: table?.restaurant_id,
-        user_id: response?.payload?.user?._id,
-      });
+      joinInfo = JSON.parse(localStorage.getItem("JOIN_INFO"));
+
+      if (canRequestJoin(joinInfo)) {
+        await emitJoinRoom(joinInfo);
+      } else {
+        await emitJoinRoom({
+          table_id: table?._id,
+          rest_id: table?.restaurant_id,
+          user_id: response?.payload?.user?._id,
+        });
+      }
     }
     return;
   }
   table = response.payload?.table;
 
-  console.log(response);
+  // console.log(response);
 
-  emitJoinRoom({
-    table_id: table?._id,
-    rest_id: table?.restaurant_id,
-    user_id: response?.payload?.user?._id,
-  });
+  joinInfo = JSON.parse(localStorage.getItem("JOIN_INFO"));
 
-  // setTimeout(
-  //   () =>
+  if (canRequestJoin(joinInfo)) {
+    joinInfo = JSON.parse(joinInfo);
+    await emitJoinRoom(joinInfo);
+  } else {
+    await emitJoinRoom({
+      table_id: table?._id,
+      rest_id: table?.restaurant_id,
+      user_id: response?.payload?.user?._id,
+    });
+  }
+
   dispatch({
     type: INIT_TABLE,
     payload: {
@@ -80,8 +99,6 @@ export const requestTable = (query) => async (dispatch) => {
       user: response?.user,
     },
   });
-  //   2000
-  // );
 };
 
 /**
@@ -92,7 +109,7 @@ export const bootstrap = (payload) => (dispatch) => {
 
   setCookie("_session_token_", payload?.session?.session_token, 1);
 
-  dispatch(setUser(null));
+  dispatch(setUser(payload?.user));
 
   dispatch(loadRestaurant(payload?.table?.restaurant_id));
 
@@ -130,10 +147,10 @@ export const placeOrder =
       let order = {
         _id: v4(), // TO BE REMOVED ONCE API INTEGRATED
         rest_id: store.getState()?.restaurant?.rest_id,
-        table_id: table?.table_id, //TO-DO
+        table_id: table?.tabm_id, //TO-DO
+        user_id: user?._id, //TO-DO
         items: items,
         total_price: totalCost,
-        session_id: "Dummy Session",
         offers: offers,
         status: ORDER_STATUS.NEW,
         meta: {
@@ -159,9 +176,16 @@ export const placeOrder =
 
       //TO-DO: [API CALL] Do a post api call to place the order
 
-      // await delay(1000);
+      // const response = await placeOrderApi(order);
 
-      if (!Boolean(table)) {
+      // if (!Boolean(response?.success)) {
+      // dispatch(setCartStatus(CART_STATUS.ORDER_ERROR))
+      //  setAlert("Order Pannot Be Placed!!", ALERT_TYPES.ERROR, 10000);
+      //  return;
+      // }
+      //  order = clone(response.order);
+
+      if (isObjEmpty(table)) {
         table = {
           orders: [order],
           offers: [],
@@ -301,6 +325,17 @@ export const tableNotFound = () => (dispatch) => {
   });
 };
 
+export const tableUnavailable = () => (dispatch) => {
+  const session = store.getState().table.session;
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      status: TABLE_STATUS.TABLE_UNAVAILABLE,
+      session: { ...session, status: SESSION_STATUS.ANAMOLY },
+    },
+  });
+};
+
 export const checkoutDone = (payload) => (dispatch) => {
   const session = store.getState().table.session;
   dispatch({
@@ -315,6 +350,42 @@ export const checkoutDone = (payload) => (dispatch) => {
 //#endregion
 
 //#region Helper methods
+
+//#region Order Status Actions
+
+export const refreshOrder = (orderId) => async (dispatch) => {
+  const response = await refreshOrderApi(orderId);
+  if (!Boolean(response?.success)) {
+    setAlert("Error Updating Order", ALERT_TYPES.ERROR, 10000);
+    return;
+  }
+
+  let table = store.getState()?.table;
+  let order = response?.order;
+
+  if (isObjEmpty(table)) {
+    table = {
+      orders: [order],
+      offers: [],
+      totalCost: order.total_price,
+    };
+  } else {
+    table.orders = table.orders.map((o) => {
+      if (order?._id === o._id) {
+        return order;
+      }
+
+      return o;
+    });
+  }
+
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: clone(table),
+  });
+};
+
+//#endregion
 
 export function getNextOrderNumber(userName) {
   let orders = store.getState()?.table.orders;

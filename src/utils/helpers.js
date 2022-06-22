@@ -17,3 +17,12 @@ export const delay = async (secs) => {
     }
   });
 };
+
+export const canRequestJoin = (joinReq) => {
+  return (
+    Boolean(joinReq?.table_id) &&
+    Boolean(joinReq?.rest_id) &&
+    Boolean(joinReq?.user_id) &&
+    !Boolean(joinReq?.flag)
+  );
+};

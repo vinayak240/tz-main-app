@@ -6,6 +6,13 @@ const emit = async (joinReq) => {
   try {
     console.log("JOIN ME");
     emitter.emit(EMTR_EVENT.SEND_MSG, SKT_EVENT.JOIN_REST_ROOM, joinReq);
+    localStorage.setItem(
+      "JOIN_INFO",
+      JSON.stringify({
+        ...joinReq,
+        flag: true,
+      })
+    );
   } catch (err) {
     console.error("Not able to join the user err: " + err);
   }

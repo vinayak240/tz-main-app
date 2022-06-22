@@ -8,6 +8,7 @@ import {
   tableNotFound,
   tableOccupied,
   tableRejected,
+  tableUnavailable,
 } from "../../../redux/actions/table";
 import store from "../../../redux/store";
 
@@ -29,6 +30,9 @@ const handle = (tableRes, dispatch) => {
       return;
     case TABLE_STATUS.TABLE_NOT_FOUND:
       dispatch(tableNotFound(tableRes));
+      return;
+    case TABLE_STATUS.TABLE_UNAVAILABLE:
+      dispatch(tableUnavailable(tableRes));
       return;
     case TABLE_STATUS.PASSCODE_INVALID:
       dispatch(passcodeInvalid(tableRes));

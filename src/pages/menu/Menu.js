@@ -116,6 +116,7 @@ const Menu = (props) => {
         tabValue={tabValue}
         setTabValue={setTabValue}
         numTabs={menuMap.length}
+        tableId={props.table?.table_id}
         tabs={menuMap.map((mt) => getMenuName(mt, props.restaurant.menu))}
         menu={restaurant.menu}
       />
@@ -307,6 +308,7 @@ const Menu = (props) => {
 
 const mapStateToProps = (state) => ({
   restaurant: state.restaurant,
+  table: state.table,
 });
 
 export default connect(mapStateToProps)(Menu);

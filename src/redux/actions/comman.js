@@ -27,7 +27,7 @@ export const setUser = (curUser) => (dispatch) => {
             user_name: v4(),
           };
     } else {
-      user = { ...user, user_name: "Guest" };
+      user = { ...user, user_name: user.user_name || "Guest" };
     }
     localStorage.setItem("user", JSON.stringify(user));
 
@@ -36,7 +36,7 @@ export const setUser = (curUser) => (dispatch) => {
       payload: user,
     });
   } catch (err) {
-    setAlert("Error setting order..", ALERT_TYPES.ERROR);
+    setAlert("Error setting user..", ALERT_TYPES.ERROR);
   }
 };
 

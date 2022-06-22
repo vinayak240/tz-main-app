@@ -55,6 +55,7 @@ const Routes = (props) => {
               ![
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading || isObjEmpty(props.restaurant) ? (
