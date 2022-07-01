@@ -1,7 +1,11 @@
 import { Button } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 
 function Table(props) {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
       {/* In Bold.. */}

@@ -51,7 +51,6 @@ export const requestTable = (query) => async (dispatch) => {
     !response?.success ||
     response.payload?.status !== TABLE_STATUS.TABLE_REQUESTED
   ) {
-    tableResponseHandlers.handle(response.payload, dispatch);
     if (response?.success) {
       table = response.payload?.table;
       joinInfo = JSON.parse(localStorage.getItem("JOIN_INFO"));
@@ -66,6 +65,9 @@ export const requestTable = (query) => async (dispatch) => {
         });
       }
     }
+
+    tableResponseHandlers.handle(response.payload, dispatch);
+
     return;
   }
   table = response.payload?.table;
@@ -119,6 +121,8 @@ export const bootstrap = (payload) => (dispatch) => {
     type: UPDATE_TABLE,
     payload: {
       table_id: payload?.table?.table_id,
+      tabm_id: payload?.table?._id,
+      restaurant_id: payload?.table?.restaurant_id,
       session: {
         token: payload?.session?.session_token,
         passcode: payload?.session?.passcode,
@@ -145,14 +149,15 @@ export const placeOrder =
       let user = store.getState()?.common?.user;
       let curDate = Date.now();
       let order = {
-        _id: v4(), // TO BE REMOVED ONCE API INTEGRATED
-        rest_id: store.getState()?.restaurant?.rest_id,
+        // _id: v4(), // TO BE REMOVED ONCE API INTEGRATED
+        rest_id: table?.restaurant_id,
         table_id: table?.tabm_id, //TO-DO
         user_id: user?._id, //TO-DO
         items: items,
-        total_price: totalCost,
+        total_price: totalCost + "",
         offers: offers,
         status: ORDER_STATUS.NEW,
+        is_update: false,
         meta: {
           user: { ...user },
           order_num: orderNum,
@@ -172,18 +177,18 @@ export const placeOrder =
         date: curDate,
       };
 
+      order.items = getSingularItems(clone(order.items));
       order.items = updateAllItemsStatus(order.items, ITEM_STATUS.NEW);
 
       //TO-DO: [API CALL] Do a post api call to place the order
+      const response = await placeOrderApi(order);
 
-      // const response = await placeOrderApi(order);
-
-      // if (!Boolean(response?.success)) {
-      // dispatch(setCartStatus(CART_STATUS.ORDER_ERROR))
-      //  setAlert("Order Pannot Be Placed!!", ALERT_TYPES.ERROR, 10000);
-      //  return;
-      // }
-      //  order = clone(response.order);
+      if (!Boolean(response?.success)) {
+        dispatch(setCartStatus(CART_STATUS.ORDER_ERROR));
+        setAlert("Order Pannot Be Placed!!", ALERT_TYPES.ERROR, 10000);
+        return;
+      }
+      order = clone(response.order);
 
       if (isObjEmpty(table)) {
         table = {
@@ -203,7 +208,16 @@ export const placeOrder =
         payload: clone(table),
       });
 
-      setTimeout(() => dispatch(setCartStatus(CART_STATUS.PLACED)), 1000);
+      setTimeout(
+        () =>
+          dispatch(
+            setCartStatus(
+              CART_STATUS.PLACED,
+              order?._id || order?.meta.order_num
+            )
+          ),
+        500
+      );
 
       return order; // this is the payload from the API call made
     } catch (err) {
@@ -363,20 +377,26 @@ export const refreshOrder = (orderId) => async (dispatch) => {
   let table = store.getState()?.table;
   let order = response?.order;
 
-  if (isObjEmpty(table)) {
+  if (isObjEmpty(table) || !Array.isArray(table?.orders)) {
     table = {
       orders: [order],
       offers: [],
-      totalCost: order.total_price,
+      totalCost: Number(order.total_price),
     };
   } else {
+    let isOrderPresent = false;
     table.orders = table.orders.map((o) => {
       if (order?._id === o._id) {
+        isOrderPresent = true;
         return order;
       }
 
       return o;
     });
+
+    if (!isOrderPresent) {
+      table.orders.push(order);
+    }
   }
 
   dispatch({
@@ -392,6 +412,23 @@ export function getNextOrderNumber(userName) {
 
   return orders.filter((o) => o?.meta?.user?.user_name === userName).length + 1;
 }
+
+const getSingularItems = (items) => {
+  let n_items = [];
+
+  items.forEach((item) => {
+    item.versions.forEach((v) => {
+      let newItem = {
+        ...item,
+        versions: [v],
+        itemCount: v.itemCount,
+      };
+      n_items.push(newItem);
+    });
+  });
+
+  return n_items;
+};
 
 const updateAllItemsStatus = (items, status) => {
   return items.map((item) => {

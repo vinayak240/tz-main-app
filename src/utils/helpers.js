@@ -19,6 +19,9 @@ export const delay = async (secs) => {
 };
 
 export const canRequestJoin = (joinReq) => {
+  if (!Boolean(joinReq)) {
+    return true;
+  }
   return (
     Boolean(joinReq?.table_id) &&
     Boolean(joinReq?.rest_id) &&

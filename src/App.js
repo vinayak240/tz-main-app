@@ -3,7 +3,6 @@ import { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
 import Routes from "./routing/Routes";
-import { emitJoinRoom } from "./sockets/emitters/join_room";
 
 const App = () => {
   let dispatch = useDispatch();
@@ -22,7 +21,8 @@ const App = () => {
       socket.disconnect();
       window.removeEventListener("beforeunload", gracefulAppShutDown);
     };
-  });
+  }, []);
+
   return (
     <div className="App">
       <Router>

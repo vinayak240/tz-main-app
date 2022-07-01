@@ -194,12 +194,14 @@ export const clearCart = () => (dispatch) => {
   });
 };
 
-export const setCartStatus = (status) => (dispatch) => {
-  dispatch({
-    type: SET_CART_STATUS,
-    payload: status,
-  });
-};
+export const setCartStatus =
+  (status, order_id = "") =>
+  (dispatch) => {
+    dispatch({
+      type: SET_CART_STATUS,
+      payload: { status, order_id },
+    });
+  };
 
 export const applyOfferOnCart = (discountedValue, offer) => (dispatch) => {
   let cart = clone(store.getState().cart);

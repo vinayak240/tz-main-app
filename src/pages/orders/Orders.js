@@ -57,6 +57,7 @@ function Orders(props) {
 
   useEffect(() => {
     initOrdersList();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -92,7 +93,7 @@ function Orders(props) {
                   textAlign: "left",
                 }}
               >
-                <Order order={o} />
+                <Order order={o} table_no={props.table_no || o.table_id} />
               </ButtonBase>
               {idx + 1 < arr.length && (
                 <hr
@@ -114,6 +115,7 @@ function Orders(props) {
 const mapStateToProps = (state) => ({
   orders: state.table?.orders,
   user: state.common?.user?.user_name,
+  table_no: state.table?.table_id,
 });
 
 export default connect(mapStateToProps)(Orders);

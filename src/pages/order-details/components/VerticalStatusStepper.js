@@ -48,7 +48,7 @@ export default function VerticalStatusStepper(props) {
         orientation="vertical"
         connector={<StatusConnector />}
       >
-        {statuses.map((status) => (
+        {statuses.map((status, idx) => (
           <Step key={status.label}>
             <StepLabel
               optional={
@@ -73,7 +73,7 @@ export default function VerticalStatusStepper(props) {
                   fontFamily: "'Proxima Nova'",
                 }}
               >
-                {status.label}
+                {idx + 1 + ". " + status.label}
               </span>
             </StepLabel>
           </Step>

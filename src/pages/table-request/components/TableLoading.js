@@ -176,6 +176,7 @@ function TableLoading(props) {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     lottie.destroy();
     lottie.loadAnimation({
       container: container.current,

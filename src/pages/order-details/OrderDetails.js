@@ -59,7 +59,7 @@ function OrderDetails(props) {
     return props.orders?.find(
       (o) =>
         o?._id === orderId ||
-        (o.meta?.user?.user_name === props.common?.user?.user_name &&
+        (o.meta?.user?._id === props.common?.user?._id &&
           String(o.meta?.order_num) === orderId)
     );
   };
@@ -67,6 +67,10 @@ function OrderDetails(props) {
   const goBack = () => {
     window.history.back();
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const order = getCurrentOrder();
   const items = order?.items;
@@ -95,6 +99,23 @@ function OrderDetails(props) {
     );
   };
 
+  const getSingularItems = (items) => {
+    let n_items = [];
+
+    items.forEach((item) => {
+      item.versions.forEach((v) => {
+        let newItem = {
+          ...item,
+          versions: [v],
+          itemCount: v.itemCount,
+        };
+        n_items.push(newItem);
+      });
+    });
+
+    return n_items;
+  };
+
   const getChargesTotal = () => {
     return getChargesMap(
       props.charges.filter((chr) => chr?.scope === "order"),
@@ -118,7 +139,7 @@ function OrderDetails(props) {
       <OrderAppBar
         goBack={goBack}
         n_items={order.items.length}
-        order_num={order.meta.order_num}
+        order_num={order.order_no}
         total={order.total_price}
       />
       <div
@@ -213,7 +234,7 @@ function OrderDetails(props) {
             }}
           >
             <LocationOnOutlinedIcon style={{ width: "18px" }} /> Table #
-            {order.table_id}
+            {props.table_no}
           </div>
         </div>
         <div>
@@ -232,22 +253,23 @@ function OrderDetails(props) {
               paddingTop: "14px",
             }}
           >
-            {(state.f_view_all ? items : getListForViewPort(items)).map(
-              (item, idx, arr) => (
-                <div key={item._id}>
-                  <Item idx={idx} item={item} />
-                  {arr.length !== idx + 1 && (
-                    <hr
-                      style={{
-                        borderWidth: "1.5px",
-                        margin: "6px 0px 5px",
-                      }}
-                      className={itmClasses.dottedSeperator}
-                    ></hr>
-                  )}
-                </div>
-              )
-            )}
+            {(state.f_view_all
+              ? getSingularItems(items)
+              : getListForViewPort(getSingularItems(items))
+            ).map((item, idx, arr) => (
+              <div key={item._id}>
+                <Item idx={idx} item={item} />
+                {arr.length !== idx + 1 && (
+                  <hr
+                    style={{
+                      borderWidth: "1.5px",
+                      margin: "6px 0px 5px",
+                    }}
+                    className={itmClasses.dottedSeperator}
+                  ></hr>
+                )}
+              </div>
+            ))}
             {order.items.length > viewPortSize && (
               <div style={{ textAlign: "center" }}>
                 <Button
@@ -322,6 +344,7 @@ const mapStateToProps = (state) => ({
   orders: clone(state.table?.orders),
   common: clone(state.common),
   charges: clone(state.restaurant?.settings?.charges),
+  table_no: state.table?.table_id,
 });
 
 export default connect(mapStateToProps)(OrderDetails);

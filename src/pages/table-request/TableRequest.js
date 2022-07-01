@@ -1,5 +1,5 @@
 import { Button, Slide, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { clearSession } from "../../redux/actions/table";
 import useNavigateSearch from "./hooks/useNavigateWithQuery";
@@ -36,6 +36,10 @@ function TableRequest(props) {
       search_id: "",
     });
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div

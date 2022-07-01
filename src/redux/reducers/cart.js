@@ -12,6 +12,7 @@ const initialState = {
   offers: [],
   totalCost: 0,
   status: CART_STATUS.NEW,
+  placed_order_id: "",
 };
 
 export default function (state = initialState, action) {
@@ -27,7 +28,8 @@ export default function (state = initialState, action) {
     case SET_CART_STATUS:
       return {
         ...state,
-        status: payload,
+        status: payload.status,
+        placed_order_id: payload.order_id,
       };
     case CLEAR_CART:
       return {
@@ -36,6 +38,7 @@ export default function (state = initialState, action) {
         offers: [],
         totalCost: 0,
         status: CART_STATUS.NEW,
+        placed_order_id: "",
       };
     case INIT_CART:
       return {
@@ -44,6 +47,7 @@ export default function (state = initialState, action) {
         offers: clone(payload.offers),
         totalCost: clone(payload.totalCost),
         status: CART_STATUS.NEW,
+        placed_order_id: "",
       };
     default:
       return state;

@@ -16,7 +16,7 @@ export const initSockets = (dispatch) => {
     reconnection: true,
     reconnectionDelay: 3000,
     reconnectionAttempts: 10000,
-    forceNew: false,
+    forceNew: true,
   });
 
   getDispatcher = () => dispatch;

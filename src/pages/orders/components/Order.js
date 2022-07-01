@@ -37,7 +37,7 @@ export function Order(props) {
             fontWeight: "600",
           }}
         >
-          Order #{order.meta.order_num}{" "}
+          Order #{order.order_no}{" "}
         </Typography>
         <Typography
           style={{
@@ -75,7 +75,7 @@ export function Order(props) {
           marginTop: "-3px",
         }}
       >
-        Table #{order.table_id}
+        Table #{props.table_no}
       </Typography>
       <Typography
         style={{

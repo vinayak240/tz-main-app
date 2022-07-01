@@ -413,7 +413,7 @@ function Cart(props) {
                 : "Order has been placed"
             }
             alert_msg={"Please wait, Don't quit the application"}
-            order_num={state.order_num}
+            order_num={props.cart?.placed_order_id || state.order_num}
           />
         </Drawer>
       </div>

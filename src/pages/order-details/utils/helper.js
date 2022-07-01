@@ -24,14 +24,14 @@ export const getOrderStatusLabels = (status) => {
     case ORDER_STATUS.NEW:
       return {
         short_label: "Requested", //To show the main status of order
-        label: "Order Requeted", // Used to show status in the status stepper
+        label: "Order Requested", // Used to show status in the status stepper
         color: "blue", // color of the status pulse
       };
     case ORDER_STATUS.PLACED:
       return {
         short_label: "Placed",
         label: "Order Placed",
-        color: "blue",
+        color: "green",
       };
     case ORDER_STATUS.ACCEPTED_PARTIALLY:
       return {
@@ -80,7 +80,7 @@ export const getItemStatusLabels = (status) => {
       return {
         short_label: "Placed",
         label: "Item Placed",
-        color: "blue",
+        color: "green",
       };
     case ITEM_STATUS.ACCEPTED:
       return {
@@ -129,7 +129,7 @@ export const getCorrespondingHexCode = (color) => {
     case "blue":
       return "rgb(67, 159, 236)";
     case "green":
-      return "#059424";
+      return "rgb(63 191 91)";
     case "red":
       return "#d25858";
     default:
