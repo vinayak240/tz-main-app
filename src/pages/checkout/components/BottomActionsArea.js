@@ -18,16 +18,41 @@ export function BottomActionsArea(props) {
       <div>
         {props.isOngoing ? (
           <div>
-            <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="error">
+            <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="warning">
               <AlertTitle>
-                <strong>Cannot Check Out</strong>
+                <strong>Some Orders Still On Going</strong>
               </AlertTitle>
-              <strong>Some orders are still on-going</strong>, Please wait for
-              them to finish or you can{" "}
-              <a style={{ color: "#0388ca", textDecoration: "underline" }}>
-                call waiter
-              </a>
+              We Recommend to wait for them to finish or you can request for a
+              checkout{" "}
             </Alert>
+            <Button
+              style={{
+                display: "block",
+                width: "95%",
+                textTransform: "capitalize",
+                fontSize: "1rem",
+                fontFamily: "'Proxima Nova'",
+                fontWeight: "600",
+                margin: "8px auto",
+                borderRadius: "5px",
+                background: "#fcd601",
+                color: "black",
+                display: "flex",
+                padding: "9px",
+                justifyContent: "space-between",
+              }}
+              // disabled={props.isOngoing}
+            >
+              <div>
+                {" "}
+                Total: <span>&#8377;</span> {props.total}{" "}
+              </div>
+              <div>
+                {" "}
+                Check Out{" "}
+                <PlayArrowRoundedIcon style={{ verticalAlign: "middle" }} />
+              </div>
+            </Button>
           </div>
         ) : (
           <Button

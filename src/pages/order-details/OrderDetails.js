@@ -64,6 +64,20 @@ function OrderDetails(props) {
     );
   };
 
+  const getAllItems = (order) => {
+    let items = [];
+
+    if (Boolean(order?.items?.length > 0)) {
+      items = [...order?.items];
+    }
+
+    if (Boolean(order?.rejected_items?.length > 0)) {
+      items = [...items, ...order?.rejected_items];
+    }
+
+    return items;
+  };
+
   const goBack = () => {
     window.history.back();
   };
@@ -73,7 +87,7 @@ function OrderDetails(props) {
   }, []);
 
   const order = getCurrentOrder();
-  const items = order?.items;
+  const items = getAllItems(order);
   const statusMap = getStatusIndfoMap(order);
   const curStatusInfo = getOrderStatusLabels(order?.status);
   if (isObjEmpty(order)) {
@@ -139,7 +153,7 @@ function OrderDetails(props) {
       <OrderAppBar
         goBack={goBack}
         n_items={order.items.length}
-        order_num={order.order_no}
+        order_num={order?.meta?.order_num || order.order_no}
         total={order.total_price}
       />
       <div
@@ -324,7 +338,7 @@ function OrderDetails(props) {
             <div style={{ margin: "0px" }} className={classes.paymentItemCtnr}>
               <p className={classes.totalMnText}>Order Total</p>
               <p className={classes.totalMnText}>
-                <span>&#8377;</span> {order.total_price || getTotal()}
+                <span>&#8377;</span> {getTotal()}
               </p>
             </div>
           </div>

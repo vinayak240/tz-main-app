@@ -2,6 +2,8 @@ export const SET_LOADING = "SET_LOADING";
 export const UNSET_LOADING = "UNSET_LOADING";
 export const SET_USER = "SET_USER";
 export const UNSET_USER = "UNSET_USER";
+export const SET_API_STATUS = "SET_API_STATUS";
+export const UNSET_API_STATUS = "UNSET_API_STATUS";
 
 // RESTAURANT
 export const LOADED_REST = "LOADED_REST";

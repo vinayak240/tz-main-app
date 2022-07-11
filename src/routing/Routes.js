@@ -13,6 +13,16 @@ import TableRequest from "../pages/table-request/TableRequest";
 import TableLoading from "../pages/table-request/components/TableLoading";
 import { TABLE_STATUS } from "../enums/table_status";
 import ErrorBoundary from "../pages/table-request/components/ErrorBoundry";
+import Table from "../pages/table/Table";
+import Notifications from "../pages/notifications/Notifications";
+import CheckOutRequest from "../pages/checkout/components/CheckOutRequest";
+import MenuSkeleton from "../pages/menu/skeletons/MenuSkeleton";
+import TableSkeleton from "../pages/table/skeletons/TableSkeleton";
+import OrdersSkeleton from "../pages/orders/skeletons/OrdersSkeleton";
+import OrderDetailsSkeleton from "../pages/order-details/skeletons/OrderDetailsSkeleton";
+import NotificationSkeleton from "../pages/notifications/skeletons/NotificationSkeleton";
+import ApiErrorBoundry from "../pages/shared/ApiErrorBoundry";
+import { API_TYPES } from "../enums/api_status";
 
 const Routes = (props) => {
   return (
@@ -21,6 +31,29 @@ const Routes = (props) => {
         <Route path="/" element={<SplashScreen />} />
 
         <Route path="/table">
+          <Route
+            index={true}
+            element={
+              ![
+                TABLE_STATUS.TABLE_REQUESTED,
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
+                <TableSkeleton /> // Replace this with skeletons
+              ) : (
+                <ApiErrorBoundry
+                  api_type={API_TYPES.TABLE}
+                  skeleton={<TableSkeleton />}
+                >
+                  <Table />
+                </ApiErrorBoundry>
+              )
+            }
+          />
+
           <Route
             index={false}
             path="request"
@@ -45,6 +78,29 @@ const Routes = (props) => {
               )
             }
           />
+
+          <Route
+            index={false}
+            path="notifications"
+            element={
+              ![
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
+                <NotificationSkeleton /> // Replace this with skeletons
+              ) : (
+                <ApiErrorBoundry
+                  api_type={API_TYPES.NOTIFICATION}
+                  skeleton={<NotificationSkeleton />}
+                >
+                  <Notifications />
+                </ApiErrorBoundry>
+              )
+            }
+          />
         </Route>
 
         <Route path="/restaurant">
@@ -59,7 +115,7 @@ const Routes = (props) => {
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading || isObjEmpty(props.restaurant) ? (
-                <LoadingPage /> // Replace this with skeletons
+                <MenuSkeleton /> // Replace this with skeletons
               ) : (
                 <Menu />
               )
@@ -72,6 +128,7 @@ const Routes = (props) => {
               ![
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading ? (
@@ -90,14 +147,20 @@ const Routes = (props) => {
               ![
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading ? (
-                <LoadingPage /> // Replace this with skeletons
+                <OrderDetailsSkeleton /> // Replace this with skeletons
               ) : isObjEmpty(props.table?.orders) ? (
                 <Navigate to="/restaurant/menu" replace={true} />
               ) : (
-                <OrderDetails />
+                <ApiErrorBoundry
+                  api_type={API_TYPES.ORDER_DETAILS}
+                  skeleton={<OrderDetailsSkeleton />}
+                >
+                  <OrderDetails />
+                </ApiErrorBoundry>
               )
             }
           />
@@ -108,12 +171,18 @@ const Routes = (props) => {
               ![
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading ? (
-                <LoadingPage /> // Replace this with skeletons
+                <OrdersSkeleton /> // Replace this with skeletons
               ) : (
-                <Orders />
+                <ApiErrorBoundry
+                  api_type={API_TYPES.ORDERS}
+                  skeleton={<OrdersSkeleton />}
+                >
+                  <Orders />
+                </ApiErrorBoundry>
               )
             }
           />
@@ -124,12 +193,35 @@ const Routes = (props) => {
               ![
                 TABLE_STATUS.TABLE_ACTIVE,
                 TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading ? (
                 <LoadingPage /> // Replace this with skeletons
               ) : (
-                <CheckOut />
+                <ApiErrorBoundry
+                  api_type={API_TYPES.CHECKOUT}
+                  skeleton={<OrderDetailsSkeleton />}
+                >
+                  <CheckOut />
+                </ApiErrorBoundry>
+              )
+            }
+          />
+          <Route
+            index={false}
+            path="checkout/request"
+            element={
+              ![
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : props.common?.loading ? (
+                <LoadingPage /> // Replace this with skeletons
+              ) : (
+                <CheckOutRequest />
               )
             }
           />

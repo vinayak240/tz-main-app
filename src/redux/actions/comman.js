@@ -1,6 +1,12 @@
 import { clone } from "ramda";
 import { v4 } from "uuid";
-import { SET_LOADING, SET_USER, UNSET_LOADING, UNSET_USER } from "./types";
+import {
+  SET_API_STATUS,
+  SET_LOADING,
+  SET_USER,
+  UNSET_LOADING,
+  UNSET_USER,
+} from "./types";
 import { isObjEmpty } from "../../utils/helpers";
 import { setAlert } from "./alert";
 import ALERT_TYPES from "../../enums/alert_types";
@@ -51,4 +57,14 @@ export const unSetUser = () => (dispatch) => {
   } catch (err) {
     setAlert("Error un-setting order..", ALERT_TYPES.ERROR);
   }
+};
+
+export const setApiStatus = (api_type, status) => (dispatch) => {
+  dispatch({
+    type: SET_API_STATUS,
+    payload: {
+      type: api_type,
+      status,
+    },
+  });
 };

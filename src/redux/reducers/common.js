@@ -1,4 +1,6 @@
+import { API_STATUS, API_TYPES } from "../../enums/api_status";
 import {
+  SET_API_STATUS,
   SET_LOADING,
   SET_USER,
   UNSET_LOADING,
@@ -8,6 +10,7 @@ import {
 const initialState = {
   loading: false,
   user: null,
+  api_status: { status: API_STATUS.NONE, type: API_TYPES.NONE },
 };
 
 export default function (state = initialState, action) {
@@ -35,6 +38,12 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
+      };
+
+    case SET_API_STATUS:
+      return {
+        ...state,
+        api_status: { ...payload },
       };
 
     default:

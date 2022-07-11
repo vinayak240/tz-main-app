@@ -2,6 +2,7 @@ import { makeStyles, Typography, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useState } from "react";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+import { of } from "ramda";
 
 const useStyles = makeStyles(() => ({
   focusBorder: {
@@ -46,11 +47,13 @@ export default function PasscodeDrawer(props) {
 
     if (
       evt.target?.previousSibling &&
-      !Boolean(oldArr[resIdx]) &&
+      !Boolean(oldArr[resIdx] + "") &&
       resIdx > 0 &&
       (evt.which == 8 || evt.which == 46)
     ) {
       evt.target.previousSibling.focus();
+    } else if (oldArr.every((d) => Boolean(d + "")) && evt.which == 13) {
+      request();
     }
   };
 
@@ -103,7 +106,7 @@ export default function PasscodeDrawer(props) {
               fontFamily: "'Proxima Nova'",
               margin: "10px 0.85rem",
             }}
-            type="text"
+            type="number"
             maxLength={1}
             value={state.digits[0]}
             onChange={handleChange}
@@ -127,7 +130,7 @@ export default function PasscodeDrawer(props) {
               fontFamily: "'Proxima Nova'",
               margin: "10px 0.85rem",
             }}
-            type="text"
+            type="number"
             maxLength={1}
             value={state.digits[1]}
             onChange={handleChange}
@@ -151,7 +154,7 @@ export default function PasscodeDrawer(props) {
               fontFamily: "'Proxima Nova'",
               margin: "10px 0.85rem",
             }}
-            type="text"
+            type="number"
             maxLength={1}
             value={state.digits[2]}
             onChange={handleChange}
@@ -175,7 +178,7 @@ export default function PasscodeDrawer(props) {
               fontFamily: "'Proxima Nova'",
               margin: "10px 0.85rem",
             }}
-            type="text"
+            type="number"
             maxLength={1}
             value={state.digits[3]}
             onChange={handleChange}

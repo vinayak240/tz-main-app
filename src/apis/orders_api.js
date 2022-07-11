@@ -2,6 +2,16 @@ import axiosClient from "./client";
 
 const ordersApiClient = axiosClient("ORDER");
 
+export const getAllOrdersApi = async () => {
+  try {
+    const res = await ordersApiClient.get("/orders");
+
+    return res.data;
+  } catch (err) {
+    return err.response?.data;
+  }
+};
+
 export const placeOrderApi = async (order) => {
   try {
     const res = await ordersApiClient.post(

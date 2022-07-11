@@ -1,4 +1,5 @@
 import { ButtonBase } from "@material-ui/core";
+import { clone } from "ramda";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -93,7 +94,11 @@ function Orders(props) {
                   textAlign: "left",
                 }}
               >
-                <Order order={o} table_no={props.table_no || o.table_id} />
+                <Order
+                  order={o}
+                  charges={props.charges}
+                  table_no={props.table_no || o.table_id}
+                />
               </ButtonBase>
               {idx + 1 < arr.length && (
                 <hr
@@ -115,6 +120,7 @@ function Orders(props) {
 const mapStateToProps = (state) => ({
   orders: state.table?.orders,
   user: state.common?.user?.user_name,
+  charges: clone(state.restaurant?.settings?.charges),
   table_no: state.table?.table_id,
 });
 

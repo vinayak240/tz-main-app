@@ -24,7 +24,11 @@ import { requestTable as requestTableApi } from "../../apis/table_api";
 import tableResponseHandlers from "../../sockets/listeners/handlers/table_response_handlers";
 import { setCookie } from "../../utils/cookies";
 import { emitJoinRoom } from "../../sockets/emitters/join_room";
-import { placeOrderApi, refreshOrderApi } from "../../apis/orders_api";
+import {
+  getAllOrdersApi,
+  placeOrderApi,
+  refreshOrderApi,
+} from "../../apis/orders_api";
 /**
  * Request for the table in 2 flows
  * 1 - flow [QR] - the link will contain restaurant ID and Table ID direct request is created
@@ -367,6 +371,36 @@ export const checkoutDone = (payload) => (dispatch) => {
 
 //#region Order Status Actions
 
+export const refreshAllOrders = () => async (dispatch) => {
+  const response = await getAllOrdersApi();
+  if (!Boolean(response?.success)) {
+    setAlert("Error Updating Orders", ALERT_TYPES.ERROR, 10000);
+    return;
+  }
+
+  let table = store.getState()?.table;
+  let orders = response?.orders;
+  if (isObjEmpty(table) || !Array.isArray(table?.orders)) {
+    table = {
+      orders: orders,
+      offers: [],
+      totalCost: orders.reduce((tot, o) => tot + Number(o?.total_price), 0),
+    };
+  } else {
+    table.orders = [
+      ...table.orders.filter((o) =>
+        Boolean(orders.find((or) => or._id === o?._id))
+      ),
+      ...orders,
+    ];
+  }
+
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: clone(table),
+  });
+};
+
 export const refreshOrder = (orderId) => async (dispatch) => {
   const response = await refreshOrderApi(orderId);
   if (!Boolean(response?.success)) {
@@ -397,6 +431,11 @@ export const refreshOrder = (orderId) => async (dispatch) => {
     if (!isOrderPresent) {
       table.orders.push(order);
     }
+
+    table.totalCost = table.orders.reduce(
+      (tot, o) => tot + Number(o.total_price),
+      0
+    );
   }
 
   dispatch({

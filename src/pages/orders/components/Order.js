@@ -6,6 +6,8 @@ import {
   getOrderStatusLabels,
 } from "../../order-details/utils/helper";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
+import ITEM_STATUS from "../../../enums/item_status";
+import { getChargesMap, round } from "../../cart/utils/helpers";
 
 export function Order(props) {
   const { order } = props;
@@ -16,9 +18,32 @@ export function Order(props) {
     return order?.offers?.reduce((tot, o) => Number(o.discount) + tot, 0);
   };
 
+  const getItemsTotal = () => {
+    return getActiveItems()?.reduce(
+      (tot, i) =>
+        Number(i.type === "package" ? i.package_price : i.item_price) + tot,
+      0
+    );
+  };
+
+  const getChargesTotal = () => {
+    return getChargesMap(
+      props.charges.filter((chr) => chr?.scope === "order"),
+      Number(getItemsTotal())
+    ).reduce((c_total, chr) => c_total + chr.total, 0);
+  };
+
+  const getActiveItems = () => {
+    return order?.items.filter(
+      (i) =>
+        ![ITEM_STATUS.UNAVAILABLE, ITEM_STATUS.CANCELLED].includes(i?.status)
+    );
+  };
+
   const getTotal = () => {
     let discount = getTotalDiscount();
-    return Number(order.total_price) - discount;
+    let chargeTotal = getChargesTotal();
+    return round(Number(getItemsTotal()) - discount + chargeTotal, 1);
   };
 
   return (
@@ -37,7 +62,7 @@ export function Order(props) {
             fontWeight: "600",
           }}
         >
-          Order #{order.order_no}{" "}
+          Order #{order?.meta?.order_num || order.order_no}{" "}
         </Typography>
         <Typography
           style={{

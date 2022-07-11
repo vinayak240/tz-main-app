@@ -19,7 +19,11 @@ const OptionsMenu = (props) => {
 
   return (
     <MenuList>
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          navigate("/table");
+        }}
+      >
         <ListItemIcon>
           <i
             style={{
@@ -41,7 +45,11 @@ const OptionsMenu = (props) => {
         </ListItemText>
         <Typography variant="body2" color="text.secondary"></Typography>
       </MenuItem>
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          navigate("/table/notifications");
+        }}
+      >
         <ListItemIcon>
           <DraftsRoundedIcon />
         </ListItemIcon>

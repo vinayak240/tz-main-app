@@ -9,7 +9,6 @@ class ErrorBoundary extends React.Component {
 
   // This method is called if any error is encountered
   componentDidCatch() {
-    console.log("REACHED HERE");
     this.props.tableError();
   }
 

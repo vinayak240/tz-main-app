@@ -70,7 +70,7 @@ export default function Order(props) {
             fontWeight: "500",
           }}
         >
-          ORDER #{order?.order_no || order?.meta?.order_num}
+          ORDER #{order?.meta?.order_num || order.order_no}
           {/* This count will represent the restaurant's total orders for that day */}
           {(isOrderOngoing(order) || state.f_show_items) && (
             <span
