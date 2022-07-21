@@ -1,11 +1,16 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, IconButton } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../../redux/actions/cart";
+import { clearCart, setCartStatus } from "../../redux/actions/cart";
 import success_check from "../../assets/success_check.json";
+import wrong_wiggle from "../../assets/wrong_wiggle.json";
 import lottie from "lottie-web";
+import CART_STATUS from "../../enums/cart_status";
+import CancelRoundedIcon from "@material-ui/icons/CancelRounded";
+import { CART_REASON_TYPES } from "../../enums/order_subs";
+import { getErrorTypeMessage } from "../cart/utils/helpers";
 
 const useStyles = makeStyles(() => ({
   spinner: {
@@ -33,7 +38,14 @@ export default function LoadingDrawer(props) {
   const navigate = useNavigate();
   const container = useRef(null);
 
+  const handleClose = () => {
+    props.onLoaderClose();
+    setTimeout(() => dispatch(setCartStatus(CART_STATUS.NEW)), 500);
+  };
+
   useEffect(() => {
+    lottie.destroy();
+
     if (Boolean(props.is_finished)) {
       lottie.loadAnimation({
         container: container.current,
@@ -47,11 +59,28 @@ export default function LoadingDrawer(props) {
         navigate(`/restaurant/orders/${props.order_num}`, { replace: true });
         dispatch(clearCart());
       }, 2500);
+    } else if (props.is_error) {
+      lottie.loadAnimation({
+        container: container.current,
+        animationData: wrong_wiggle,
+        renderer: "svg",
+        loop: false,
+        autoplay: true,
+      });
     }
-  }, [props.is_finished]);
+  }, [props.is_finished, props.is_error]);
 
   return (
-    <div style={{ padding: props.is_finished ? "25px" : "10px" }}>
+    <div
+      style={{ padding: props.is_finished || props.is_error ? "25px" : "10px" }}
+    >
+      {props.is_error && (
+        <div style={{ position: "absolute", top: "5px", right: "13px" }}>
+          <IconButton onClick={handleClose}>
+            <CancelRoundedIcon />
+          </IconButton>
+        </div>
+      )}
       <div
         style={{
           display: "flex",
@@ -60,10 +89,19 @@ export default function LoadingDrawer(props) {
           minHeight: "140px",
         }}
       >
-        {props.is_finished ? (
+        {props.is_finished || props.is_error ? (
           <div
             ref={container}
-            style={{ width: "130px", height: "130px" }}
+            style={
+              props.is_finished
+                ? { width: "130px", height: "130px" }
+                : {
+                    height: "19rem",
+                    width: "19rem",
+                    position: "absolute",
+                    marginTop: "10px",
+                  }
+            }
           ></div>
         ) : (
           <div className={classes.spinner}></div>
@@ -87,10 +125,28 @@ export default function LoadingDrawer(props) {
           {props.msg}
         </Typography>
       </div>
-      {!props.is_finished && Boolean(props.alert_msg) && (
+      {!props.is_finished && !props.is_error && Boolean(props.alert_msg) && (
         <div style={{ marginTop: "20px" }}>
           <Alert style={{ fontFamily: "'Proxima Nova'" }} severity="info">
             {props.alert_msg}
+          </Alert>
+        </div>
+      )}
+      {Boolean(
+        props.is_error &&
+          props.reason !== CART_REASON_TYPES.NONE &&
+          Boolean(getErrorTypeMessage(props.reason))
+      ) && (
+        <div style={{ marginTop: "20px" }}>
+          <Alert
+            style={{
+              fontFamily: '"Proxima Nova"',
+              display: "flex",
+              justifyContent: "center",
+            }}
+            severity="error"
+          >
+            {getErrorTypeMessage(props.reason)}
           </Alert>
         </div>
       )}

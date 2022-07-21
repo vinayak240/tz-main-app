@@ -231,7 +231,7 @@ export default function Notification(props) {
                 new Date(),
                 new Date(props.notification?.date || new Date())
               )}
-              m ago
+              &nbsp;ago
             </span>
           </div>
           <div style={{ fontSize: "0.76rem", fontFamily: "'Proxima Nova'" }}>

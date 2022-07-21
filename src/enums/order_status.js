@@ -23,6 +23,7 @@ const ORDER_STATUS = {
   CANCELLED_PARTIALLY: "CANCELLED_PARTIALLY", //Not required
   CANCELLED: "CANCELLED", //manual only After ACCEPT from Rest
 
+  CANNOT_PLACE: "CANNOT_PLACE",
   SERVED: "SERVED", //manual -- last stage
   CLOSED: "CLOSED", // manual - After customer checks out all his current table orders(In Status SERVED) will be CLOSED (Triggered by rest)
 };

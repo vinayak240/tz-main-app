@@ -10,11 +10,14 @@ import {
   Paper,
 } from "@material-ui/core";
 import PaperComponent from "../../cart/shared/PaperComponent";
+import { useNavigate } from "react-router-dom";
 
 export default function EmptyList() {
   const [state, setState] = useState({
     f_warn_msg: false,
   });
+
+  const navigate = useNavigate();
 
   const handleDialogOpen = (flagName) => {
     setState((prevState) => ({
@@ -142,7 +145,8 @@ export default function EmptyList() {
         </Typography>
         <div>
           <Button
-            onClick={() => handleDialogOpen("f_warn_msg")}
+            // onClick={() => handleDialogOpen("f_warn_msg")}
+            onClick={() => navigate("/restaurant/checkout/request")}
             style={{
               background: "#282c34",
               color: "white",
@@ -158,7 +162,7 @@ export default function EmptyList() {
               }}
               className="fas fa-sign-out-alt"
             ></i>
-            Check Me Out
+            Sign Me Out
           </Button>
         </div>
       </div>

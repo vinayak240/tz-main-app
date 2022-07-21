@@ -21,6 +21,8 @@ import { connect } from "react-redux";
 import { isObjEmpty } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
 import { clone } from "ramda";
+import { API_TYPES } from "../../enums/api_status";
+import MenuSkeleton from "./skeletons/MenuSkeleton";
 
 const Menu = (props) => {
   // Since Menu is not updated so we use menu as props [ The whole restaturant data is used as props ]
@@ -94,11 +96,9 @@ const Menu = (props) => {
   //   return () => window.removeEventListener("popstate", onBackButtonEvent);
   // }, []);
 
-  if (isObjEmpty(restaurant)) {
-    return <Fragment>Loading menu..</Fragment>;
-  }
-
-  return (
+  return Boolean(props.loaders?.[API_TYPES.MENU]) ? (
+    <MenuSkeleton />
+  ) : (
     <div
       style={{
         marginTop: showTopSearchBar
@@ -115,7 +115,7 @@ const Menu = (props) => {
         isAtTop={showTopSearchBar}
         tabValue={tabValue}
         setTabValue={setTabValue}
-        numTabs={menuMap.length}
+        numTabs={menuMap?.length}
         tableId={props.table?.table_id}
         tabs={menuMap.map((mt) => getMenuName(mt, props.restaurant.menu))}
         menu={restaurant.menu}
@@ -309,6 +309,7 @@ const Menu = (props) => {
 const mapStateToProps = (state) => ({
   restaurant: state.restaurant,
   table: state.table,
+  loaders: state.common?.loaders,
 });
 
 export default connect(mapStateToProps)(Menu);

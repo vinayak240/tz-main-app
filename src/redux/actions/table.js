@@ -29,6 +29,7 @@ import {
   placeOrderApi,
   refreshOrderApi,
 } from "../../apis/orders_api";
+import { CART_REASON_TYPES } from "../../enums/order_subs";
 /**
  * Request for the table in 2 flows
  * 1 - flow [QR] - the link will contain restaurant ID and Table ID direct request is created
@@ -187,8 +188,21 @@ export const placeOrder =
       //TO-DO: [API CALL] Do a post api call to place the order
       const response = await placeOrderApi(order);
 
-      if (!Boolean(response?.success)) {
-        dispatch(setCartStatus(CART_STATUS.ORDER_ERROR));
+      if (
+        !Boolean(response?.success) ||
+        response?.order?.status === ORDER_STATUS.CANNOT_PLACE
+      ) {
+        dispatch(
+          setCartStatus(
+            CART_STATUS.ORDER_ERROR,
+            "",
+            Object.keys(CART_REASON_TYPES).includes(
+              response.order?.meta?.reason
+            )
+              ? response.order?.meta?.reason
+              : CART_REASON_TYPES.ANONYMOUS
+          )
+        );
         setAlert("Order Pannot Be Placed!!", ALERT_TYPES.ERROR, 10000);
         return;
       }
@@ -225,6 +239,17 @@ export const placeOrder =
 
       return order; // this is the payload from the API call made
     } catch (err) {
+      dispatch(
+        setCartStatus(
+          CART_STATUS.ORDER_ERROR,
+          "",
+          Object.keys(CART_REASON_TYPES).includes(
+            err?.response?.order?.meta?.reason
+          )
+            ? err?.response?.order?.meta?.reason
+            : CART_REASON_TYPES.ANONYMOUS
+        )
+      );
       setAlert("Error placing order..", ALERT_TYPES.ERROR);
     }
   };

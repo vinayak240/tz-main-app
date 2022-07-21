@@ -9,15 +9,12 @@ import { setLoading, setUser, unSetLoading } from "./comman";
 export const loadRestaurant = (restId) => async (dispatch) => {
   try {
     // [API CALL] This is to be updated..
-    setLoading();
     const payload = await laodRestApi(restId);
 
     dispatch({
       type: LOADED_REST,
       payload: payload?.restaurant,
     });
-
-    unSetLoading();
   } catch (err) {
     setAlert("Error loading restaurant..", ALERT_TYPES.ERROR);
   }

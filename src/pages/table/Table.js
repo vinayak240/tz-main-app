@@ -8,29 +8,32 @@ import TableAppBar from "./components/TableAppBar";
 import CounterInfo from "./components/CounterInfo";
 import { getTableSession } from "../../apis/table_api";
 import { useNavigate } from "react-router-dom";
+import { API_TYPES } from "../../enums/api_status";
+import TableSkeleton from "./skeletons/TableSkeleton";
 
 function Table(props) {
   const navigate = useNavigate();
   const [state, setState] = useState({});
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     // SET LOADING
-    getTableSession().then((response) => {
-      if (Boolean(response?.success)) {
-        let session = response.session;
-        setState({
-          ...state,
-          ...clone(session),
-        });
-      }
-    });
-  }, [props.table?.orders]);
+    window.scrollTo(0, 0);
+    if (!Boolean(props.common?.loaders?.[API_TYPES.TABLE])) {
+      getTableSession().then((response) => {
+        if (Boolean(response?.success)) {
+          let session = response.session;
+          setState({
+            ...state,
+            ...clone(session),
+          });
+        }
+      });
+    }
+  }, [props.table?.orders?.length]);
 
-  return (
+  return Boolean(props.common?.loaders?.[API_TYPES.TABLE]) ? (
+    <TableSkeleton />
+  ) : (
     <div>
       <TableAppBar status={state?.table_status || "NONE"} />
       {/* In Bold.. */}

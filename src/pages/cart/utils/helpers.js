@@ -1,3 +1,5 @@
+import { CART_REASON_TYPES } from "../../../enums/order_subs";
+
 export const checkIfCustumizationSame = (arr1, arr2) => {
   if (arr1.length !== arr2.length) {
     return false;
@@ -86,6 +88,23 @@ export const calculateTotalByPerc = (method, total, value) => {
   }
 
   return Number(value);
+};
+
+export const getErrorTypeMessage = (type) => {
+  switch (type) {
+    case CART_REASON_TYPES.ITEMS_UNAVAILABLE:
+      return "Some of the Items are Not Available"; //manual - semi status
+    case CART_REASON_TYPES.KITCHEN_CLOSED:
+      return "Sorry the Kitchen is Closed";
+    case CART_REASON_TYPES.MANUAL_REJECTION:
+      return "Order rejected by the Restaurant";
+    case CART_REASON_TYPES.ORDER_INVALID:
+      return "Something Went Wrong..";
+    case CART_REASON_TYPES.ANONYMOUS:
+      return "Something Went Wrong..";
+    default:
+      return "";
+  }
 };
 
 export const round = (value, decimals) => {

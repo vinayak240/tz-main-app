@@ -8,6 +8,9 @@ import { clone } from "ramda";
 import ORDER_STATUS from "../../enums/order_status";
 import { TABLE_STATUS } from "../../enums/table_status";
 import EmptyList from "./components/EmptyList";
+import { API_TYPES } from "../../enums/api_status";
+import NotificationSkeleton from "./skeletons/NotificationSkeleton";
+import { connect } from "react-redux";
 
 function Notifications(props) {
   const [state, setState] = useState({
@@ -16,22 +19,27 @@ function Notifications(props) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    getTableSessionNoticationApi().then((response) => {
-      if (Boolean(response?.success)) {
-        let notifications = response.notifications;
-        notifications = notifications.sort(
-          (n1, n2) =>
-            new Date(n2?.date || new Date()) - new Date(n1?.date || new Date())
-        );
-        setState({
-          ...state,
-          notifications: [...notifications],
-        });
-      }
-    });
+    if (!props.loaders?.[API_TYPES.NOTIFICATION]) {
+      getTableSessionNoticationApi().then((response) => {
+        if (Boolean(response?.success)) {
+          let notifications = response.notifications;
+          notifications = notifications.sort(
+            (n1, n2) =>
+              new Date(n2?.date || new Date()) -
+              new Date(n1?.date || new Date())
+          );
+          setState({
+            ...state,
+            notifications: [...notifications],
+          });
+        }
+      });
+    }
   }, []);
 
-  return (
+  return Boolean(props.loaders?.[API_TYPES.NOTIFICATION]) ? (
+    <NotificationSkeleton />
+  ) : (
     <div>
       <NotificationAppBar />
       <div style={{ paddingBottom: "60px" }}>
@@ -55,4 +63,8 @@ function Notifications(props) {
   );
 }
 
-export default Notifications;
+const mapStateToProps = (state) => ({
+  loaders: state.common?.loaders,
+});
+
+export default connect(mapStateToProps)(Notifications);

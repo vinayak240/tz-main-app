@@ -54,6 +54,10 @@ export const findOriginalPackage = (menu, packId) => {
 export const createMenuMap = (menu) => {
   let menuMap = {};
 
+  if (isObjEmpty(menu)) {
+    return menuMap;
+  }
+
   for (const mt of menu) {
     menuMap[mt._id || mt.name] = mt.categories;
   }

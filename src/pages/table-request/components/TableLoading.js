@@ -102,6 +102,13 @@ function TableLoading(props) {
   const isRequestingStatus = (status) =>
     [TABLE_STATUS.TABLE_REQUEST, TABLE_STATUS.TABLE_REQUESTED].includes(status);
 
+  const isIntermidiateStatus = (status) =>
+    [
+      TABLE_STATUS.TABLE_REQUEST,
+      TABLE_STATUS.TABLE_REQUESTED,
+      TABLE_STATUS.TABLE_ACTIVE,
+    ].includes(status);
+
   const isPasscodeStatus = (status) =>
     [TABLE_STATUS.TABLE_OCCUPIED, TABLE_STATUS.PASSCODE_INVALID].includes(
       status
@@ -168,7 +175,7 @@ function TableLoading(props) {
         return "Your Table Request was Rejected by the Restaurant Executive";
 
       case TABLE_STATUS.REQUEST_ERROR:
-        return "Something went wrong while requesting the Table, Please be patient";
+        return "Something went wrong while requesting the Table, Please try again";
 
       default:
         return "Requesting Table";
@@ -242,7 +249,7 @@ function TableLoading(props) {
         </Drawer>
       </div>
       <div>
-        <TableAppBar />
+        <TableAppBar noBack={isIntermidiateStatus(props.table?.status)} />
       </div>
       <div
         style={{

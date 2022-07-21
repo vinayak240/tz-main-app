@@ -403,17 +403,25 @@ function Cart(props) {
         <Drawer
           anchor="bottom"
           open={state.f_place_drawer}
-          onClose={() => handleDialogClose("f_place_drawer")}
+          onClose={() =>
+            props.cart?.status === CART_STATUS.ORDER_ERROR &&
+            handleDialogClose("f_place_drawer")
+          }
         >
           <LoadingDrawer
             is_finished={props.cart?.status === CART_STATUS.PLACED}
+            is_error={props.cart?.status === CART_STATUS.ORDER_ERROR}
+            reason={props.cart?.reason}
             msg={
               props.cart?.status !== CART_STATUS.PLACED
-                ? "Placing your order.."
+                ? props.cart?.status === CART_STATUS.ORDER_ERROR
+                  ? "Order Cannot be Placed"
+                  : "Placing your order.."
                 : "Order has been placed"
             }
             alert_msg={"Please wait, Don't quit the application"}
             order_num={props.cart?.placed_order_id || state.order_num}
+            onLoaderClose={() => handleDialogClose("f_place_drawer")}
           />
         </Drawer>
       </div>

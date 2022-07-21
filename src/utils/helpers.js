@@ -33,5 +33,14 @@ export const canRequestJoin = (joinReq) => {
 export const diff_minutes = (dt2, dt1) => {
   var diff = (dt2.getTime() - dt1.getTime()) / 1000;
   diff /= 60;
-  return Math.abs(Math.round(diff));
+  return timeConvert(Math.abs(Math.round(diff)));
+};
+
+export const timeConvert = (time) => {
+  if (Number(time) / 1440 > 1) {
+    return String(Number(time) / 1440).split(".")[0] + "d";
+  } else if (Number(time) / 60 > 1) {
+    return String(Number(time) / 60).split(".")[0] + "d";
+  }
+  return time + "m";
 };

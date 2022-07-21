@@ -22,6 +22,9 @@ export function OrderSlideButton(props) {
       setDragPosition(0);
     } else {
       props.onSlideComplete();
+      setTimeout(() => {
+        setDragPosition(0);
+      }, 1000);
     }
   };
 

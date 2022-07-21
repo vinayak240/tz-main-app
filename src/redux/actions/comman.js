@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import {
   SET_API_STATUS,
   SET_LOADING,
+  SET_SPECIFIC_LOADING,
   SET_USER,
   UNSET_LOADING,
   UNSET_USER,
@@ -68,3 +69,15 @@ export const setApiStatus = (api_type, status) => (dispatch) => {
     },
   });
 };
+
+export const setSpecificLoading =
+  (api_type, flag = false) =>
+  (dispatch) => {
+    dispatch({
+      type: SET_SPECIFIC_LOADING,
+      payload: {
+        type: api_type,
+        flag,
+      },
+    });
+  };

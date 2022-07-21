@@ -1,5 +1,6 @@
 import { clone } from "ramda";
 import ALERT_TYPES from "../../enums/alert_types";
+import { CART_REASON_TYPES } from "../../enums/order_subs";
 import {
   checkIfCustumizationSame,
   filterSameVersions,
@@ -195,11 +196,11 @@ export const clearCart = () => (dispatch) => {
 };
 
 export const setCartStatus =
-  (status, order_id = "") =>
+  (status, order_id = "", reason = CART_REASON_TYPES.NONE) =>
   (dispatch) => {
     dispatch({
       type: SET_CART_STATUS,
-      payload: { status, order_id },
+      payload: { status, order_id, reason },
     });
   };
 

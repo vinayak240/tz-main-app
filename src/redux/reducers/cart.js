@@ -1,5 +1,6 @@
 import { clone } from "ramda";
 import CART_STATUS from "../../enums/cart_status";
+import { CART_REASON_TYPES } from "../../enums/order_subs";
 import {
   CLEAR_CART,
   INIT_CART,
@@ -12,6 +13,7 @@ const initialState = {
   offers: [],
   totalCost: 0,
   status: CART_STATUS.NEW,
+  reason: CART_REASON_TYPES.NONE,
   placed_order_id: "",
 };
 
@@ -30,6 +32,10 @@ export default function (state = initialState, action) {
         ...state,
         status: payload.status,
         placed_order_id: payload.order_id,
+        reason:
+          payload.status === CART_STATUS.ORDER_ERROR
+            ? payload?.reason
+            : CART_REASON_TYPES.NONE,
       };
     case CLEAR_CART:
       return {
@@ -38,6 +44,7 @@ export default function (state = initialState, action) {
         offers: [],
         totalCost: 0,
         status: CART_STATUS.NEW,
+        reason: CART_REASON_TYPES.NONE,
         placed_order_id: "",
       };
     case INIT_CART:
@@ -47,6 +54,7 @@ export default function (state = initialState, action) {
         offers: clone(payload.offers),
         totalCost: clone(payload.totalCost),
         status: CART_STATUS.NEW,
+        reason: CART_REASON_TYPES.NONE,
         placed_order_id: "",
       };
     default:

@@ -79,7 +79,7 @@ export function BottomActionsArea(props) {
             </div>
             <div>
               {" "}
-              Check Out{" "}
+              Request CheckOut{" "}
               <PlayArrowRoundedIcon style={{ verticalAlign: "middle" }} />
             </div>
           </Button>
