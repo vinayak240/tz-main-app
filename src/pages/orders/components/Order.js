@@ -153,13 +153,13 @@ export function Order(props) {
           >
             <span
               style={{
-                background: "lightgray",
+                background: "#e2e2e2",
                 marginTop: "14px",
                 color: "black",
-                fontSize: ".66rem",
-                padding: "3px 6px",
+                fontSize: "0.66rem",
+                padding: "5px 6px",
                 borderRadius: "6px",
-                fontFamily: "'Proxima Nova'",
+                fontFamily: '"Proxima Nova"',
               }}
             >
               {new Date(order.date)

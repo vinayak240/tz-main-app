@@ -96,7 +96,8 @@ const Menu = (props) => {
   //   return () => window.removeEventListener("popstate", onBackButtonEvent);
   // }, []);
 
-  return Boolean(props.loaders?.[API_TYPES.MENU]) ? (
+  return Boolean(props.loaders?.[API_TYPES.MENU]) &&
+    isObjEmpty(props?.restaurant?.menu) ? (
     <MenuSkeleton />
   ) : (
     <div

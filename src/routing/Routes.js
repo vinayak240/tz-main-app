@@ -24,6 +24,7 @@ import NotificationSkeleton from "../pages/notifications/skeletons/NotificationS
 import ApiErrorBoundry from "../pages/shared/ApiErrorBoundry";
 import { API_TYPES } from "../enums/api_status";
 import Feedback from "../pages/checkout/components/Feedback";
+import CheckoutSkeleton from "../pages/checkout/skeletons/CheckoutSkeleton";
 
 const Routes = (props) => {
   return (
@@ -142,30 +143,6 @@ const Routes = (props) => {
           />
           <Route
             index={false}
-            path="orders/:orderId"
-            element={
-              ![
-                TABLE_STATUS.TABLE_ACTIVE,
-                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
-                TABLE_STATUS.TABLE_CHECKOUT_DONE,
-              ].includes(props.table?.status) ? (
-                <Navigate to="/table/request" replace={true} />
-              ) : props.common?.loading ? (
-                <OrderDetailsSkeleton /> // Replace this with skeletons
-              ) : isObjEmpty(props.table?.orders) ? (
-                <Navigate to="/restaurant/menu" replace={true} />
-              ) : (
-                <ApiErrorBoundry
-                  api_type={API_TYPES.ORDER_DETAILS}
-                  skeleton={<OrderDetailsSkeleton />}
-                >
-                  <OrderDetails />
-                </ApiErrorBoundry>
-              )
-            }
-          />
-          <Route
-            index={false}
             path="orders"
             element={
               ![
@@ -174,14 +151,32 @@ const Routes = (props) => {
                 TABLE_STATUS.TABLE_CHECKOUT_DONE,
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
-              ) : props.common?.loading ? (
-                <OrdersSkeleton /> // Replace this with skeletons
               ) : (
                 <ApiErrorBoundry
                   api_type={API_TYPES.ORDERS}
                   skeleton={<OrdersSkeleton />}
                 >
                   <Orders />
+                </ApiErrorBoundry>
+              )
+            }
+          />
+          <Route
+            index={false}
+            path="orders/:orderId"
+            element={
+              ![
+                TABLE_STATUS.TABLE_ACTIVE,
+                TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                TABLE_STATUS.TABLE_CHECKOUT_DONE,
+              ].includes(props.table?.status) ? (
+                <Navigate to="/table/request" replace={true} />
+              ) : (
+                <ApiErrorBoundry
+                  api_type={API_TYPES.ORDER_DETAILS}
+                  skeleton={<OrderDetailsSkeleton />}
+                >
+                  <OrderDetails />
                 </ApiErrorBoundry>
               )
             }
@@ -197,11 +192,11 @@ const Routes = (props) => {
               ].includes(props.table?.status) ? (
                 <Navigate to="/table/request" replace={true} />
               ) : props.common?.loading ? (
-                <OrderDetailsSkeleton /> // Replace this with skeletons
+                <CheckoutSkeleton /> // Replace this with skeletons
               ) : (
                 <ApiErrorBoundry
                   api_type={API_TYPES.CHECKOUT}
-                  skeleton={<OrderDetailsSkeleton />}
+                  skeleton={<CheckoutSkeleton />}
                 >
                   <CheckOut />
                 </ApiErrorBoundry>

@@ -16,6 +16,7 @@ function TableAppBar(props) {
 
   const goBack = () => {
     window.history.back();
+    props.noBack && props.noBack();
   };
 
   return (

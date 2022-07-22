@@ -1,14 +1,18 @@
 import { ButtonBase } from "@material-ui/core";
 import { clone } from "ramda";
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { API_TYPES } from "../../enums/api_status";
+import { refreshAllOrders } from "../../redux/actions/table";
 import EmptyList from "./components/EmptyList";
 import { Order } from "./components/Order";
 import OrdersAppBar from "./components/OrdersAppBar";
+import OrdersSkeleton from "./skeletons/OrdersSkeleton";
 
 function Orders(props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     f_user: true,
   });
@@ -59,9 +63,12 @@ function Orders(props) {
   useEffect(() => {
     initOrdersList();
     window.scrollTo(0, 0);
+    dispatch(refreshAllOrders());
   }, []);
 
-  return (
+  return Boolean(props.loaders?.[API_TYPES.ORDERS]) ? (
+    <OrdersSkeleton />
+  ) : (
     <div
       style={{
         width: "100vw",
@@ -79,7 +86,7 @@ function Orders(props) {
       ) : (
         <div style={{ backgroundColor: "white" }}>
           {getOrdersList().map((o, idx, arr) => (
-            <div key={idx}>
+            <div key={idx + "-" + o._id}>
               <ButtonBase
                 onClick={() =>
                   navigate(
@@ -122,6 +129,7 @@ const mapStateToProps = (state) => ({
   user: state.common?.user?.user_name,
   charges: clone(state.restaurant?.settings?.charges),
   table_no: state.table?.table_id,
+  loaders: state.common?.loaders,
 });
 
 export default connect(mapStateToProps)(Orders);

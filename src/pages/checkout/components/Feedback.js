@@ -43,7 +43,7 @@ export default function Feedback() {
           style={{
             fontSize: "1.3rem",
             fontFamily: "'Proxima Nova'",
-            fontWeight: "600",
+            fontWeight: "bold",
             margin: "10px",
             textAlign: "center",
           }}

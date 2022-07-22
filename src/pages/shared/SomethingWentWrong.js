@@ -3,6 +3,9 @@ import lottie from "lottie-web";
 import wrong_wiggle from "../../assets/wrong_wiggle.json";
 import TableAppBar from "../table-request/components/TableAppBar";
 import { Typography } from "@material-ui/core";
+import store from "../../redux/store";
+import { setApiStatus } from "../../redux/actions/comman";
+import { API_STATUS, API_TYPES } from "../../enums/api_status";
 
 export function SomethingWentWrong() {
   const container = useRef(null);
@@ -21,7 +24,11 @@ export function SomethingWentWrong() {
   return (
     <div>
       <div>
-        <TableAppBar />
+        <TableAppBar
+          onBack={() =>
+            store.dispatch(setApiStatus(API_TYPES.NONE, API_STATUS.NONE))
+          }
+        />
       </div>
       <div>
         <div

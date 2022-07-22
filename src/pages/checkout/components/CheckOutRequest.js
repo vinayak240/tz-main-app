@@ -170,13 +170,14 @@ function CheckOutRequest(props) {
           style={{
             marginTop: "1.8rem",
             padding: "15px",
+            borderTop: "1px solid #a7a7a7",
           }}
         >
           <Typography
             style={{
               fontSize: "1.3rem",
               fontFamily: "'Proxima Nova'",
-              fontWeight: "600",
+              fontWeight: "bold",
               margin: "10px",
               textAlign: "center",
             }}

@@ -8,7 +8,7 @@ export default function OrderDetailsSkeleton() {
         <Skeleton variant="rect" style={{ width: "100vw", height: "7vh" }} />
       </div>
       <div style={{ marginTop: "10px", padding: "0px 10px" }}>
-        <Skeleton variant="rect" style={{ width: "95vw", height: "20vh" }} />
+        <Skeleton variant="rect" style={{ width: "95vw", height: "24vh" }} />
       </div>
       <div
         style={{
@@ -19,7 +19,7 @@ export default function OrderDetailsSkeleton() {
           padding: "0px 10px",
         }}
       >
-        <Skeleton variant="rect" style={{ width: "95", height: "8vh" }} />
+        <Skeleton variant="rect" style={{ width: "95vw", height: "8vh" }} />
       </div>
       <div
         style={{

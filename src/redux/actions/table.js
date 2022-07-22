@@ -405,7 +405,7 @@ export const refreshAllOrders = () => async (dispatch) => {
 
   let table = store.getState()?.table;
   let orders = response?.orders;
-  if (isObjEmpty(table) || !Array.isArray(table?.orders)) {
+  if (isObjEmpty(table) || Boolean(table?.orders?.length <= 0)) {
     table = {
       orders: orders,
       offers: [],
@@ -413,12 +413,17 @@ export const refreshAllOrders = () => async (dispatch) => {
     };
   } else {
     table.orders = [
-      ...table.orders.filter((o) =>
-        Boolean(orders.find((or) => or._id === o?._id))
+      ...table.orders.filter(
+        (o) => !Boolean(orders.find((or) => or._id === o?._id))
       ),
       ...orders,
     ];
   }
+
+  table.orders = table.orders.sort(
+    (o1, o2) =>
+      new Date(o2?.date || new Date()) - new Date(o1?.date || new Date())
+  );
 
   dispatch({
     type: UPDATE_TABLE,

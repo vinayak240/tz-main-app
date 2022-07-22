@@ -21,6 +21,10 @@ import {
 } from "./utils/helper";
 import { getChargesMap, round } from "../cart/utils/helpers";
 import ITEM_STATUS from "../../enums/item_status";
+import OrderDetailsSkeleton from "./skeletons/OrderDetailsSkeleton";
+import { API_TYPES } from "../../enums/api_status";
+import store from "../../redux/store";
+import { refreshOrder } from "../../redux/actions/table";
 
 // Get current order id from route params
 function OrderDetails(props) {
@@ -33,6 +37,11 @@ function OrderDetails(props) {
     f_view_stepper: false,
     cur_order: null,
   });
+
+  const [order, setOrder] = useState(null);
+  const [items, setItems] = useState([]);
+  const [statusMap, setMap] = useState({});
+  const [curStatusInfo, setCurInfo] = useState({});
 
   const viewPortSize = 2;
 
@@ -56,12 +65,23 @@ function OrderDetails(props) {
 
   const getCurrentOrder = () => {
     // Here if cant find do a API call..
-    return props.orders?.find(
+    let m_order = props.orders?.find(
       (o) =>
         o?._id === orderId ||
         (o.meta?.user?._id === props.common?.user?._id &&
           String(o.meta?.order_num) === orderId)
     );
+
+    if (!isObjEmpty(m_order)) {
+      setOrder(m_order);
+      setItems(getAllItems(m_order));
+      setMap(getStatusIndfoMap(m_order));
+      setCurInfo(getOrderStatusLabels(m_order?.status));
+
+      return true;
+    }
+
+    return false;
   };
 
   const getAllItems = (order) => {
@@ -84,15 +104,11 @@ function OrderDetails(props) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  const order = getCurrentOrder();
-  const items = getAllItems(order);
-  const statusMap = getStatusIndfoMap(order);
-  const curStatusInfo = getOrderStatusLabels(order?.status);
-  if (isObjEmpty(order)) {
-    return <LoadingPage />;
-  }
+    let flag = getCurrentOrder();
+    if (!flag && !Boolean(props?.common?.loaders?.[API_TYPES.ORDER_DETAILS])) {
+      store.dispatch(refreshOrder(orderId));
+    }
+  }, [JSON.stringify(props?.orders)]);
 
   const getTotalDiscount = () => {
     return order?.offers?.reduce((tot, o) => Number(o.discount) + tot, 0);
@@ -143,7 +159,10 @@ function OrderDetails(props) {
     return round(Number(getItemsTotal()) - discount + chargeTotal, 1);
   };
 
-  return (
+  return Boolean(props?.common?.loaders?.[API_TYPES.ORDER_DETAILS]) ||
+    isObjEmpty(order) ? (
+    <OrderDetailsSkeleton />
+  ) : (
     <div
       style={{
         background: "#efeff3",
