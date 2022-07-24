@@ -42,6 +42,7 @@ export function BottomActionsArea(props) {
                 justifyContent: "space-between",
               }}
               // disabled={props.isOngoing}
+              onClick={props.requestCheckout}
             >
               <div>
                 {" "}
@@ -71,7 +72,7 @@ export function BottomActionsArea(props) {
               padding: "9px",
               justifyContent: "space-between",
             }}
-            disabled={props.isOngoing}
+            onClick={props.requestCheckout}
           >
             <div>
               {" "}

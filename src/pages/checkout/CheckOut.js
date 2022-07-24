@@ -19,16 +19,25 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Drawer,
   Paper,
   Typography,
 } from "@material-ui/core";
 import PaperComponent from "../cart/shared/PaperComponent";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import { applyOfferOnTable, removeOffers } from "../../redux/actions/table";
+import {
+  applyOfferOnTable,
+  removeOffers,
+  requestCheckout,
+} from "../../redux/actions/table";
 import { BottomActionsArea } from "./components/BottomActionsArea";
 import EmptyList from "./components/EmptyList";
 import { isOrderOngoing } from "./utils/helper";
+import { TABLE_STATUS } from "../../enums/table_status";
+import LoadingDrawer from "./components/LoadingDrawer";
+import { API_STATUS, API_TYPES } from "../../enums/api_status";
+import { setApiStatus } from "../../redux/actions/comman";
 
 function CheckOut(props) {
   const cartClasses = useCartStyles();
@@ -39,6 +48,7 @@ function CheckOut(props) {
     is_open: false,
     f_offer_page: false,
     f_offer_msg: false,
+    f_load_drawer: false,
     infolist: [],
     infoHead: "",
   });
@@ -144,6 +154,15 @@ function CheckOut(props) {
     return round(props.table.totalCost + chargeTotal - discount, 1);
   };
 
+  const requestCheckout_Click = () => {
+    dispatch(setApiStatus(API_TYPES.CHECKOUT, API_STATUS.NONE));
+    setState({
+      ...state,
+      f_load_drawer: true,
+    });
+    dispatch(requestCheckout());
+  };
+
   useEffect(() => {
     if (!curOffer.is_applied) {
       setCurOffer({
@@ -182,6 +201,50 @@ function CheckOut(props) {
           }}
         >
           <div className="partials">
+            <Drawer
+              anchor="bottom"
+              open={state.f_load_drawer}
+              onClose={() =>
+                [
+                  TABLE_STATUS.REQUEST_ERROR,
+                  TABLE_STATUS.TABLE_CHECKOUT_REJECTED,
+                ].includes(props.table?.status) ||
+                (props.common?.api_status?.status === API_STATUS.INDIV_ERR &&
+                  props.common?.api_status?.type === API_TYPES.CHECKOUT &&
+                  handleDialogClose("f_load_drawer"))
+              }
+            >
+              <LoadingDrawer
+                is_finished={[
+                  TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+                  TABLE_STATUS.TABLE_CHECKOUT_DONE,
+                ].includes(props.table?.status)}
+                is_error={
+                  [
+                    TABLE_STATUS.REQUEST_ERROR,
+                    TABLE_STATUS.TABLE_CHECKOUT_REJECTED,
+                  ].includes(props.table?.status) ||
+                  (props.common?.api_status?.status === API_STATUS.INDIV_ERR &&
+                    props.common?.api_status?.type === API_TYPES.CHECKOUT)
+                }
+                reason={props.table?.meta_info?.reason}
+                msg={
+                  props.table?.status !== TABLE_STATUS.TABLE_CHECKOUT_REQUESTED
+                    ? [
+                        TABLE_STATUS.REQUEST_ERROR,
+                        TABLE_STATUS.TABLE_CHECKOUT_REJECTED,
+                      ].includes(props.table?.status) ||
+                      (props.common?.api_status?.status ===
+                        API_STATUS.INDIV_ERR &&
+                        props.common?.api_status?.type === API_TYPES.CHECKOUT)
+                      ? "Cannot CheckOut Table"
+                      : "Requesting CheckOut.."
+                    : "CheckOut Requested"
+                }
+                alert_msg={"Please wait, Don't quit the application"}
+                onLoaderClose={() => handleDialogClose("f_load_drawer")}
+              />
+            </Drawer>
             <Dialog
               PaperComponent={PaperComponent}
               open={state.f_offer_msg}
@@ -598,6 +661,7 @@ function CheckOut(props) {
           <BottomActionsArea
             total={getTotal()}
             isOngoing={orders.some((o) => isOrderOngoing(o))}
+            requestCheckout={requestCheckout_Click}
           />
           <div
             style={{

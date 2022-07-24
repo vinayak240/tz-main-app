@@ -5,6 +5,7 @@ import {
   passcodeInvalid,
   tableActive,
   tableError,
+  tableFree,
   tableNotFound,
   tableOccupied,
   tableRejected,
@@ -45,6 +46,12 @@ const handle = (tableRes, dispatch) => {
       return;
     case TABLE_STATUS.TABLE_CHECKOUT_DONE:
       dispatch(checkoutDone(tableRes));
+      return;
+    case TABLE_STATUS.TABLE_CHECKOUT_REJECTED:
+      dispatch(checkoutDone(tableRes));
+      return;
+    case TABLE_STATUS.TABLE_FREE:
+      dispatch(tableFree(tableRes));
       return;
     default:
       return;

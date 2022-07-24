@@ -2,6 +2,7 @@ export const API_STATUS = {
   LOADING: "LOADING",
   ERROR: "ERROR",
   SUCCESS: "SUCCESS",
+  INDIV_ERR: "INDIV_ERR",
   NONE: "NONE",
 };
 
@@ -12,5 +13,6 @@ export const API_TYPES = {
   CHECKOUT: "CHECKOUT",
   TABLE: "TABLE",
   NOTIFICATION: "NOTIFICATION",
+  TABLE_CALL: "TABLE_CALL",
   NONE: "NONE",
 };

@@ -20,7 +20,10 @@ import CART_STATUS from "../../enums/cart_status";
 import { TABLE_STATUS } from "../../enums/table_status";
 import { loadRestaurant } from "./restaurant";
 import SESSION_STATUS from "../../enums/session_status";
-import { requestTable as requestTableApi } from "../../apis/table_api";
+import {
+  requestCheckoutApi,
+  requestTable as requestTableApi,
+} from "../../apis/table_api";
 import tableResponseHandlers from "../../sockets/listeners/handlers/table_response_handlers";
 import { setCookie } from "../../utils/cookies";
 import { emitJoinRoom } from "../../sockets/emitters/join_room";
@@ -104,6 +107,30 @@ export const requestTable = (query) => async (dispatch) => {
       totalCost: 0,
       status: TABLE_STATUS.TABLE_REQUESTED,
       user: response?.user,
+    },
+  });
+};
+
+export const requestCheckout = () => async (dispatch) => {
+  let tableReq = {
+    table_id: store.getState()?.table?.tabm_id,
+    status: TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
+    session: store.getState()?.table?.session,
+  };
+
+  let response = await requestCheckoutApi(tableReq);
+
+  if (
+    !response?.success ||
+    response.payload?.status !== TABLE_STATUS.TABLE_CHECKOUT_REQUESTED
+  ) {
+    return;
+  }
+
+  dispatch({
+    type: UPDATE_TABLE,
+    payload: {
+      status: TABLE_STATUS.TABLE_CHECKOUT_REQUESTED,
     },
   });
 };
@@ -381,6 +408,9 @@ export const tableUnavailable = () => (dispatch) => {
 
 export const checkoutDone = (payload) => (dispatch) => {
   const session = store.getState().table.session;
+  if (payload?.session?.status !== SESSION_STATUS.CLOSED) {
+    return;
+  }
   dispatch({
     type: UPDATE_TABLE,
     payload: {
@@ -390,6 +420,18 @@ export const checkoutDone = (payload) => (dispatch) => {
   });
 };
 
+export const tableFree = (payload) => (dispatch) => {
+  const session = store.getState().table.session;
+  if (payload?.session?.status === SESSION_STATUS.CLOSED) {
+    dispatch({
+      type: UPDATE_TABLE,
+      payload: {
+        status: TABLE_STATUS.TABLE_CHECKOUT_DONE,
+        session: { ...session, status: SESSION_STATUS.CLOSED },
+      },
+    });
+  }
+};
 //#endregion
 
 //#region Helper methods

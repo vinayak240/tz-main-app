@@ -131,13 +131,18 @@ export default function Notification(props) {
         }; //After checkout the rest table status is set to FREE
       case TABLE_STATUS.TABLE_CHECKOUT_REQUESTED:
         return {
-          main_text: "Check out Requested",
+          main_text: "CheckOut Requested",
           desc_text: "Checkout request has been received",
         };
       case TABLE_STATUS.TABLE_CHECKOUT_DONE:
         return {
           main_text: "Table Checked Out",
           desc_text: "Your table has been cleared and checked out",
+        };
+      case TABLE_STATUS.TABLE_CHECKOUT_REJECTED:
+        return {
+          main_text: "Checkout Rejected",
+          desc_text: "Table Checkout has been Rejected",
         };
 
       default:

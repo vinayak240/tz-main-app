@@ -154,7 +154,7 @@ function CheckOutRequest(props) {
         <Typography
           style={{
             color: "gray",
-            fontSize: "0.8rem",
+            fontSize: "0.85rem",
             fontWeight: "300",
             fontFamily: "'Proxima Nova'",
             textAlign: "center",
